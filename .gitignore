@@ -1,0 +1,17 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Generated experiment outputs
+experiments/outputs/
+results/
+
+# Local environment
+.env
+.venv/
+venv/
+
+# OS/editor noise
+.DS_Store
+.vscode/
+.idea/

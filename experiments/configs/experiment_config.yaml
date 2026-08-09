@@ -1,0 +1,104 @@
+project:
+  name: sparse-view-3dgs-regime-study
+  version: v0.1
+  experiment_id: regime-map-20260806
+
+runtime:
+  pose_mode: pose_given
+  cuda_warmup: true
+  exclude_initial_compilation: true
+  data_root: /data
+
+protocol:
+  dataset_primary: RE10K
+  dataset_external: DTU
+  dataset_primary_path: /data/re10k
+  dataset_external_path: /data/dtu
+  scenes_primary: 20
+  scenes_external: 8
+  seeds: [0, 1, 2]
+  view_counts: [2, 4, 8, 12]
+  overlap_levels: [low, high]
+  budgets_seconds: [1, 10, 60, 300]
+  time_boundary: end_to_end
+  checkpoint_rule: budget_end_checkpoint
+  use_oracle_peak: false
+
+methods:
+  feedforward:
+    - DepthSplat
+    - MVSplat
+  optimization:
+    - Vanilla3DGS
+    - SparseGS
+  control:
+    refinement_on: true
+    refinement_off: true
+
+metrics:
+  primary: [psnr, ssim, lpips]
+  secondary: [reprojection_consistency, gaussian_count, peak_vram]
+  external: [absrel, rmse, chamfer_distance, floater_ratio, free_space_opacity]
+
+logging:
+  schema:
+    - experiment_id
+    - scene
+    - seed
+    - method
+    - iteration
+    - wall_clock
+    - train_loss
+    - validation_metric
+    - test_psnr
+    - test_ssim
+    - test_lpips
+    - gaussian_count
+    - peak_vram
+    - checkpoint_path
+  output_dirs:
+    main_results: main_results
+    oracle_results: oracle_results
+    logs: logs
+    checkpoints: checkpoints
+    audits: audits
+    overlap: overlap
+
+overlap:
+  pairwise_formula: dice_covisibility
+  min_common_points: 1
+  non_edge_value: 0.0
+  primary_statistic: mean_overlap_zero_included
+  secondary_statistics: [q25_overlap, median_overlap_reference, zero_pair_ratio]
+  stratify_thresholds_within_view_count: true
+  isolated_view_policy: separate_from_main_aggregate
+  texture_covariates: [gradient_energy]
+  output_dir: overlap
+
+analysis:
+  cluster_unit: scene
+  seed_handling: repeated_measure_within_scene
+  bootstrap_iterations: 2000
+  confidence: 0.95
+  multiple_comparison_correction: Holm
+  tau:
+    pilot_seed_variability_psnr: 0.0
+    practical_min_delta_psnr: 0.5
+    rule: max_pilot_variability_and_practical_min_delta
+
+c1b:
+  enabled: true
+  renderer_equivalence_tolerance: 0.0001
+  initial_value_source: feedforward_gaussian
+  refinement_budget_seconds: [10, 60, 300]
+
+c2:
+  enabled: true
+  depth_noise_levels: [0.0, 0.01, 0.03, 0.05, 0.10]
+  global_scale_bias: [0.9, 0.95, 1.0, 1.05, 1.1]
+  claim_scope: sensitivity_analysis
+  representative_conditions:
+    - 2view_low_overlap
+    - 4view_low_overlap
+    - 4view_high_overlap
+    - 12view_high_overlap
