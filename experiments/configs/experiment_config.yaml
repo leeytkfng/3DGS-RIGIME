@@ -7,13 +7,13 @@ runtime:
   pose_mode: pose_given
   cuda_warmup: true
   exclude_initial_compilation: true
-  data_root: /data
+  data_root: /data/Re-feem
 
 protocol:
   dataset_primary: RE10K
   dataset_external: DTU
-  dataset_primary_path: /data/re10k
-  dataset_external_path: /data/dtu
+  dataset_primary_path: /data/Re-feem/datasets/re10k
+  dataset_external_path: /data/Re-feem/datasets/dtu
   scenes_primary: 20
   scenes_external: 8
   seeds: [0, 1, 2]

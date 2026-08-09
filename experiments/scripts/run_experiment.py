@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+"""실험 config를 읽어 전체 run manifest를 생성하는 스캐폴드.
+
+이 파일의 목적:
+- 실제 DepthSplat/MVSplat/3DGS runner를 붙이기 전에 실험 격자를 먼저 고정한다.
+- 어떤 scene, seed, view 수, overlap level, budget, method를 실행할지 manifest로 남긴다.
+- 예상 출력은 `experiments/outputs/experiment_manifest.json`이다.
+"""
+
 import json
 import sys
 from itertools import product
@@ -6,7 +14,7 @@ from pathlib import Path
 
 try:
     import yaml
-except ImportError as exc:  # pragma: no cover - runtime safeguard
+except ImportError as exc:  # pragma: no cover - 실행 환경에서 PyYAML 누락 시 바로 안내한다.
     raise SystemExit(f"PyYAML is required to run this script: {exc}") from exc
 
 from model_registry import DATASET_REGISTRY, MODEL_REGISTRY
@@ -14,9 +22,18 @@ from protocol_utils import compute_tau
 
 
 def build_experiment_plan(config: dict) -> list[dict]:
-    # This scaffold creates an auditable run manifest before real model runners
-    # are connected. The manifest is the contract that keeps the paper protocol
-    # stable across later implementation work.
+    """config의 축을 조합해 실행 계획 list를 만든다.
+
+    목적:
+    - 본 실험 전에 전체 실험 공간을 눈으로 확인하고 동결한다.
+    - 나중에 실제 runner가 붙으면 이 plan의 각 row를 하나의 작업 단위로 삼는다.
+
+    예상 결과:
+    - main phase: regime map용 전체 grid.
+    - c1b phase: feed-forward 초기값 고정 후 refinement off/on 비교.
+    - c2 phase: depth noise와 scale bias 민감도 분석.
+    """
+
     protocol = config.get("protocol", {})
     methods_cfg = config.get("methods", {})
     runtime_cfg = config.get("runtime", {})
@@ -27,14 +44,19 @@ def build_experiment_plan(config: dict) -> list[dict]:
     budgets = protocol.get("budgets_seconds", [])
     seeds = protocol.get("seeds", [0])
     scene_count = int(protocol.get("scenes_primary", 0))
+
+    # 실제 scene id 목록이 붙기 전까지는 deterministic placeholder를 쓴다.
+    # 예상 결과: re10k_scene_000, re10k_scene_001 ... 형태의 manifest row가 생성된다.
     scenes = [f"{primary_dataset.lower()}_scene_{index:03d}" for index in range(scene_count)]
     feedforward_methods = methods_cfg.get("feedforward", [])
     optimization_methods = methods_cfg.get("optimization", [])
     all_methods = feedforward_methods + optimization_methods
 
     plan = []
-    # Main regime-map grid: scene is the statistical unit, seed is a repeated
-    # measurement, and budget uses the fixed budget-end checkpoint rule.
+
+    # Main regime-map grid.
+    # 중요: scene은 통계적 독립 단위, seed는 scene 내부 반복 측정이다.
+    # 중요: checkpoint_selection은 budget_end_checkpoint로 고정해 test oracle 선택을 막는다.
     for scene, seed, view_count, overlap, budget, method in product(scenes, seeds, view_counts, overlap_levels, budgets, all_methods):
         plan.append(
             {
@@ -54,8 +76,10 @@ def build_experiment_plan(config: dict) -> list[dict]:
 
     c1b_cfg = config.get("c1b", {})
     if c1b_cfg.get("enabled", False):
-        # C1-b isolates the effect of standard 3DGS refinement by holding the
-        # feed-forward Gaussian initialization fixed and toggling refinement.
+        # C1-b 목적:
+        # - feed-forward Gaussian 초기값은 그대로 둔다.
+        # - standard 3DGS refinement를 끄거나 켰을 때의 순효과만 본다.
+        # 예상 결과: refinement=off 0초 row와 refinement=on 10/60/300초 row가 생성된다.
         refinement_budgets = c1b_cfg.get("refinement_budget_seconds", [10, 60, 300])
         if isinstance(refinement_budgets, (int, float)):
             refinement_budgets = [refinement_budgets]
@@ -95,8 +119,10 @@ def build_experiment_plan(config: dict) -> list[dict]:
 
     c2_cfg = config.get("c2", {})
     if c2_cfg.get("enabled", False):
-        # C2 is intentionally a sensitivity analysis, not a claim that these
-        # perturbations fully reproduce real monocular-depth errors.
+        # C2 목적:
+        # - 초기 depth uncertainty가 refinement 동역학에 미치는 민감도를 본다.
+        # - 현실의 모든 depth 오류를 재현한다는 주장이 아니라 sensitivity analysis다.
+        # 예상 결과: DTU 대표 조건마다 iid noise row와 scale bias row가 생성된다.
         external_dataset = protocol.get("dataset_external", "DTU")
         external_scenes = [
             f"{external_dataset.lower()}_scene_{index:03d}"
@@ -145,8 +171,16 @@ def build_experiment_plan(config: dict) -> list[dict]:
 
 
 def validate_config(config: dict) -> list[str]:
-    # These warnings catch protocol drift early, especially accidental oracle
-    # checkpoint use or unsupported view-count requests.
+    """config가 논문 프로토콜을 벗어나는지 가벼운 경고를 만든다.
+
+    목적:
+    - 지원하지 않는 view 수 요청, oracle peak 사용 같은 위험한 drift를 빨리 발견한다.
+
+    예상 결과:
+    - 문제가 없으면 빈 list.
+    - 문제가 있으면 manifest의 `config_warnings`와 터미널 출력에 남길 문자열 list.
+    """
+
     warnings = []
     protocol = config.get("protocol", {})
     methods_cfg = config.get("methods", {})
@@ -171,6 +205,19 @@ def validate_config(config: dict) -> list[str]:
 
 
 def main() -> int:
+    """manifest 생성 CLI 진입점.
+
+    실행 흐름:
+    1. YAML config를 읽는다.
+    2. output directory와 하위 결과 폴더를 만든다.
+    3. 전체 실험 plan과 protocol guard를 manifest JSON으로 저장한다.
+    4. 터미널에는 plan 수와 등록된 모델/데이터셋을 출력한다.
+
+    예상 결과:
+    - `experiments/outputs/experiment_manifest.json` 생성.
+    - 정상 종료 시 0 반환.
+    """
+
     repo_root = Path(__file__).resolve().parents[2]
     config_path = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else repo_root / "experiments/configs/experiment_config.yaml"
     output_dir = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else repo_root / "experiments/outputs"
@@ -196,8 +243,8 @@ def main() -> int:
     )
 
     manifest_path = output_dir / "experiment_manifest.json"
-    # Protocol guards are duplicated into the manifest so result folders remain
-    # interpretable even if the YAML config changes later.
+    # protocol_guards는 config가 나중에 바뀌더라도 특정 결과 폴더가 어떤 규칙으로
+    # 생성됐는지 복원할 수 있게 manifest 안에 복제해 둔다.
     manifest_payload = {
         "data_root": data_root,
         "protocol_guards": {

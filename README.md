@@ -25,7 +25,7 @@ bash experiments/scripts/run_experiment.sh
 
 ```bash
 python3 experiments/scripts/generate_overlap.py \
-  --colmap-images /data/re10k/scene_000/sparse/0/images.txt \
+  --colmap-images /data/Re-feem/datasets/re10k/scene_000/sparse/0/images.txt \
   --output-dir experiments/outputs/overlap/re10k_scene_000/4view_seed0 \
   --scene re10k_scene_000 \
   --view-count-label 4view_seed0

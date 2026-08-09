@@ -8,7 +8,7 @@
 
 ```bash
 python3 experiments/scripts/generate_overlap.py \
-  --colmap-images /data/re10k/scene_000/sparse/0/images.txt \
+  --colmap-images /data/Re-feem/datasets/re10k/scene_000/sparse/0/images.txt \
   --output-dir experiments/outputs/overlap/re10k_scene_000/4view_seed0 \
   --scene re10k_scene_000 \
   --view-count-label 4view_seed0
@@ -18,7 +18,7 @@ python3 experiments/scripts/generate_overlap.py \
 
 ```bash
 python3 experiments/scripts/generate_overlap.py \
-  --visibility-json /data/re10k/scene_000/visibility.json \
+  --visibility-json /data/Re-feem/datasets/re10k/scene_000/visibility.json \
   --views experiments/docs/early_experiment/example_views.txt \
   --output-dir experiments/outputs/overlap/re10k_scene_000/manual_subset
 ```
