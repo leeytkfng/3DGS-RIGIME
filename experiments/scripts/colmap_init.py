@@ -108,9 +108,26 @@ def triangulate_sfm_points(
 
     pycolmap.match_exhaustive(str(db_path))
 
+    # 극단적으로 sparse한 view 조합(예: 2-view인데 두 view가 거의 안 겹침)에서는
+    # SIFT 매칭이 0개가 나올 수 있다. 이 경우 pycolmap.triangulate_points()는
+    # 부드러운 예외가 아니라 COLMAP 내부 fatal check("LoadDatabase() failed")로
+    # 죽어서 러너 프로세스 전체가 죽는다 (2026-08-10 batch run에서 scan30/103/110이
+    # 이렇게 실패했다). 매칭 0개면 triangulation을 시도하지 않고 바로 fallback 신호를
+    # 반환해 호출측(MIN_SFM_POINTS 체크)이 random-sphere init으로 넘어가게 한다.
+    db = pycolmap.Database.open(str(db_path))
+    has_matches = db.num_matches() > 0
+    db.close()
+    if not has_matches:
+        return np.zeros((0, 3)), np.zeros((0, 3), dtype=np.uint8)
+
     reconstruction = pycolmap.Reconstruction()
     reconstruction.read_text(str(sparse_in))
-    result = pycolmap.triangulate_points(reconstruction, str(db_path), str(image_path), str(sparse_out))
+    try:
+        result = pycolmap.triangulate_points(reconstruction, str(db_path), str(image_path), str(sparse_out))
+    except (ValueError, RuntimeError) as exc:
+        # 위에서 못 잡은 다른 COLMAP 내부 실패에 대한 안전망.
+        print(f"[colmap_init] triangulate_points failed, falling back to random init: {exc}")
+        return np.zeros((0, 3)), np.zeros((0, 3), dtype=np.uint8)
 
     if result.num_points3D() == 0:
         return np.zeros((0, 3)), np.zeros((0, 3), dtype=np.uint8)

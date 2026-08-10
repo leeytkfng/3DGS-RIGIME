@@ -2,9 +2,12 @@
 __pycache__/
 *.py[cod]
 
-# Generated experiment outputs
+# Generated experiment outputs (checkpoints/logs can be 100MB+, GitHub hard-limits at 100MB/file)
 experiments/outputs/
+experiments/outputs_*/
 results/
+*.pt
+*.ckpt
 
 # Local environment
 .env
