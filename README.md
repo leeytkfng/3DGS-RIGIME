@@ -44,7 +44,14 @@ python3 experiments/scripts/generate_overlap.py \
 
 ## 권장 다음 작업
 
-1. 실제 DepthSplat/MVSplat/3DGS 실행 코드 연결
-2. RE10K/DTU 데이터셋과 COLMAP export 경로 반영
-3. 파일럿 5장면으로 view 수별 overlap threshold 산출
-4. 파일럿 로그로 bootstrap CI와 tau 값 동결
+1. 주 데이터셋 결정: RE10K vs DL3DV를 feed-forward checkpoint 도메인 기준으로 비교
+2. DTU 49-view dense sanity check로 Vanilla 3DGS 정상 기준값 확보
+3. MVSplat/DepthSplat checkpoint별 지원 view 수와 confidence 출력 여부 확인
+4. sanity check 통과 후 overlap threshold, tau, bootstrap CI용 파일럿 batch 실행
+
+
+## Local Data Status
+
+- RE10K pixelSplat small subset downloaded to `/data/Re-feem/datasets/re10k` (`test`: 41 scenes, `train`: 39 scenes).
+- Main RE10K protocol should use `256x256` images inherited from feed-forward checkpoints.
+- DTU official split is available locally and remains external/C2/dense-sanity data, not the main benchmark.

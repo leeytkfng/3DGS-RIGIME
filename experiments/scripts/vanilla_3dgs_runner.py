@@ -8,11 +8,12 @@
 - H200의 큰 VRAM을 쓰기 위해 기본값을 downsample 없는 원본 해상도(1600x1200), 큰 초기
   Gaussian 수, 상한 없는 growth로 둔다.
 
-지금 단계에서 의도적으로 비워둔 것 (스모크 테스트 범위를 넘는 부분):
-- 초기화는 COLMAP SfM이 아니라 카메라 기하로 추정한 bounding sphere 안의 random point다.
-  §5.2/§8 계획대로 실제 실험에서는 COLMAP triangulation으로 교체해야 한다.
-- LPIPS는 사전학습 가중치 다운로드가 필요해 이번 스모크 테스트에서는 계산하지 않는다
-  (로그에는 null로 남긴다).
+초기화는 colmap_init.triangulate_sfm_points()로 학습 view만 이용해 known-pose triangulation을
+수행한다 (§5.2/§8에서 요구하는 COLMAP SfM init). GT point cloud는 참조하지 않는다. Triangulation이
+너무 빈약하면(예: 극단적으로 낮은 overlap) 카메라 기하로 추정한 bounding sphere 안의 random
+point로 fallback한다 — 이 fallback 경로를 탄 run은 로그에 `init_source`로 남긴다.
+
+지금 단계에서 의도적으로 비워둔 것:
 - checkpoint_rule=budget_end_checkpoint / oracle_peak 분리는 protocol_utils의 기존 함수를
   그대로 재사용한다. 이 파일은 새 규칙을 만들지 않는다.
 """
@@ -25,16 +26,20 @@ import sys
 import time
 from pathlib import Path
 
+import lpips
 import numpy as np
 import torch
 import torch.nn.functional as F
+from scipy.spatial import cKDTree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from colmap_init import triangulate_sfm_points  # noqa: E402
 from dtu_dataset import estimate_scene_sphere, load_camera, load_scan  # noqa: E402
 from protocol_utils import budget_checkpoint, oracle_checkpoint  # noqa: E402
 
 SH_C0 = 0.28209479177387814
+MIN_SFM_POINTS = 200  # 이보다 triangulated point가 적으면 random-sphere init으로 fallback
 
 
 # ---------------------------------------------------------------------------
@@ -89,26 +94,37 @@ def build_camera_tensors(view: dict, device: torch.device) -> tuple[torch.Tensor
     return viewmat, k, image
 
 
-def init_gaussians(
-    center: np.ndarray,
-    radius: float,
-    num_points: int,
-    device: torch.device,
-    seed: int,
-) -> dict[str, torch.nn.Parameter]:
-    """카메라 기하로 추정한 bounding sphere 안에 random Gaussian을 초기화한다."""
-
+def _random_points_in_sphere(center: np.ndarray, radius: float, num_points: int, seed: int) -> tuple[np.ndarray, np.ndarray]:
     rng = np.random.default_rng(seed)
-    # 구 내부 uniform sampling: 방향은 정규분포 후 정규화, 반경은 세제곱근으로 보정.
     directions = rng.normal(size=(num_points, 3))
     directions /= np.linalg.norm(directions, axis=1, keepdims=True)
     radii = radius * (rng.uniform(size=(num_points, 1)) ** (1.0 / 3.0))
     points = center[None, :] + directions * radii
+    colors = np.full((num_points, 3), 128, dtype=np.uint8)
+    return points, colors
 
-    # nearest-neighbor 간격 근사값으로 초기 scale을 잡는다 (원본 3DGS의 SfM 기반 초기화를
-    # random 초기화로 대체할 때 흔히 쓰는 근사: 부피/점수 기반 평균 간격).
-    avg_spacing = radius / (num_points ** (1.0 / 3.0))
-    scales = np.full((num_points, 3), np.log(max(avg_spacing, 1e-4)), dtype=np.float32)
+
+def init_gaussians(
+    points: np.ndarray,
+    colors_rgb: np.ndarray,
+    device: torch.device,
+) -> dict[str, torch.nn.Parameter]:
+    """3D point(+RGB color)로부터 Gaussian을 초기화한다 (SfM 또는 random-sphere fallback 공용).
+
+    scale은 원본 3DGS 관례대로 각 점의 최근접 이웃까지 거리로 잡는다 (KNN, k=3 평균).
+    """
+
+    num_points = points.shape[0]
+    tree = cKDTree(points)
+    # k=4: 자기 자신(distance 0) + 최근접 3개.
+    k = min(4, num_points)
+    dists, _ = tree.query(points, k=k)
+    if k > 1:
+        avg_nn_dist = dists[:, 1:].mean(axis=1)
+    else:
+        avg_nn_dist = np.full(num_points, 1e-3)
+    avg_nn_dist = np.clip(avg_nn_dist, 1e-4, None)
+    scales = np.log(avg_nn_dist)[:, None].repeat(3, axis=1).astype(np.float32)
 
     means = torch.tensor(points, dtype=torch.float32, device=device)
     scales_t = torch.tensor(scales, dtype=torch.float32, device=device)
@@ -116,7 +132,9 @@ def init_gaussians(
     quats[:, 0] = 1.0  # identity quaternion (w, x, y, z)
     opacities = torch.full((num_points,), -2.1972246, dtype=torch.float32, device=device)  # inverse_sigmoid(0.1)
 
-    gray = torch.full((num_points, 1, 3), (0.5 - 0.5) / SH_C0, dtype=torch.float32, device=device)
+    rgb01 = colors_rgb.astype(np.float32) / 255.0
+    sh0_np = (rgb01 - 0.5) / SH_C0
+    sh0 = torch.tensor(sh0_np, dtype=torch.float32, device=device).unsqueeze(1)
     sh_rest_dims = (3 + 1) ** 2 - 1  # sh_degree=3 최대 계수까지 미리 확보
     shN = torch.zeros((num_points, sh_rest_dims, 3), dtype=torch.float32, device=device)
 
@@ -125,9 +143,24 @@ def init_gaussians(
         "scales": torch.nn.Parameter(scales_t),
         "quats": torch.nn.Parameter(quats),
         "opacities": torch.nn.Parameter(opacities),
-        "sh0": torch.nn.Parameter(gray),
+        "sh0": torch.nn.Parameter(sh0),
         "shN": torch.nn.Parameter(shN),
     }
+
+
+class LPIPSMetric:
+    """`lpips` 패키지를 lazy하게 로드하는 wrapper. 첫 호출에서 AlexNet 사전학습 가중치를 받는다."""
+
+    def __init__(self, device: torch.device):
+        self._model = lpips.LPIPS(net="alex").to(device)
+        self._model.eval()
+
+    @torch.no_grad()
+    def __call__(self, pred: torch.Tensor, target: torch.Tensor) -> float:
+        # lpips는 [-1, 1] 범위의 [1,3,H,W] 입력을 기대한다.
+        pred_n = (pred.unsqueeze(0) * 2.0 - 1.0)
+        target_n = (target.unsqueeze(0) * 2.0 - 1.0)
+        return float(self._model(pred_n, target_n).item())
 
 
 def build_optimizers(params: dict[str, torch.nn.Parameter], scene_scale: float) -> dict[str, torch.optim.Optimizer]:
@@ -171,7 +204,17 @@ def run(args: argparse.Namespace) -> None:
     center, radius = estimate_scene_sphere(cameras_for_sphere)
     print(f"[init] estimated scene center={center}, radius={radius:.3f}")
 
-    params = init_gaussians(center, radius, args.num_init_points, device, args.seed)
+    colmap_workdir = Path(args.output_dir) / "colmap_work" / args.scene / f"{args.view_count}view_seed{args.seed}"
+    sfm_points, sfm_colors = triangulate_sfm_points(scan_dir, train_ids, colmap_workdir)
+    if sfm_points.shape[0] >= MIN_SFM_POINTS:
+        init_source = "colmap_sfm"
+        points, colors = sfm_points, sfm_colors
+    else:
+        init_source = "random_sphere_fallback"
+        points, colors = _random_points_in_sphere(center, radius, args.num_init_points, args.seed)
+    print(f"[init] source={init_source}, num_points={points.shape[0]}")
+
+    params = init_gaussians(points, colors, device)
     optimizers = build_optimizers(params, scene_scale=radius)
 
     strategy = DefaultStrategy(verbose=False)
@@ -200,8 +243,14 @@ def run(args: argparse.Namespace) -> None:
     active_sh_degree = 0
     next_snapshot_targets = sorted(set(args.budget_snapshots))
     snapshot_idx = 0
+    # Dense-view sanity check처럼 "30k iteration에서 정확히 평가"해야 하는 경우를 위해
+    # 시간 budget snapshot과 별도로 iteration snapshot도 지원한다.
+    next_iteration_targets = sorted(set(args.iteration_snapshots))
+    iteration_snapshot_idx = 0
 
-    print(f"[train] starting optimization, budget={args.max_budget_seconds}s, init_points={args.num_init_points}")
+    lpips_metric = LPIPSMetric(device) if args.compute_lpips else None
+
+    print(f"[train] starting optimization, budget={args.max_budget_seconds}s, init_points={points.shape[0]} ({init_source})")
     while elapsed < args.max_budget_seconds:
         if step % len(order) == 0:
             rng.shuffle(order)
@@ -248,6 +297,36 @@ def run(args: argparse.Namespace) -> None:
         if snapshot_idx < len(next_snapshot_targets) and elapsed >= next_snapshot_targets[snapshot_idx]:
             budget_label = next_snapshot_targets[snapshot_idx]
             snapshot_idx += 1
+            # elapsed는 이 스텝이 끝난 "후"에 확인하므로 budget_label을 살짝 넘긴 값이다.
+            # protocol_utils.budget_checkpoint()는 wall_clock <= budget만 인정하므로,
+            # 넘친 실측치 대신 budget_label로 clamp해 해당 budget의 유효 체크포인트로 기록한다.
+            row = _evaluate_and_checkpoint(
+                params=params,
+                rasterization=rasterization,
+                test_cams=test_cams,
+                height=height,
+                width=width,
+                active_sh_degree=args.sh_degree,
+                step=step,
+                elapsed=min(elapsed, budget_label),
+                train_loss=float(loss.item()),
+                checkpoints_dir=checkpoints_dir,
+                args=args,
+                checkpoint_label=f"budget_{budget_label}s",
+                lpips_metric=lpips_metric,
+                init_source=init_source,
+            )
+            trajectory.append(row)
+            lpips_str = f"{row['test_lpips']:.3f}" if row["test_lpips"] is not None else "n/a"
+            print(
+                f"[ckpt] budget={budget_label}s iter={step} elapsed={elapsed:.1f}s "
+                f"gaussians={row['gaussian_count']} test_psnr={row['test_psnr']:.3f} "
+                f"test_lpips={lpips_str} peak_vram_mb={row['peak_vram']:.0f}"
+            )
+
+        if iteration_snapshot_idx < len(next_iteration_targets) and step >= next_iteration_targets[iteration_snapshot_idx]:
+            iteration_label = next_iteration_targets[iteration_snapshot_idx]
+            iteration_snapshot_idx += 1
             row = _evaluate_and_checkpoint(
                 params=params,
                 rasterization=rasterization,
@@ -260,16 +339,20 @@ def run(args: argparse.Namespace) -> None:
                 train_loss=float(loss.item()),
                 checkpoints_dir=checkpoints_dir,
                 args=args,
-                budget_label=budget_label,
+                checkpoint_label=f"iter_{iteration_label}",
+                lpips_metric=lpips_metric,
+                init_source=init_source,
             )
+            row["iteration_snapshot"] = iteration_label
             trajectory.append(row)
+            lpips_str = f"{row['test_lpips']:.3f}" if row["test_lpips"] is not None else "n/a"
             print(
-                f"[ckpt] budget={budget_label}s iter={step} elapsed={elapsed:.1f}s "
+                f"[ckpt] iter_snapshot={iteration_label} iter={step} elapsed={elapsed:.1f}s "
                 f"gaussians={row['gaussian_count']} test_psnr={row['test_psnr']:.3f} "
-                f"peak_vram_mb={row['peak_vram']:.0f}"
+                f"test_lpips={lpips_str} peak_vram_mb={row['peak_vram']:.0f}"
             )
 
-        if step > args.max_iterations:
+        if step >= args.max_iterations:
             print(f"[train] hit max_iterations={args.max_iterations} before budget exhausted, stopping.")
             break
 
@@ -316,10 +399,12 @@ def _evaluate_and_checkpoint(
     train_loss,
     checkpoints_dir,
     args,
-    budget_label,
+    checkpoint_label,
+    lpips_metric=None,
+    init_source=None,
 ) -> dict[str, object]:
     with torch.no_grad():
-        psnrs, ssims = [], []
+        psnrs, ssims, lpipss = [], [], []
         for viewmat, k, gt_image in test_cams:
             colors = torch.cat([params["sh0"], params["shN"]], dim=1)
             render, _, _ = rasterization(
@@ -338,8 +423,10 @@ def _evaluate_and_checkpoint(
             pred = render[0].permute(2, 0, 1).clamp(0.0, 1.0)
             psnrs.append(psnr(pred, gt_image))
             ssims.append(float(ssim(pred, gt_image)))
+            if lpips_metric is not None:
+                lpipss.append(lpips_metric(pred, gt_image))
 
-    checkpoint_path = checkpoints_dir / f"budget_{budget_label}s_iter{step}.pt"
+    checkpoint_path = checkpoints_dir / f"{checkpoint_label}_iter{step}.pt"
     torch.save({key: value.detach().cpu() for key, value in params.items()}, checkpoint_path)
 
     return {
@@ -353,10 +440,11 @@ def _evaluate_and_checkpoint(
         "validation_metric": None,
         "test_psnr": float(np.mean(psnrs)),
         "test_ssim": float(np.mean(ssims)),
-        "test_lpips": None,  # pending: lpips 가중치 다운로드 필요 (audit log 참고)
+        "test_lpips": float(np.mean(lpipss)) if lpipss else None,
         "gaussian_count": int(params["means"].shape[0]),
         "peak_vram": float(torch.cuda.max_memory_allocated() / (1024 * 1024)),
         "checkpoint_path": str(checkpoint_path),
+        "init_source": init_source,
     }
 
 
@@ -377,9 +465,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="config.protocol.budgets_seconds와 맞춘다.",
     )
     parser.add_argument("--max-iterations", type=int, default=200_000, help="budget 안에서도 무한 루프 방지용 상한.")
-    parser.add_argument("--num-init-points", type=int, default=100_000)
+    parser.add_argument(
+        "--iteration-snapshots",
+        type=int,
+        nargs="+",
+        default=[],
+        help="Dense sanity check처럼 특정 iteration에서 평가/checkpoint를 남길 때 사용한다.",
+    )
+    parser.add_argument("--num-init-points", type=int, default=100_000, help="COLMAP triangulation이 실패할 때만 쓰는 random-fallback 점 개수.")
     parser.add_argument("--sh-degree", type=int, default=3)
     parser.add_argument("--output-dir", default=str(Path(__file__).resolve().parents[1] / "outputs"))
+    parser.add_argument("--compute-lpips", action="store_true", default=True, help="AlexNet 기반 LPIPS도 함께 계산.")
+    parser.add_argument("--no-lpips", dest="compute_lpips", action="store_false")
     return parser
 
 

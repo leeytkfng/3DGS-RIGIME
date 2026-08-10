@@ -45,8 +45,8 @@ Feed-forward Gaussian을 standard 3DGS 표현으로 변환할 때 좌표계, sca
 
 ## 다음 작업
 
-1. 실제 RE10K/DTU 데이터 경로와 COLMAP export 경로 연결
-2. 파일럿 5장면으로 overlap histogram과 zero-pair ratio 확인
-3. view 수별 low/high overlap threshold 동결
-4. DepthSplat, MVSplat, Vanilla3DGS, SparseGS runner 연결
-5. 파일럿 로그로 tau와 bootstrap CI 산출 경로 검증
+1. 주 데이터셋 결정: RE10K vs DL3DV. feed-forward checkpoint 학습 도메인과 맞춰 결정한다.
+2. DTU dense-view sanity check: 49-view + 충분한 iteration으로 Vanilla 3DGS가 정상 PSNR 범위에 도달하는지 확인한다.
+3. §5.2 모델별 지원 view 수 표 갱신: MVSplat 4/8/12-view, DepthSplat checkpoint별 2/4/6/12-view 지원을 확인한다.
+4. DTU는 공식 split 기준으로 external/C2 track에 둔다.
+5. sanity check 이후에만 overlap threshold, tau, bootstrap CI 산출용 batch를 스케일업한다.

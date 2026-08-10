@@ -39,14 +39,14 @@ MODEL_REGISTRY = {
         family="feedforward",
         requires_pose=True,
         supports_views=[2, 4, 8, 12],
-        notes="Zero-shot feed-forward model. 실제 checkpoint와 view 지원 범위는 smoke test 후 갱신.",
+        notes="Zero-shot feed-forward model. RE10K/DL3DV 계열 checkpoint 확인 후 view 지원 범위 갱신 필요.",
     ),
     "MVSplat": ModelSpec(
         name="MVSplat",
         family="feedforward",
         requires_pose=True,
         supports_views=[2, 4, 8, 12],
-        notes="Zero-shot feed-forward model. 실제 입력 해상도와 view 수 제약은 smoke test 후 갱신.",
+        notes="Zero-shot feed-forward model. 공식 checkpoint는 RE10K/ACID 중심, DTU는 cross-dataset 평가로 취급.",
     ),
     "Vanilla3DGS": ModelSpec(
         name="Vanilla3DGS",

@@ -47,7 +47,131 @@ budget(1/10/60/300초)은 **하나의 연속 학습 궤적에서 뽑는 체크�
 - 외부 네트워크 접근: 가능 (`curl` 테스트 성공)
 - `/data/Re-feem/datasets/{re10k,dtu,dl3dv}`, `sfm_exports`, `overlap_reports`, `raw_downloads` 전부 빈 디렉터리 — 데이터 미확보 상태
 
-## 6. 다음 결정이 필요한 항목 (블로킹)
+## 6. DTU scan1 확보 및 vanilla 3DGS(gsplat) 러너 통합 — 2026-08-09
 
-1. DTU 데이터 배포본 선택 — 원본 DTU MVS(대용량, GT point cloud 포함, C2 depth AbsRel/RMSE·Chamfer 계산에 필요) vs 커뮤니티에서 흔히 쓰는 전처리된 sparse-view subset. 소스 URL 확정 필요.
-2. 실제 모델 러너 통합 우선순위 — DepthSplat/MVSplat/Vanilla3DGS/SparseGS 중 스모크 테스트를 먼저 통과시킬 1개 선정. GPU 메모리 활용(batch size, resolution 등) 코드 변경은 이 통합이 선행돼야 의미가 있음.
+### 6.1 데이터
+
+DTU 공식 배포(roboimagedata2.compute.dtu.dk)의 `SampleSet.zip`(6.9GB)에 scan1/scan6 예시가 이미 포함돼 있는 것을 확인. 전체 zip을 받는 대신 `remotezip`으로 zip central directory만 읽어 필요한 엔트리(scan1 rectified 이미지 49장, calibration `pos_001~064.txt`, GT `stl001_total.ply`)만 range request로 내려받음 — 약 200MB, 3.5분. `Rectified.zip`(130GB) 전체를 받을 필요가 없었다. 저장 위치: `/data/Re-feem/datasets/dtu/scan1/{images,cameras,stl}`. citeware 조건이므로(Jensen et al., CVPR 2014) 논문에 인용 필요.
+
+나머지 scan(파일럿 5개, 외부검증 8~15개)도 같은 방식으로 언제든 저비용으로 추가 가능. 어떤 scan id를 쓸지는 아직 결정 안 됨(§7 참고).
+
+### 6.2 Pose 변환
+
+`experiments/scripts/dtu_dataset.py`: DTU의 3x4 projection matrix `P`를 RQ 분해로 `K, R, t`로 분리. `K@[R|t]`가 원본 `P`를 재구성하는지(오차 <0.002) 및 추정 scene 중심이 view1 이미지 중앙 근처(1600x1200 중 820,626)에 투영되는지로 검증 완료.
+
+### 6.3 Vanilla 3DGS 러너 (`experiments/scripts/vanilla_3dgs_runner.py`)
+
+gsplat 1.5.3 + `DefaultStrategy`로 densification을 구현. `protocol_utils.budget_checkpoint()` / `oracle_checkpoint()`를 실제 학습 궤적에 직접 적용해 정상 동작 확인. **의도적으로 비워둔 부분(추후 교체 필요):**
+- Gaussian 초기화가 COLMAP SfM이 아니라 카메라 기하로 추정한 bounding sphere 안 random point (§5.2/§8에서 요구하는 COLMAP init 아님, GT point cloud도 참조하지 않음 — 참조하면 leakage)
+- LPIPS 미계산 (사전학습 가중치 필요, 로그에는 `null`)
+
+**버그 발견 및 수정:** 첫 20초 예산 smoke test에서 `budget_end_checkpoint`가 `None`을 반환. 원인은 스텝 완료 "후"에 경과시간을 확인하는 구조라 마지막 체크포인트가 budget을 항상 소폭(약 0.05~0.1초) 초과 기록됐고, `protocol_utils.budget_checkpoint()`의 `wall_clock <= budget` 필터가 (의도대로) 이를 걸러낸 것. 스냅샷 시점의 `wall_clock`을 `budget_label`로 clamp하도록 수정해 해결. **protocol_utils 자체는 정상 작동 — 버그는 러너 쪽 타이밍 기록에 있었음.**
+
+### 6.4 DTU scan1, 8-view, seed 0, budget 300초 결과
+
+| budget | iter | gaussians | test PSNR | test SSIM | peak VRAM |
+|---|---|---|---|---|---|
+| 1s | 5 | 100,000 | 8.76 | 0.372 | 995MB |
+| 10s | 60 | 100,000 | 9.16 | 0.385 | 995MB |
+| 60s | 375 | 100,000 | **10.69** | 0.469 | 995MB |
+| 300s | 1,894 | 221,188 | 9.85 | 0.455 | 1,143MB |
+
+**주목할 점**: densification이 시작된(iter>500) 이후 Gaussian 수는 100k→221k로 늘었지만 test PSNR은 오히려 60s 시점보다 떨어졌다. 이는 계획서 H1/H2 가설이 그리는 "sparse-view optimization의 과적합·정점 후 하강" 패턴과 정성적으로 일치한다. **다만 random init·1,894 iteration(표준 3DGS는 보통 30k)·단일 seed·단일 scene이라 이 수치 자체를 결과로 인용하면 안 되고, 전체 로깅·체크포인트 파이프라인이 이 패턴을 놓치지 않고 잡아낸다는 배관 검증으로만 사용한다.**
+
+### 6.5 GPU 메모리·병렬 실행 테스트
+
+- 1600x1200 해상도, Gaussian 100k~221k에서도 peak VRAM은 1~1.2GB. **3DGS/gsplat은 구조적으로 메모리 사용량이 적다** (파라미터 수가 적고 activation이 쌓이는 구조가 아님) — 143GB GPU에서 2GB만 쓰는 것은 정상이다.
+- GPU util은 단일 프로세스에서도 이미 99~100% — **연산 병목이지 메모리 병목이 아니다.**
+- **병렬 실행 테스트**: 동일 GPU에서 4-view/20초 budget run을 1개(solo, 125 iter) vs 6개 동시 실행(각 20~22 iter, 총 25초)으로 비교. **동시 실행해도 전체 처리량(총 iteration/초)이 늘지 않았다** — 6개 프로세스가 GPU를 시분할할 뿐, single-process 처리량과 aggregate 처리량이 거의 같음(≈6.2~6.3 it/s). **결론: H200의 여유 메모리는 "한 GPU에서 여러 run을 동시에 돌려 GPU-hour를 절약"하는 데 쓸 수 없다.** §3의 2,880회 optimization 실행 재추정은 이 결과를 반영해 순차 실행 기준으로 다시 잡아야 한다(멀티 GPU가 있다면 그쪽이 유일한 실질적 병렬화 경로).
+
+## 7. COLMAP SfM init + LPIPS 통합 — 2026-08-09
+
+### 7.1 COLMAP known-pose triangulation (`experiments/scripts/colmap_init.py`)
+
+`pycolmap`(3.13.0, prebuilt wheel — COLMAP CLI 빌드 불필요)으로 COLMAP CLI의 `feature_extractor` → `exhaustive_matcher` → `point_triangulator` 조합을 재현했다. Pose-given track이므로 COLMAP이 pose를 추정하지 않는다: DTU calibration이 주는 고정 pose로 known-pose triangulation만 수행한다.
+
+구현상 중요했던 점(ID 정합):
+1. `pycolmap.extract_features()`를 먼저 실행해 database가 camera_id/image_id를 자동 배정하게 둔다.
+2. database를 읽어 (image_name → image_id, camera_id) 매핑을 얻는다.
+3. **그 ID를 그대로 재사용**해 DTU의 실제 K/R/t로 채운 COLMAP text 포맷(cameras.txt/images.txt, POINTS2D는 비움)을 쓴다 — ID가 어긋나면 `triangulate_points`가 keypoint/pose를 매칭 못 함.
+4. database의 camera params도 (extract_features가 추측한 값 대신) 실제 K로 덮어써서 matching의 geometric verification이 정확한 intrinsics를 쓰게 한다.
+5. `pycolmap.match_exhaustive()` → `pycolmap.triangulate_points(reconstruction, db, images, output)`.
+
+**오직 학습(input) view만 triangulation에 넣는다.** held-out test view를 넣으면 초기화 단계에서 test 정보가 새는 leakage가 된다. GT point cloud(stl)는 어디에서도 참조하지 않는다.
+
+검증 결과: scan1, 8-view, seed 0 → **1,994개 3D point, mean track length 3.7, mean reprojection error 0.61px** (COLMAP 자체 로그 기준) — 기하적으로 정상. 매우 적은 view 수(예: 2-view)에서 triangulation이 실패하거나 너무 빈약할 경우를 대비해 `MIN_SFM_POINTS=200` 미만이면 기존 random-sphere init으로 자동 fallback하고, 어느 경로를 탔는지 로그의 `init_source`(`colmap_sfm` / `random_sphere_fallback`)에 남긴다.
+
+### 7.2 LPIPS 연결
+
+`lpips` 패키지(AlexNet trunk)를 붙여 checkpoint마다 test LPIPS를 계산하도록 했다. 가중치는 `lpips` 패키지가 표준적으로 받아오는 `https://download.pytorch.org/models/alexnet-owt-7be5be79.pth`(PyTorch 공식 호스트, ImageNet 사전학습)에서 자동 다운로드된다.
+
+### 7.3 ⚠ 환경 사고: `pip install lpips`가 공유 conda env의 torch를 조용히 업그레이드함
+
+`ps3` conda env(이 프로젝트 전용 env가 아닐 수 있음 — 다른 작업에도 쓰일 가능성)에 `pip install lpips`를 실행했더니 의존성 해석 과정에서 **torch가 2.2.2+cu121 → 2.8.0+cu128로, torchvision이 최신판으로 조용히 업그레이드**됐고, 그 결과 `torchaudio 2.2.2+cu121`과 버전이 어긋났다. gsplat의 CUDA 확장이 기존 torch 2.2.2 기준으로 JIT 컴파일돼 있었기 때문에 이 상태로는 재현성이 깨질 위험이 있었다.
+
+**조치:** `pip install --no-deps torch==2.2.2 torchvision==0.17.2 --index-url .../cu121`로 원복하고, `lpips`는 `--no-deps`로 재설치해 의존성 재해석이 다시 torch를 건드리지 않게 했다. 이후 gsplat/lpips 정상 동작 재확인 (`torch 2.2.2+cu121`, `torchvision 0.17.2+cu121`).
+
+**교훈:** 이 env가 다른 작업과 공유된다면, 앞으로 이 env에 패키지를 추가할 때는 항상 `--no-deps` 또는 명시적 버전 고정을 쓰거나, 프로젝트 전용 가상환경(예: `conda create -n sparse3dgs --clone ps3`)을 새로 파서 격리하는 것을 권장한다.
+
+### 7.4 통합 후 재검증 (scan1, 8-view, seed 0, budget 30초)
+
+COLMAP init(1,994 point) + LPIPS 포함 전체 파이프라인이 정상 동작함을 확인. `budget_end_checkpoint`에 `test_lpips`와 `init_source` 필드가 정상적으로 채워짐. (30초/175 iteration으로는 densification 시작 전이라 품질 수치는 여전히 배관 검증용일 뿐 결과로 인용 불가 — §6.4와 동일한 caveat.)
+
+## 8. DTU scan 15개 확보 — 2026-08-09
+
+pixelNeRF류 논문의 "표준 DTU sparse-view split"을 그대로 따르려 했으나, 정확한 scan 번호 목록이 코드가 아니라 별도 `.lst` 파일로 배포돼 있어 신뢰 가능한 출처 없이 재현하면 틀린 번호를 표준으로 오인시킬 위험이 있었다. 담당자 결정: **자체적으로 scan 번호를 스프레드해서 선정**, 외부 논문 split과의 일치는 주장하지 않는다.
+
+- `remotezip`으로 `Rectified.zip`(129GB)의 central directory만 읽어 실제 존재하는 scan 목록을 확인: **scan1~77, scan82~128, 총 124개** (78~81 결번).
+- ReadMe가 명시한 360도 회전 그룹(55-58, 65-68, 69-73, 106-109, 110-113, 114-117, 118-121, 122-125 — 같은 물체를 4방향에서 찍은 것이라 사실상 한 scene)에서 그룹당 최대 1개만 선택해 장면 다양성이 왜곡되지 않게 했다.
+- 최종 선정: **scan1(기존) + scan9, 17, 25, 34, 42, 50, 58, 67, 75, 87, 95, 104, 112, 120 = 15개.**
+- 카메라 calibration(`pos_001~064.txt`)은 전체 DTU rig 공용이라 scan1 것을 그대로 복사해 재사용(재다운로드 불필요).
+- 이미지(각 scan 49장, `_3_` 조명 조건) + GT `stl{scan}_total.ply`를 `remotezip` range read로만 받음. 6-way 병렬로 약 3분/scan, 최종 `/data/Re-feem/datasets/dtu/`에 15개 scan, **총 3.0GB** (`Rectified.zip` 129GB 전체를 받을 필요 없었음).
+- 중간에 scan104가 네트워크 연결이 끊겨 20분간 정지했던 것을 발견 → 해당 프로세스만 kill 후 남은 파일 재시도로 해결. `remotezip` 기반 다운로드는 커넥션이 죽어도 무한 대기할 수 있으므로, 이후 다중 scan 다운로드에는 timeout/재시도 로직을 넣는 게 좋음(현재는 없음, TODO).
+
+이 15개는 계획서 §5.4 외부검증(DTU) 8~15장면 요구치를 채운다. 다만 이번 논의에서 다룬 건 데이터 확보이지 파일럿 실행 자체가 아니다 — 실제로 이 15개에 대해 vanilla 3DGS를 돌려 overlap/tau 등을 산출하는 건 아직 안 함(§9 참고).
+
+## 9. MVSplat 통합 및 DTU zero-shot 검증 — 2026-08-09
+
+### 9.1 환경
+
+`ps3`/`lpips` 사고(§7.3)를 반복하지 않기 위해 **완전히 격리된 conda env(`mvsplat`, python 3.10)를 새로 생성**해 README가 명시한 정확한 버전(`torch==2.1.2+cu121`, `torchvision==0.16.2`, `torchaudio==2.1.2` — cu118 대신 로컬 nvcc 12.1과 맞춰 cu121 wheel 사용)으로 설치. `requirements.txt`의 `diff-gaussian-rasterization-modified`(공식 저자의 fork, CUDA 커스텀 커널)는 `--no-build-isolation`으로 별도 설치해야 했음(빌드 격리 환경에 torch가 없어서 실패하는 문제). `numpy<2` 고정 필요(2.x는 torch 2.1.2와 ABI 불일치 경고). 체크포인트(`re10k.ckpt`, 48MB)는 README가 링크한 공식 Google Drive 폴더에서 `gdown`으로 받음.
+
+### 9.2 공식 DTU sparse-view test split 발견
+
+MVSplat repo의 `src/scripts/convert_dtu.py`의 `get_example_keys()`에 **공식 DTU sparse-view test scan 목록**이 하드코딩돼 있는 것을 발견했다:
+
+```
+scan1, scan8, scan21, scan30, scan31, scan34, scan38, scan40, scan41, scan45, scan55, scan63, scan82, scan103, scan110, scan114  (16개)
+```
+
+이건 담당자와 §8에서 "정확한 출처가 없어 못 쓴다"고 판단했던 그 pixelNeRF 계열 표준 split의 실제 소스였다 — 확인 없이 기억으로 적지 않은 게 맞는 판단이었고, 이제는 신뢰 가능한 출처(공식 repo 코드)로 확보됐다. **§8에서 자체 선정한 15개(scan1,9,17,25,34,42,50,58,67,75,87,95,104,112,120)와 scan1·scan34만 겹친다.** 이 표준 split으로 바꿀지는 다음 세션 결정 사항으로 남긴다(§10).
+
+### 9.3 우리 raw DTU 데이터로 공식 체크포인트를 돌리는 브릿지 구현
+
+MVSplat 공식 dtu.yaml 평가 경로는 별도 배포본(`dtu_training.rar`)을 그들의 `convert_dtu.py`로 전처리해야 하는데, 그 스크립트를 읽어보니 카메라 정규화 로직이 명시적이었다: **world-to-cam translation에 scale_factor=1/200 적용, intrinsics는 fx/w·fy/h로 정규화하고 principal point는 항상 (0.5, 0.5)로 고정, near=2.125/far=4.525 고정**(dtu.yaml에서 override). 이 로직을 그대로 재현하면 `dtu_training.rar` 없이도 **우리가 이미 갖고 있는 raw DTU calibration(pos_XXX.txt)만으로 동일한 입력을 만들 수 있었다.**
+
+`/data/Re-feem/code/mvsplat/run_on_custom_dtu.py` 작성: 우리 `dtu_dataset.py`의 pose 파싱을 재사용해 위 변환을 적용하고, MVSplat 자체의 `apply_crop_shim_to_views`(256×256 resize+center-crop)를 그대로 import해서 이미지/intrinsics를 맞춘 뒤, `get_encoder`/`get_decoder`로 만든 모델에 `re10k.ckpt`를 로드(encoder 가중치 471개 키 **missing=0, unexpected=0** — 아키텍처 완전 일치 확인)해 forward.
+
+**결과 (scan1, context view 2장[25,33], target view 3장[1,15,29], RE10K로 학습된 체크포인트로 zero-shot):**
+
+| target view | PSNR |
+|---|---|
+| 15 (context와 가까움) | 11.82 |
+| 29 | 7.18 |
+| 1 (context와 각도 크게 다름) | 4.81 |
+
+수치만 보면 낮아 보이지만 **렌더링된 이미지를 직접 확인하면 GT와 구조적으로 명확히 일치**한다 — 동일한 물체(손자국이 있는 깡통), 같은 텍스트("...OLINE") 위치, 같은 형태가 재현됨. context view와 각도가 먼 target(view1)일수록 검은 영역(추정 실패 영역)이 늘고 PSNR이 낮아지는 것도 sparse 2-view 외삽의 예상된 한계지 버그가 아니다. **카메라 변환(scale_factor, 정규화 intrinsics, cx=cy=0.5)이 틀렸다면 이 정도로 인식 가능한 재구성이 나올 수 없으므로, 이 결과 자체가 좌표계 변환이 올바르다는 강한 증거다.**
+
+이로써 **RE10K로 학습된 MVSplat이 우리가 직접 받은 독립적인 DTU 원본 데이터에서 zero-shot cross-dataset generalization을 실제로 수행함**을 확인했다 — vanilla 3DGS에 이어 두 번째 method가 파이프라인에 살아있는 데이터로 검증됨.
+
+### 9.4 이번 통합에서 의도적으로 안 한 것 (다음 세션 TODO)
+
+- `vanilla_3dgs_runner.py`처럼 `protocol_utils` 체크포인트 스키마(experiment_id/scene/seed/method/wall_clock/...)에 맞춘 정식 러너로 감싸지 않음 — 지금은 1회성 검증 스크립트.
+- context view 2장 고정만 테스트함. 계획서의 view_counts=[2,4,8,12] 전체나 MVSplat의 실제 지원 범위(§5.2 표) 확인 안 함.
+- 15개 scan 전체가 아니라 scan1 하나에서만 검증.
+- §9.2에서 발견한 공식 split으로 갈아탈지 여부 미결정.
+
+## 10. 다음 결정이 필요한 항목 (블로킹)
+
+1. **DTU scan 목록: 자체 선정(15개) vs 공식 split(16개, §9.2에서 발견)** — 이제 신뢰 가능한 출처가 생겼으니 재검토 필요. 바꾸면 scan8,21,30,31,38,40,41,45,55,63,82,103,110,114 재다운로드 필요(scan1·34는 이미 있음).
+2. **RE10K 확보 여부** — 계획서상 주 데이터셋은 RE10K인데 아직 손대지 않음. YouTube 기반 배포라 DTU보다 다운로드가 까다로울 것으로 예상(§6.1 dataset_recommendation.md 참고). 언제 착수할지 결정 필요.

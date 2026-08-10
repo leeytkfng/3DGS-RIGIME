@@ -11,11 +11,17 @@ runtime:
 
 protocol:
   dataset_primary: RE10K
+  image_resolution_policy:
+    main_re10k: [256, 256]
+    dl3dv_depthsplat: [256, 448]
+    dtu_sanity_original: [1200, 1600]
+    note: "Follow feed-forward checkpoint training resolution; per-scene optimization must use the same images for fair comparison."
   dataset_external: DTU
   dataset_primary_path: /data/Re-feem/datasets/re10k
   dataset_external_path: /data/Re-feem/datasets/dtu
   scenes_primary: 20
   scenes_external: 8
+  dtu_official_split: [1, 8, 21, 30, 31, 34, 38, 40, 41, 45, 55, 63, 82, 103, 110, 114]
   seeds: [0, 1, 2]
   view_counts: [2, 4, 8, 12]
   overlap_levels: [low, high]
