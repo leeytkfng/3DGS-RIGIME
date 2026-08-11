@@ -8,15 +8,20 @@ Repository alias: `3DGS-RIGIME`
 
 - [Sparse-view_3DGS_Regime_연구계획서_정리.md](Sparse-view_3DGS_Regime_연구계획서_정리.md): 연구 목표와 실험 설계 요약
 - [experiments/configs/experiment_config.yaml](experiments/configs/experiment_config.yaml): 실험 설정
-- [experiments/scripts/run_experiment.sh](experiments/scripts/run_experiment.sh): 실행 진입점 스텁
-- [experiments/scripts/generate_overlap.py](experiments/scripts/generate_overlap.py): SfM visibility 기반 overlap report 생성기
+- [experiments/scripts/batch/run_experiment.sh](experiments/scripts/batch/run_experiment.sh): 실행 진입점 스텁
+- [experiments/scripts/analysis/generate_overlap.py](experiments/scripts/analysis/generate_overlap.py): SfM visibility 기반 overlap report 생성기
 - [experiments/docs/early_experiment](experiments/docs/early_experiment): 파일럿 전 동결 절차 문서
+
+`experiments/scripts/`는 2026-08-11부터 유형별 하위 디렉토리로 나뉘어 있다: `core/`(공유
+모듈: protocol_utils, model_registry, dtu_dataset, colmap_init), `runners/`(protocol_utils
+스키마를 따르는 정식 모델 러너), `probes/`(1회성 검증 스크립트), `batch/`(순회 실행
+driver·manifest 생성), `analysis/`(figure·overlap report 생성).
 
 ## 빠른 시작
 
 ```bash
 cd /root/task\ 5
-bash experiments/scripts/run_experiment.sh
+bash experiments/scripts/batch/run_experiment.sh
 ```
 
 이제 스크립트는 설정 파일을 읽고, 수정본 프로토콜에 맞춘 실험 계획을 자동 생성해 결과 폴더에 manifest로 저장합니다. manifest에는 pose-given track, budget-end checkpoint 규칙, oracle 결과 분리, C1-b 렌더 등가성 gate, C2 depth perturbation, scene 단위 bootstrap 분석 설정이 함께 기록됩니다.
@@ -24,7 +29,7 @@ bash experiments/scripts/run_experiment.sh
 ## Overlap report 생성
 
 ```bash
-python3 experiments/scripts/generate_overlap.py \
+python3 experiments/scripts/analysis/generate_overlap.py \
   --colmap-images /data/Re-feem/datasets/re10k/scene_000/sparse/0/images.txt \
   --output-dir experiments/outputs/overlap/re10k_scene_000/4view_seed0 \
   --scene re10k_scene_000 \

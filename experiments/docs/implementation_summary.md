@@ -9,9 +9,9 @@
 ## 주요 파일
 
 - `experiments/configs/experiment_config.yaml`: 전체 실험 축과 protocol guard 설정. view 수, overlap level, seed, budget, C1-b, C2, 통계 설정이 들어 있다.
-- `experiments/scripts/run_experiment.py`: config를 읽어 전체 실험 manifest를 만든다. 실제 모델 실행기는 아직 붙어 있지 않지만, 어떤 run을 해야 하는지와 어떤 규칙을 적용해야 하는지 먼저 고정한다.
-- `experiments/scripts/protocol_utils.py`: 논문 프로토콜에서 반복 사용되는 계산 규칙 모음. overlap 집계, budget checkpoint 선택, tau 계산, scene cluster bootstrap을 담당한다.
-- `experiments/scripts/generate_overlap.py`: SfM visibility에서 overlap report를 생성하는 CLI. COLMAP `images.txt` 또는 단순 JSON 입력을 받아 `summary.json`과 `pairwise_overlap.csv`를 쓴다.
+- `experiments/scripts/batch/run_experiment.py`: config를 읽어 전체 실험 manifest를 만든다. 실제 모델 실행기는 아직 붙어 있지 않지만, 어떤 run을 해야 하는지와 어떤 규칙을 적용해야 하는지 먼저 고정한다.
+- `experiments/scripts/core/protocol_utils.py`: 논문 프로토콜에서 반복 사용되는 계산 규칙 모음. overlap 집계, budget checkpoint 선택, tau 계산, scene cluster bootstrap을 담당한다.
+- `experiments/scripts/analysis/generate_overlap.py`: SfM visibility에서 overlap report를 생성하는 CLI. COLMAP `images.txt` 또는 단순 JSON 입력을 받아 `summary.json`과 `pairwise_overlap.csv`를 쓴다.
 - `tests/test_protocol_utils.py`: 중요한 프로토콜 규칙이 깨지지 않는지 확인하는 단위 테스트.
 - `experiments/docs/early_experiment/README.md`: 본 실험 전에 동결해야 하는 STEP 0~2 절차 문서.
 
@@ -40,7 +40,7 @@ Feed-forward Gaussian을 standard 3DGS 표현으로 변환할 때 좌표계, sca
 ## 현재 검증 상태
 
 - 단위 테스트: `python3 -m unittest discover -s tests`
-- manifest 생성: `bash experiments/scripts/run_experiment.sh`
+- manifest 생성: `bash experiments/scripts/batch/run_experiment.sh`
 - overlap CLI 샘플 실행 확인 완료
 
 ## 다음 작업

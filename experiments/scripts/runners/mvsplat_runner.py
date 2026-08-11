@@ -34,7 +34,7 @@ import torch
 
 def _add_repo_paths(mvsplat_repo: Path) -> None:
     sys.path.insert(0, str(mvsplat_repo))
-    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "core"))
 
 
 DTU_SCALE_FACTOR = 1.0 / 200.0  # MVSplat convert_dtu.py와 동일 (§9.3 audit log)
@@ -85,7 +85,7 @@ def run(args: argparse.Namespace) -> None:
     mvsplat_repo = Path(args.mvsplat_repo)
     _add_repo_paths(mvsplat_repo)
 
-    import dtu_dataset  # 우리 프로젝트의 pose 파서 (experiments/scripts/dtu_dataset.py)
+    import dtu_dataset  # 우리 프로젝트의 pose 파서 (experiments/scripts/core/dtu_dataset.py)
     from protocol_utils import budget_checkpoint, oracle_checkpoint  # noqa: F401 (oracle: FF는 사실상 main==oracle)
     from hydra import compose, initialize_config_dir
     from src.dataset.shims.crop_shim import apply_crop_shim_to_views
@@ -244,7 +244,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--budgets", type=float, nargs="+", default=[1.0, 10.0, 60.0, 300.0])
     parser.add_argument("--mvsplat-repo", default="/data/Re-feem/code/mvsplat")
     parser.add_argument("--checkpoint", default="/data/Re-feem/code/mvsplat/checkpoints/re10k.ckpt")
-    parser.add_argument("--output-dir", default=str(Path(__file__).resolve().parents[1] / "outputs"))
+    parser.add_argument("--output-dir", default=str(Path(__file__).resolve().parents[2] / "outputs"))
     return parser
 
 
