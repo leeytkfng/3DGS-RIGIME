@@ -10,7 +10,7 @@ set -euo pipefail
 # SCRIPT_DIR은 이 shell script가 위치한 디렉터리다.
 # 어느 위치에서 실행해도 repo root를 안정적으로 찾기 위해 사용한다.
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-REPO_ROOT=$(cd -- "$SCRIPT_DIR/../.." && pwd)
+REPO_ROOT=$(cd -- "$SCRIPT_DIR/../../.." && pwd)
 
 # 기본 config와 output dir.
 # 예상 결과: 별도 인자가 없으면 repository 내부 outputs에 manifest와 빈 결과 폴더가 생긴다.

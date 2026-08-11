@@ -32,7 +32,7 @@ import torch
 import torch.nn.functional as F
 from scipy.spatial import cKDTree
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "core"))
 
 from colmap_init import triangulate_sfm_points  # noqa: E402
 from dtu_dataset import estimate_scene_sphere, load_camera, load_scan  # noqa: E402
@@ -474,7 +474,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--num-init-points", type=int, default=100_000, help="COLMAP triangulation이 실패할 때만 쓰는 random-fallback 점 개수.")
     parser.add_argument("--sh-degree", type=int, default=3)
-    parser.add_argument("--output-dir", default=str(Path(__file__).resolve().parents[1] / "outputs"))
+    parser.add_argument("--output-dir", default=str(Path(__file__).resolve().parents[2] / "outputs"))
     parser.add_argument("--compute-lpips", action="store_true", default=True, help="AlexNet 기반 LPIPS도 함께 계산.")
     parser.add_argument("--no-lpips", dest="compute_lpips", action="store_false")
     return parser

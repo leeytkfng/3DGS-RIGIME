@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""여러 scan × seed × view_count에 대해 vanilla_3dgs_runner.py / mvsplat_runner.py를
+"""[2026-08-10 이후 신규 배치는 run_experiment_batch.py 사용 권장]
+이 파일은 DTU 전용/모델 하드코딩 버전으로 남겨둔다(기존 batch_summary.json과의 호환을 위해).
+model_registry.py 기반으로 일반화된 버전은 experiments/scripts/run_experiment_batch.py 참고.
+
+여러 scan × seed × view_count에 대해 vanilla_3dgs_runner.py / mvsplat_runner.py를
 순회 실행하는 driver.
 
 이 파일의 목적:
@@ -30,7 +34,7 @@ import sys
 import time
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 DTU_ROOT = Path("/data/Re-feem/datasets/dtu")
 
 # MVSplat 공식 sparse-view test split (convert_dtu.py get_example_keys(), §9.2 audit log).
@@ -57,7 +61,7 @@ def run_vanilla3dgs(scan_id: int, seed: int, view_count: int, output_dir: Path, 
         return {"status": "skipped_exists", "log": str(log_path)}
 
     cmd = [
-        PS3_PYTHON, str(REPO_ROOT / "experiments/scripts/vanilla_3dgs_runner.py"),
+        PS3_PYTHON, str(REPO_ROOT / "experiments/scripts/runners/vanilla_3dgs_runner.py"),
         "--scan-dir", str(scan_dir),
         "--scene", scene,
         "--seed", str(seed),
@@ -79,7 +83,7 @@ def run_mvsplat(scan_id: int, seed: int, view_count: int, output_dir: Path) -> d
         return {"status": "skipped_exists", "log": str(log_path)}
 
     cmd = [
-        MVSPLAT_PYTHON, str(REPO_ROOT / "experiments/scripts/mvsplat_runner.py"),
+        MVSPLAT_PYTHON, str(REPO_ROOT / "experiments/scripts/runners/mvsplat_runner.py"),
         "--scan-dir", str(scan_dir),
         "--scene", scene,
         "--seed", str(seed),

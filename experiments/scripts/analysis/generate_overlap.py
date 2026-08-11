@@ -12,14 +12,16 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import sys
 from pathlib import Path
 from typing import Iterable
 
 try:
-    # 스크립트를 `python experiments/scripts/generate_overlap.py`처럼 직접 실행할 때 사용된다.
+    # 스크립트를 `python experiments/scripts/analysis/generate_overlap.py`처럼 직접 실행할 때 사용된다.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "core"))
     from protocol_utils import build_overlap_report
 except ModuleNotFoundError:  # tests에서 package import 형태로 실행할 때 사용된다.
-    from experiments.scripts.protocol_utils import build_overlap_report
+    from experiments.scripts.core.protocol_utils import build_overlap_report
 
 
 def _read_view_list(path: Path | None) -> list[str] | None:

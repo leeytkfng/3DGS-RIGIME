@@ -4,13 +4,13 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from experiments.scripts.generate_overlap import (
+from experiments.scripts.analysis.generate_overlap import (
     generate_overlap_report,
     load_colmap_images_txt,
     load_visibility_json,
     subset_views,
 )
-from experiments.scripts.protocol_utils import (
+from experiments.scripts.core.protocol_utils import (
     aggregate_overlap,
     budget_checkpoint,
     build_overlap_report,

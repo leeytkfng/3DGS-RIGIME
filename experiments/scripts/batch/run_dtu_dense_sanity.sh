@@ -11,11 +11,11 @@
 set -euo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-REPO_ROOT=$(cd -- "$SCRIPT_DIR/../.." && pwd)
+REPO_ROOT=$(cd -- "$SCRIPT_DIR/../../.." && pwd)
 PS3_PYTHON=${PS3_PYTHON:-/opt/conda/envs/ps3/bin/python3}
 SCAN_ID=${1:-1}
 SCAN_DIR=/data/Re-feem/datasets/dtu/scan${SCAN_ID}
 SCENE=dtu_scan${SCAN_ID}_dense_sanity
 OUTDIR=${2:-$REPO_ROOT/experiments/outputs_dense_sanity}
 
-PATH="/opt/conda/envs/ps3/bin:$PATH" "$PS3_PYTHON" "$SCRIPT_DIR/vanilla_3dgs_runner.py"   --scan-dir "$SCAN_DIR"   --scene "$SCENE"   --view-count 49   --seed 0   --max-budget-seconds 7200   --budget-snapshots 60 300 1800 3600 7200   --max-iterations 30000   --iteration-snapshots 30000   --output-dir "$OUTDIR"
+PATH="/opt/conda/envs/ps3/bin:$PATH" "$PS3_PYTHON" "$SCRIPT_DIR/../runners/vanilla_3dgs_runner.py"   --scan-dir "$SCAN_DIR"   --scene "$SCENE"   --view-count 49   --seed 0   --max-budget-seconds 7200   --budget-snapshots 60 300 1800 3600 7200   --max-iterations 30000   --iteration-snapshots 30000   --output-dir "$OUTDIR"

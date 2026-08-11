@@ -7,7 +7,7 @@
 입력은 SfM visibility다. COLMAP text export의 `images.txt` 또는 `{view_id: [point_id, ...]}` 형태의 JSON을 사용한다.
 
 ```bash
-python3 experiments/scripts/generate_overlap.py \
+python3 experiments/scripts/analysis/generate_overlap.py \
   --colmap-images /data/Re-feem/datasets/re10k/scene_000/sparse/0/images.txt \
   --output-dir experiments/outputs/overlap/re10k_scene_000/4view_seed0 \
   --scene re10k_scene_000 \
@@ -17,7 +17,7 @@ python3 experiments/scripts/generate_overlap.py \
 특정 view subset만 평가하려면 newline-delimited view 목록을 넘긴다.
 
 ```bash
-python3 experiments/scripts/generate_overlap.py \
+python3 experiments/scripts/analysis/generate_overlap.py \
   --visibility-json /data/Re-feem/datasets/re10k/scene_000/visibility.json \
   --views experiments/docs/early_experiment/example_views.txt \
   --output-dir experiments/outputs/overlap/re10k_scene_000/manual_subset

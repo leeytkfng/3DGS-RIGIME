@@ -171,7 +171,113 @@ MVSplat 공식 dtu.yaml 평가 경로는 별도 배포본(`dtu_training.rar`)을
 - 15개 scan 전체가 아니라 scan1 하나에서만 검증.
 - §9.2에서 발견한 공식 split으로 갈아탈지 여부 미결정.
 
-## 10. 다음 결정이 필요한 항목 (블로킹)
+## 10. 다음 결정이 필요한 항목 (블로킹, 2026-08-09 시점)
 
-1. **DTU scan 목록: 자체 선정(15개) vs 공식 split(16개, §9.2에서 발견)** — 이제 신뢰 가능한 출처가 생겼으니 재검토 필요. 바꾸면 scan8,21,30,31,38,40,41,45,55,63,82,103,110,114 재다운로드 필요(scan1·34는 이미 있음).
-2. **RE10K 확보 여부** — 계획서상 주 데이터셋은 RE10K인데 아직 손대지 않음. YouTube 기반 배포라 DTU보다 다운로드가 까다로울 것으로 예상(§6.1 dataset_recommendation.md 참고). 언제 착수할지 결정 필요.
+1. ~~DTU scan 목록: 자체 선정(15개) vs 공식 split(16개)~~ → 2026-08-10, 공식 split(16개)로 확정, 나머지 14개 추가 다운로드 완료.
+2. ~~RE10K 확보 여부~~ → 2026-08-10, probe subset(pixelSplat 공식 small subset)으로 확보, MVSplat in-domain 검증까지 완료.
+
+## 11. 2026-08-10 — Dense-view sanity check, RE10K/DL3DV in-domain 검증, DepthSplat 통합, 아키텍처 일반화
+
+### 11.1 Dense-view sanity check 결과 (DTU scan1, 42-view train, 30k iteration)
+
+병렬 세션(critical_path_2026-08-10.md)이 제기한 "sparse-view에서 나온 낮은 PSNR(9~11dB)이 진짜 현상인지 파이프라인 버그인지"를 가르기 위해, scan1을 거의 dense(42 train view, held-out 7) + 표준 iteration(30,000)으로 재실행.
+
+| 체크포인트 | iter | gaussians | test PSNR | SSIM | LPIPS |
+|---|---|---|---|---|---|
+| 60s | 346 | 24,690 | 13.38 | - | 0.591 |
+| 300s | 1,749 | 218,693 | 22.61 | - | 0.352 |
+| 1800s | 10,297 | 1,380,065 | 24.00 | - | 0.235 |
+| 3600s | 20,366 | 1,703,091 | **24.11** | 0.843 | 0.218 |
+| 30k iter (5458s) | 30,000 | 1,703,091 | 24.06 | 0.842 | 0.215 |
+
+**해석**: 1800초 이후 24.0~24.1dB로 사실상 수렴, "정상 범위" 기준으로 잡았던 25dB에는 살짝 못 미치지만 SSIM 0.84/LPIPS 0.22는 명확히 건강한 값이다. oracle(3600s, 24.11)이 최종(30k, 24.06)보다 미세하게 높아 아주 약한 정점-후-하강이 있지만, sparse 8-view에서 본 급격한 붕괴(10.69→9.85, §6.4)와는 규모가 다르다. **결론: 파이프라인은 망가지지 않았다 — 같은 로깅이 "심한 과적합"과 "정상 수렴 후 미세한 노이즈"를 구분해서 잡아낸다는 것 자체가 좋은 신호. sparse-view의 낮은 PSNR은 진짜 현상일 가능성이 높다.** 다만 24dB가 DTU scan1 자체의 특성(어두운 배경·특이 텍스처)인지 하이퍼파라미터 미세조정 여지가 있는지는 추가 scan으로 더 봐야 함.
+
+### 11.2 MVSplat RE10K in-domain 검증
+
+pixelSplat 공식 small subset(re10k_subset.zip, test 41 scene)에서 MVSplat 공식 체크포인트로 2-view 추론. **mean PSNR 25.6dB** (19.2~29.4dB). DTU zero-shot(4.8~11.8dB, §9.3)과 극명하게 대비 — DTU에서 낮았던 건 OOD penalty이지 카메라 변환 버그가 아니었다는 강한 증거. 스크립트: `experiments/scripts/mvsplat_re10k_probe.py`.
+
+### 11.3 DepthSplat 통합 + DL3DV in-domain 검증
+
+- 공식 repo(`cvg/depthsplat`) clone, 격리 env(`depthsplat`, torch 2.4.0+cu121) 구축. 커스텀 rasterizer는 MVSplat과 동일하게 `--no-build-isolation`으로 별도 빌드.
+- 체크포인트: `depthsplat-gs-base-dl3dv-256x448-randview2-6` (DL3DV in-domain, HF `haofeixu/depthsplat`). 공식 2-scene quick-test subset(`dl3dv_960p_test_subset.zip`, 같은 HF repo)으로 검증.
+- 막혔던 것 두 개: ① 기본 `+experiment=dl3dv` config가 "small" 아키텍처라 "base" 체크포인트와 채널 수 불일치 → README의 정확한 override(`num_scales=2, upsample_factor=4, monodepth_vit_type=vitb`)로 해결, `missing=0 unexpected=0` 확인. ② encoder가 `return_depth=true` 기본값이라 `Gaussians` 대신 `dict`를 반환 → `return_depth=false`로 해결.
+- 초기 시도(context view를 410프레임 영상의 양 끝에서 뽑음)는 baseline이 너무 커서 12dB — DL3DV는 RE10K보다 훨씬 긴 walkthrough라 context 간격을 좁게(30프레임 이내) 잡아야 한다는 걸 발견. 수정 후 **mean PSNR 20.0dB** (19.1~21.8dB, target을 context 사이로 제한). 스크립트: `experiments/scripts/depthsplat_dl3dv_probe.py`.
+- **결론: feed-forward 두 종(MVSplat/DepthSplat) + optimization 한 종(Vanilla3DGS) 전부 실데이터에서 정상 동작 확인 완료.**
+
+### 11.4 아키텍처 일반화 — model_registry.py 기반 dispatch
+
+담당자 요청("메인 실험 장소를 정하고 모델/툴을 갖다 쓰는 형식")에 따라, 무거운 추상화(공통 베이스 클래스 등) 대신 이미 쓰던 패턴을 공식화:
+
+- `model_registry.py`의 `ModelSpec`에 `conda_env_python`/`runner_script`/`external_repo`/`default_checkpoint` 필드 추가 — 모델별 실행 방법을 한 곳에서 관리.
+- `experiments/scripts/run_experiment_batch.py` 신규 작성 — `run_dtu_batch.py`(DTU 전용, 모델 하드코딩)를 일반화. `--dataset-root`로 데이터셋 무관하게, `--methods`는 registry를 lookup해서 자동 dispatch. 새 모델 추가 시 이 파일은 안 건드리고 registry에 항목만 추가하면 됨.
+- 검증: scan1에서 Vanilla3DGS(ok)/MVSplat(ok)/DepthSplat(정식 runner_script 없어서 `no_runner`로 안전하게 skip) 3-way 배치 실행 확인.
+- `run_dtu_batch.py`는 삭제하지 않고 상단에 안내만 추가(기존 batch_summary.json 호환 유지).
+
+### 11.5 남은 작업
+
+1. ~~COLMAP 0-match 버그 수정 후 scan30/103/110 재실행~~ → 완료. 16개 공식 DTU scan × 2-view × seed0, Vanilla3DGS+MVSplat 배치 전부 성공.
+2. DepthSplat 정식 러너(`depthsplat_runner.py`, protocol_utils 스키마) 아직 미작성 — probe 스크립트만 있음.
+3. 우리가 직접 받은 DL3DV raw probe(480P, 5 scene)는 아직 미검증 — 오늘은 DepthSplat 공식 test subset으로만 확인함.
+4. 메인 데이터셋 결정(RE10K vs DL3DV)은 여전히 미결.
+
+## 12. 담당자 검토 반영 — 연구 설계에 직접 영향 (2026-08-10)
+
+### 12.1 Densification on/off는 "공짜 통제 실험"이었다 — C1-b 결정
+
+§11.1 dense-sanity 궤적을 다시 보면, gsplat `DefaultStrategy`의 `refine_stop_iter=15,000`(§11.4 이전에 이미 읽었던 B 항목 값) 때문에 iter 20,366~30,000 구간은 gaussian_count가 1,703,091로 고정된 채 PSNR만 24.11→24.06으로 미세 하강했다. 반면 sparse 8-view 붕괴(§6.4, iter<1749)는 densification이 활발한 구간에서 일어났다. **두 하강의 메커니즘이 다를 수 있다는 뜻이고, H1("densification 후 품질 하락")을 검증하려면 densification 없이 같은 시간을 쓴 조건과 비교해야 한다.**
+
+→ **결정: C1-b는 refinement on/off뿐 아니라, densification on(기본) / densification off(`refine_stop_iter`를 낮추거나 0으로) 두 조건 모두 돌린다.** ForeSplat이 post-optimization에서 densification을 끄는 것과 같은 근거이며, 선행 연구 프로토콜과 비교 가능성도 확보된다. 비용은 늘지만 H1의 핵심 증거이므로 우선순위 높음. `공부방향.md` "신규" 항목에도 반영.
+
+### 12.2 Dense-sanity 수치(24.0dB/LPIPS 0.215) 재해석 — "정상"이 아니라 "치명적 고장 없음"
+
+42-view dense 재구성치고 LPIPS 0.215/SSIM 0.843은 다소 높은 편(dense 재구성은 보통 LPIPS 0.15 이하가 기대치)이라는 지적. 원인 후보 두 가지를 점검:
+
+- **DTU 조명 조건 혼입 여부** — DTU Rectified 이미지는 카메라 위치당 조명 인덱스가 0~6+max로 8종 있다(§DTU README). 학습 view와 held-out view의 조명이 섞이면 재구성 품질과 무관하게 PSNR 상한이 걸린다. **점검 결과: 우리 다운로드 스크립트(`fetch_dtu_scans.py`, `fetch_dtu_official_split.py`)는 모든 scan·모든 position에서 예외 없이 `rect_{i:03d}_3_r5000.png`(조명 index 3, "most diffuse")만 받았다 — 조명 혼입 아님, 원인에서 제외.**
+- **배경/마스크 처리** — DTU는 object mask 없이 전체 이미지(배경 포함)로 평가하면 배경이 점수를 깎는다. 우리 러너는 마스크를 안 쓴다. 원인일 가능성이 남아 있으나, DTU는 external validation 전용이라 우선순위 낮음 — main 실험(RE10K/DL3DV)에는 영향 없음. 평가 컨벤션을 문서에 명시하는 것으로 충분, 추가 조치는 보류.
+
+### 12.3 DepthSplat context 간격 결과(20↔12dB) — overlap이 지배 축일 조기 신호이자 방법론 경고
+
+§11.3의 "context 간격 30프레임 이내 20.0dB vs 넓게 잡으면 12dB" 결과는 같은 모델·같은 장면에서 view 선택만으로 8dB가 갈린 것 — **V2("어느 축이 승패를 지배하는가")의 조기 신호로, overlap이 유력 후보**라는 뜻이다.
+
+동시에 방법론 경고이기도 하다: 지금 probe 스크립트의 context view 선정은 co-visibility가 아니라 임의 프레임 간격으로 했다. **§5.3에서 정한 co-visibility 기반 정의로 바꾸지 않으면, "우리가 view를 어떻게 골랐는가"가 실험 전체의 교란 변수가 된다.** DepthSplat/MVSplat 정식 러너를 만들 때 view 선정 로직을 `generate_overlap.py`의 co-visibility 계산과 연결해야 한다 (현재 미연결 — TODO). 또한 20.0dB 자체가 DepthSplat 공식 평가 index/split 대비 낮은 수치인지도 확인 필요(현재는 임의 선정과 비교할 기준이 없음).
+
+### 12.4 병행 트랙 — RE10K/DL3DV 본 실험 규모 데이터 확보는 이론 공부와 별도로 계속 굴러가야 함
+
+A-1(Gauss-Newton) 등 이론 공부가 지금 최우선이지만, **본 실험 데이터셋(RE10K 또는 DL3DV) 확보를 그 뒤로 미루면 안 된다.** 지금 있는 건 probe 규모(RE10K 3 scene, DL3DV 5 scene)뿐이고, 메인 데이터셋 결정 자체가 미결이다(§10-2). 이 상태가 계속되면 계획서 STEP3(4~6주차 본 벤치마크)가 시작을 못 한다. 이론 공부(A-1 등)와 데이터 확보는 병렬 트랙으로 관리할 것.
+
+**후속 조치 (2026-08-10, 같은 날)**: 전체 RE10K의 "쉬운 경로"였던 pixelSplat 호스팅 서버(`schadenfreude.csail.mit.edu:8000`)가 죽어있는 것을 확인 — RE10K 전체 확보는 여전히 YouTube 기반이라 어렵다. 반면 DL3DV는 이미 접근 가능한 상태라 **DL3DV를 파일럿 규모(25 scene)로 먼저 확장**하기로 결정. `DL3DV-ALL-480P`의 11개 bucket에서 spread 선정(seed=0), 기존 probe 5개 + 신규 20개 = 25 scene, 1.9GB. 25개 전부 구조 검증 완료(transforms.json+images_8 정상, 네이티브 해상도 3840×2160으로 전부 동일, images_8 다운샘플 배율도 정확히 일치, 불일치 0건). RE10K는 별도로 획득 경로를 더 찾아야 하는 상태로 남음.
+
+## 13. D 항목 실측 결과 — overlap과 depth uncertainty의 관계가 예상과 반대 (2026-08-10)
+
+`experiments/scripts/geometry_uncertainty_figure.py` 작성: scan1 dense-sanity COLMAP 재구성(42-view, 861 pair)에서 pair마다 baseline(camera center 거리), overlap(`protocol_utils.compute_pairwise_overlaps` 재사용), 2-view Gauss-Newton 기반 depth 불확실성(`σ²(JᵀJ)⁻¹`을 view 시선 방향에 투영, pixel_sigma=1로 가정)을 실제로 계산. 출력: `experiments/outputs/geometry_figures/{pairwise_geometry.csv, *.png}`.
+
+**결과 (상관계수)**:
+- `corr(baseline, overlap) = -0.87` — 예상대로 (baseline↑ → overlap↓)
+- `corr(baseline, log(depth_uncertainty)) = -0.95` — 예상대로 (baseline↑ → 불확실성↓, 표준 스테레오 조건수 이론과 일치)
+- **`corr(overlap, log(depth_uncertainty)) = +0.95`** (baseline로 partial control해도 +0.80) — **overlap이 높을수록 depth 불확실성도 높게 나옴. H1이 암묵적으로 가정하는 방향(overlap↓ → uncertainty↑)과 정반대.**
+
+**원인 (버그 아님, confounding)**: baseline이 overlap과 uncertainty를 **같은 방향으로** 동시에 끌어내린다(baseline↑ ⇒ overlap↓ *그리고* uncertainty↓). baseline을 안 보고 overlap-uncertainty만 직접 비교하면 이 공통 원인의 그림자만 보여 부호가 뒤집힌다.
+
+**더 근본적인 프레이밍 문제**: 이 계산은 pairwise("인접한 두 view") 단위다. DTU 49-view rig에서 overlap 높은 pair = 물리적으로 가까운 두 카메라(중복 정보, 좁은 baseline), overlap 낮은 pair = 멀리 떨어진 두 카메라(스프레드, 넓은 baseline). 반면 실제 sparse-view 실험(2/4/8/12-view)이 다루는 "낮은 overlap"은 **소수 view를 장면 전체 커버리지를 위해 스프레드해서 뽑은 결과**이지 "두 프레임이 우연히 안 겹친 것"이 아니다 — §5.3의 pairwise `O_ij`와 sparse-view 세팅의 실제 문제(view set 전체의 커버리지 부족)가 같은 지표로 재고 있지만 원인 기제는 다를 수 있다.
+
+**단순화 2가지 (재검토 필요, A-1 이론 공부와 함께)**:
+1. baseline을 world-unit 거리로 썼다 — 삼각측량 조건수에 실제로 중요한 건 물체 기준 시선 사이 각도이지 raw 거리가 아닐 수 있음.
+2. 각 3D point의 실제 track length는 평균 6.05인데(reconstruction summary), 이 분석은 매 pair마다 2-view만 가정해 계산했다 — 실제 달성된 정밀도가 아니라 "이 두 view만 있었다면"이라는 가상의 값이다.
+
+**결론**: §5.3에서 "overlap이 uncertainty를 낮춘다"는 식으로 단순 서술하면 안 됨 — 이 confounding을 알고 서술해야 하며, 최종 해석은 A-1(Gauss-Newton) 재독 완료 후 재논의하기로 함(진행 중, 미결).
+
+## 14. RE10K 획득 경로 재탐색 성공 + DL3DV-Benchmark 중복 확인 (2026-08-10, 같은 날 후반)
+
+### 14.1 RE10K — 41 scene(probe) → 114 scene
+
+§12.4/§10-2에서 "RE10K는 YouTube 기반이라 어렵다"고 결론 내렸던 것을 재검토. Hugging Face에서 pixelSplat/MVSplat과 동일한 `.torch` chunk 포맷으로 RE10K test split을 재업로드한 gate 없는 mirror(`Hualingchu/RealEstate10K_test`, 543 chunk, 전체 ~58GB)를 발견. 전체를 받을 필요 없이 5 chunk만 추가로 받아 **73 scene 신규 확보(기존 41개와 중복 0)** — 합계 **114 scene, 1.2GB**. 새 chunk도 MVSplat 공식 checkpoint로 검증(mean PSNR 22.4dB, 기존 probe의 25.6dB와 같은 정상 범위).
+
+**결론: RE10K가 더 이상 데이터 확보 병목이 아니다.** 계획서 §5.4 본 실험 규모(20~30 scene)를 이미 초과했고, DL3DV(25 scene)보다도 많다. §12.4에서 "데이터 확보 축이 DL3DV로 뒤집혔다"고 기록했던 것도 이번 확장으로 다시 균형 회복(오히려 RE10K가 근소 우위). `model_registry.py` DATASET_REGISTRY 갱신 완료.
+
+### 14.2 DL3DV 25개 pilot — 공식 DL3DV-Benchmark(140-scene eval split)와 중복 0 확인
+
+§11 DL3DV pilot 확장 시 남겨뒀던 caveat("공식 split과 겹치는지 미확인")을 해소. `DL3DV/DL3DV-Benchmark`는 실제 파일 다운로드는 여전히 gate 상태지만 **파일 목록(`list_repo_files`)만은 접근 가능**(DTU/RE10K-Evaluation 때와 같은 패턴 — 메타데이터 열람과 실제 다운로드 gate는 별개). 141개 scene id를 확인해 우리 25개와 대조한 결과 **중복 0** — 우리 25개는 DepthSplat이 "train pool"로 쓰는 쪽에서 뽑힌 것이고 공식 held-out eval set과는 완전히 분리돼 있다. Leakage 걱정 없이 pilot으로 써도 됨. DepthSplat 논문 공식 수치와 직접 비교하려면 `DL3DV-Benchmark` 자체의 접근 승인이 별도로 필요(현재 미승인, 필요 시에만 진행).
+
+### 14.3 메인 데이터셋 결정에 대한 함의
+
+RE10K(114)와 DL3DV(25) 둘 다 이제 "데이터 부족"이 결정 사유가 될 수 없는 규모다. §12.3(model_checkpoint_domain_table.md)의 원래 결정 기준(어떤 feed-forward checkpoint가 in-domain인가)으로 돌아가 순수하게 그 기준으로 결정하면 됨 — MVSplat 중심이면 RE10K, DepthSplat 중심이면 DL3DV. 데이터 접근성은 더 이상 결정 요인이 아니다.

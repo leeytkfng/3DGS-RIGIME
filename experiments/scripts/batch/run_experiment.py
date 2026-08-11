@@ -17,8 +17,9 @@ try:
 except ImportError as exc:  # pragma: no cover - 실행 환경에서 PyYAML 누락 시 바로 안내한다.
     raise SystemExit(f"PyYAML is required to run this script: {exc}") from exc
 
-from model_registry import DATASET_REGISTRY, MODEL_REGISTRY
-from protocol_utils import compute_tau
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "core"))
+from model_registry import DATASET_REGISTRY, MODEL_REGISTRY  # noqa: E402
+from protocol_utils import compute_tau  # noqa: E402
 
 
 def build_experiment_plan(config: dict) -> list[dict]:
@@ -218,7 +219,7 @@ def main() -> int:
     - 정상 종료 시 0 반환.
     """
 
-    repo_root = Path(__file__).resolve().parents[2]
+    repo_root = Path(__file__).resolve().parents[3]
     config_path = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else repo_root / "experiments/configs/experiment_config.yaml"
     output_dir = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else repo_root / "experiments/outputs"
 
