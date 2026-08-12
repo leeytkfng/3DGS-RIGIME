@@ -57,7 +57,11 @@
   - [x] refinement off(0s) vs on(5/10/20s) 실측(DTU scan1 2-view): off=9.20dB → on 5s=9.38 → 10s=9.39 → 20s=9.42dB, gaussian 수 131,072→164,131(densify 작동). **같은 초기값에서 refinement 효과가 실측으로 단조 증가함을 확인** — V3가 측정하려던 현상이 실제로 나옴
   - [x] **RE10K로 이식** (2026-08-12, 같은 세션) — `mvsplat_re10k_runner.py` 신규 작성(re10k_main_subset.json의 공식 context/target 재사용, DTU_SCALE_FACTOR 없이 raw RE10K pose 그대로), `re10k_dataset.py`에 `load_views()` 추가(dtu_dataset.load_scan과 동일 dict 형태 반환), `vanilla_3dgs_runner.py`에 `--dataset {dtu,re10k}` 분기 추가. RE10K main subset scene 1개(`0588138dfec165a1`, 2-view, official context=[70,160] — 앞서 overlap 분석에서 SfM 매칭 0건이었던 바로 그 wide-baseline 케이스)로 end-to-end 실행: refinement=off 기준 PSNR 17.253이 MVSplat 자체 평가(17.246)와 거의 일치(오차 0.007dB) → 변환·warm-start가 RE10K에서도 정확함을 확인
   - [x] **실측 결과 — 흥미로운 반전 신호**: 이 scene에서는 refinement가 품질을 **낮췄다**(off=17.25dB → on 5s=16.64 → 10s=16.62 → 20s=16.61dB). `oracle_checkpoint`도 정확히 iteration 0(=refinement 전)을 최고점으로 잡음. DTU 2-view(같은 세션 앞부분)에서는 반대로 refinement가 +0.22dB 개선시켰던 것과 대비됨 — overall.md의 사전 가설 **H3(초기 geometry 품질이 높으면 refinement 한계이득이 소멸/역전)**과 정확히 같은 방향의 첫 실측 신호. 다만 scene 1개·seed 1개 결과라 일반화 불가, main subset 20개 스케일로 반복해야 진짜 패턴인지 판단 가능
-  - [ ] **남은 일**: main subset 20 scene 전체 스케일 실행(현재는 1개 scene 증명), 4/8/12-view 조건도 반복, DepthSplat도 같은 방식으로 연결, renderer_equivalence_tolerance 최종 동결, RE10K 일반 COLMAP/random-init 경로(warm-start 아닌 케이스)는 여전히 미구현
+- [x] **V3/C1-b main subset 20 scene 전체 스케일업 완료** (2026-08-12, `batch/run_re10k_c1b_scaleup.py` 신규):
+  - **버그 발견·수정**: 스케일업 중 일부 scene에서 refinement 도중 PSNR이 26→6.7dB로 폭락하는 걸 발견. 원인은 gsplat `DefaultStrategy`의 opacity reset(`reset_every=3000`, "처음부터 학습" 가정)이 짧은 warm-start 예산(60s, iter~3000 근처) 안에서 걸리면 좋은 FF 초기값을 파괴하고 복구를 못 하는 것 — `--reset-every 1000000`(사실상 비활성화)으로 C1-b warm-start 경로에 한해 고치고 재확인(재현/해소 둘 다 실측 확인)
+  - **결과(off vs on 60s, view_count=2, 17/20 scene 유효)**: 6개 개선(+0.11~+1.60dB), 11개 소폭 하락(-0.06~-1.84dB), 평균 delta **-0.14dB**(대체로 무승부에 가까움, scene마다 방향이 갈림). 3개 scene은 렌더 등가성 gate가 근소하게 미달(28.98~33.14dB, PSNR≥33dB 기준 대비)해서 refinement 자체를 스킵함 — DTU 1개 scene으로 잡았던 tolerance가 RE10K 20개 스케일에서는 경계선 케이스가 나온다는 뜻, 최종 tolerance 재검토 필요
+  - 원본 데이터: `experiments/outputs/re10k_c1b_scaleup/c1b_scaleup_summary_full20.json`
+  - [ ] **남은 일**: 4/8/12-view 조건도 반복, DepthSplat도 같은 방식으로 연결, renderer_equivalence_tolerance 최종 동결(20-scene 실측 반영), RE10K 일반 COLMAP/random-init 경로(warm-start 아닌 케이스)는 여전히 미구현, scene 수가 적어(n=17) 통계적으로 유의한 결론은 아직 이름
 
 ## 검증 결과
 
@@ -89,8 +93,8 @@
 |---|---:|
 | 연구 설계 / 프로토콜 | ~85% (핵심 12항목 중 미결 3개: C2 budget, 조기종료 규칙, 통계계획 동결) |
 | 데이터 확보 | ~80% |
-| 모델 / 러너 | ~50% (V3/C1-b 구현이 새 항목으로 추가되며 체감 진행률 하락) |
-| 검증 결과 | ~55% (DTU는 두텁게 검증, RE10K/DL3DV는 아직 얇음) |
+| 모델 / 러너 | ~60% (V3/C1-b가 DTU+RE10K 20-scene까지 실측 완료됐지만 4/8/12-view·DepthSplat·RE10K 일반 경로는 남음) |
+| 검증 결과 | ~60% (DTU는 두텁게 검증, RE10K는 C1-b 20-scene까지 붙음, DL3DV는 아직 얇음) |
 | 분석 / 이론 | ~60% |
 
 논문에 쓸 결과 생산 이전, 파일럿 직전 단계라는 평가는 유효함.

@@ -75,6 +75,21 @@ RE10K 전용 로더 `core/re10k_dataset.py`를 새로 작성했다 — `.torch` 
 - refinement=off 기준 PSNR 17.253 — MVSplat 자체 평가(17.246)와 거의 일치. 변환·warm-start가 RE10K에서도 정확함을 재확인.
 - **반전 신호**: off=17.25dB → on 5s=16.64 → 10s=16.62 → 20s=16.61dB — **refinement가 품질을 낮췄다.** `oracle_checkpoint`도 iteration 0을 최고점으로 잡음. DTU에서는 +0.22dB 개선, RE10K 이 scene에서는 반대로 악화 — overall.md 사전가설 **H3**(초기 geometry 품질이 높으면 refinement 한계이득이 소멸/역전)과 같은 방향의 첫 실측 신호다. scene 1개·seed 1개라 아직 일반화는 안 되고, main subset 20개로 스케일업해야 패턴인지 우연인지 판단 가능.
 
+## 8. V3(C1-b) main subset 20 scene 전체 스케일업
+
+RE10K scene 1개짜리 증명(§7)을 `batch/run_re10k_c1b_scaleup.py`로 20개 전체로 확장했다(2-view, off vs on 10s/60s).
+
+**스케일업 도중 버그 발견·수정**: 몇몇 scene에서 refinement 도중 PSNR이 26dB대에서 6.7dB로 순간 폭락하는 걸 발견. train_loss가 같은 지점에서 0.006→0.28로 튀는 것까지 확인해 원인을 좁혔다 — gsplat `DefaultStrategy`의 opacity reset(기본 `reset_every=3000`)이 "처음부터 학습"을 가정한 안전장치인데, 짧은 warm-start 예산(60s ≈ 5000 iter) 안에서 iter~3000 근처에 걸리면 이미 좋은 FF 초기값의 opacity를 전부 날려버리고 남은 iteration으로 복구를 못 한다. `--reset-every 1000000`(사실상 비활성화)으로 재현/해소를 각각 실측 확인하고 C1-b warm-start 경로에 고정 적용했다.
+
+**결과 (17/20 scene 유효, 3개는 렌더 등가성 gate 근소 미달로 스킵):**
+
+| 방향 | scene 수 | delta 범위 |
+|---|---:|---|
+| 개선 | 6 | +0.11 ~ +1.60dB |
+| 하락 | 11 | -0.06 ~ -1.84dB |
+
+평균 delta **-0.14dB** — 대체로 무승부에 가깝고, scene마다 방향이 갈린다. 3개 gate 실패 scene의 PSNR은 28.98~33.14dB로, DTU 1개 scene으로 잡았던 tolerance(PSNR≥33dB)가 20-scene 스케일에서는 경계선에 걸리는 경우가 있다는 뜻 — 최종 tolerance는 이 20-scene 데이터까지 반영해서 재검토해야 한다. 원본: `experiments/outputs/re10k_c1b_scaleup/c1b_scaleup_summary_full20.json`.
+
 ---
 
 ## 종합 결론
@@ -82,17 +97,18 @@ RE10K 전용 로더 `core/re10k_dataset.py`를 새로 작성했다 — `.torch` 
 1. §5.2/§5.4가 채워지면서 연구설계/프로토콜 카테고리가 사실상 완료됐다. 남은 미결은 C2 budget과 §5.11/§5.12 동결뿐.
 2. densification on/off는 코드만이 아니라 실측 궤적으로 검증됐다 — C1-b 실험이 실제로 돌아갈 준비가 됐다.
 3. RE10K에서도 DTU와 똑같이 "2-view는 SfM이 완전히 죽는다"가 재현됐다 — 이제 이게 DTU만의 특이 현상이 아니라 sparse-view 자체의 구조적 성질이라고 말할 수 있는 두 번째 데이터셋 증거가 생겼다. 이건 논문의 핵심 서사(H1)에 직접 쓸 수 있는 결과다.
-4. **V3(C1-b) 파이프라인이 DTU와 RE10K 양쪽에서 end-to-end로 완성·검증됐다.** 변환기 수학적 정확성(합성 round-trip), 렌더 등가성(실측 PSNR 35~42dB), warm-start 좌표계/해상도 정합성(MVSplat 원본과 0.05dB 이내 일치)까지 전부 실측으로 확인. 그리고 첫 실측에서 벌써 DTU(개선)와 RE10K(악화)가 반대 방향으로 나오는 흥미로운 신호를 얻었다 — H3 가설과 정확히 같은 결의 현상.
-5. RE10K main subset의 view/overlap 인프라(view selection, overlap 계산, low/high bucket)에 이어 이제 실제 runner 실행(FF+warm-start C1-b)까지 RE10K에 붙었다. 아직 안 붙은 건 COLMAP/random-init을 쓰는 "일반" Vanilla3DGS/MVSplat RE10K 실행뿐.
+4. **V3(C1-b) 파이프라인이 DTU와 RE10K 양쪽에서 end-to-end로 완성·검증되고, RE10K는 20-scene 스케일까지 실측이 끝났다.** 변환기 수학적 정확성(합성 round-trip), 렌더 등가성(실측 PSNR), warm-start 좌표계/해상도 정합성까지 전부 실측으로 확인. **20-scene 결과는 "refinement가 항상 좋다/나쁘다"가 아니라 scene마다 갈리고 평균은 거의 0에 가깝다(-0.14dB, 6승11패)** — 이건 H3 가설(초기 geometry 품질이 높으면 refinement 효과가 소멸/역전)과 부합하는, 논문에 바로 쓸 수 있는 1차 실측 결과다. 스케일업 과정에서 opacity reset과 warm-start의 상호작용이라는 실전 함정도 하나 찾아서 고쳤다.
+5. RE10K main subset의 view/overlap 인프라에 이어 실제 runner 실행(FF+warm-start C1-b)까지 20-scene 스케일로 RE10K에 붙었다. 아직 안 붙은 건 COLMAP/random-init을 쓰는 "일반" Vanilla3DGS/MVSplat RE10K 실행과 4/8/12-view 조건.
 
 ---
 
 ## 다음 실행 목록 (8/13로 이월)
 
-1. V3(C1-b) main subset 20 scene 전체로 스케일업 — DTU/RE10K에서 각각 나온 개선/악화 신호가 진짜 패턴인지 확인
+1. V3(C1-b)를 4/8/12-view 조건으로도 반복 — 지금은 2-view만 20-scene 스케일
 2. C2 budget 결정 (§5.4 GPU-hour 확정의 유일한 미결 변수)
 3. Vanilla3DGS/MVSplat "일반"(non-warm-start) 경로를 RE10K main subset 256×256 입력으로 실제 실행 — COLMAP/random init 연결 필요
 4. DepthSplat도 C1-b 파이프라인에 연결(지금은 MVSplat만)
-5. DL3DV에도 같은 overlap 패턴 이식
-6. DepthSplat 정식 승격, co-visibility selector 연결
-7. RE10K citation/license 문구, train/ split 39 scene 문서 정합성(2026-08-12 오전에 이미 수정함, 완료)
+5. renderer_equivalence_tolerance 최종 동결 — 20-scene 실측(28.98~42.0dB 분포) 반영
+6. DL3DV에도 같은 overlap 패턴 이식
+7. DepthSplat 정식 승격, co-visibility selector 연결
+8. RE10K citation/license 문구, train/ split 39 scene 문서 정합성(2026-08-12 오전에 이미 수정함, 완료)
