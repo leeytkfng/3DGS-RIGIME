@@ -94,7 +94,8 @@
 - [x] Gauss-Newton / J^T J 수식 정리 문서 (`experiments/docs/paper/paper_gauss_newton_notation.md`)
 - [x] geometry uncertainty figure 1차 생성 + 실측 (DTU scan1, 861 pair, `experiments/outputs/geometry_figures/pairwise_geometry.csv`)
 - [x] overlap-uncertainty 부호 이상 현상 발견 및 원인 분석(baseline confound)
-- [ ] 위 부호 이상 현상 재해석 — A-1(Gauss-Newton) 완료 후로 보류 중
+- [x] 위 부호 이상 현상 재해석 완료 (2026-08-12, A-1 완료 후 사용자와 직접 분석). raw corr +0.952 → baseline 선형 통제해도 +0.801(불충분) → shared_points 가설 세워서 검증했으나 기각(+0.071, 무관) → baseline이 log-log 관계(power-law)임을 확인하고 log(baseline)로 통제하니 +0.301로 크게 감소. 결론: 원래 가설(baseline 교란)이 맞았고, 처음 선형 통제가 함수형을 잘못 잡아서 가짜 잔차가 남았던 것. 전체 유도·해석·논문 초안 문장: `paper/paper_geometry_confound_analysis_2026-08-12.md`, 재현 코드는 `geometry_uncertainty_figure.py::print_confound_analysis()`에 통합
+- [ ] RE10K/DL3DV(경로형 카메라)에서도 같은 baseline-overlap 관계가 성립하는지 확인 — DTU(orbital rig)와 다를 수 있음
 - [ ] co-visibility 기반 view selector 구현 (모델/러너 섹션과 중복 추적)
 - [ ] overlap bucket threshold를 본 실험용으로 동결
 

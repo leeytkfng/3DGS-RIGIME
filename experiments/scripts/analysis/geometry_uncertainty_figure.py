@@ -235,6 +235,41 @@ def make_plots(rows: list[dict], out_dir: Path) -> None:
     corr = np.corrcoef(overlap[valid], np.log(uncertainty[valid]))[0, 1]
     print(f"[stat] corr(overlap, log(depth_uncertainty)) = {corr:.3f} (음수면 예상대로: overlap↑ → uncertainty↓)")
 
+    print_confound_analysis(baseline[valid], overlap[valid], uncertainty[valid])
+
+
+def partial_correlation(x: np.ndarray, y: np.ndarray, controls: list[np.ndarray]) -> float:
+    """x, y의 상관관계에서 controls(공변량 리스트)의 선형 효과를 제거한 partial correlation.
+
+    각 변수를 controls에 대해 최소자승 회귀한 잔차끼리 상관을 구하는 표준적인 방법
+    (2개 이상 공변량으로도 그대로 일반화됨). controls로 넘기는 항의 함수형이 실제
+    관계의 곡률과 다르면(예: 진짜 관계가 log-log인데 원본 스케일로 통제) 그 변수의
+    영향을 다 못 지우고 잔차 상관에 새어나간다 — 2026-08-12 분석에서 실제로 겪은 함정.
+    """
+
+    Z = np.column_stack([np.ones_like(controls[0])] + list(controls))
+
+    def resid(v: np.ndarray) -> np.ndarray:
+        coef, *_ = np.linalg.lstsq(Z, v, rcond=None)
+        return v - Z @ coef
+
+    return float(np.corrcoef(resid(x), resid(y))[0, 1])
+
+
+def print_confound_analysis(baseline: np.ndarray, overlap: np.ndarray, uncertainty: np.ndarray) -> None:
+    """2026-08-12 A-1(Gauss-Newton) 완료 후 분석: overlap-uncertainty의 raw 양의 상관이
+    baseline 교란(confounding)으로 설명되는지 확인한다. `paper_geometry_confound_analysis_
+    2026-08-12.md`에 전체 유도/해석이 있다 — 이 함수는 그 결과를 재현 가능하게 코드로 남긴 것.
+    """
+
+    log_u = np.log(uncertainty)
+    log_b = np.log(baseline)
+
+    print("\n[confound] baseline 교란 분석 (paper/paper_geometry_confound_analysis_2026-08-12.md 참고)")
+    print(f"  corr(overlap, log(uncertainty))                 raw           = {np.corrcoef(overlap, log_u)[0, 1]:+.3f}")
+    print(f"  corr(overlap, log(uncertainty) | baseline)       선형 통제(부족)  = {partial_correlation(overlap, log_u, [baseline]):+.3f}")
+    print(f"  corr(overlap, log(uncertainty) | log(baseline))  log 통제(정답)   = {partial_correlation(overlap, log_u, [log_b]):+.3f}")
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
