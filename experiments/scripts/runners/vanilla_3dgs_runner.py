@@ -217,12 +217,26 @@ def run(args: argparse.Namespace) -> None:
     params = init_gaussians(points, colors, device)
     optimizers = build_optimizers(params, scene_scale=radius)
 
-    strategy = DefaultStrategy(verbose=False)
+    # C1-b densification on/off ablation (paper_scaffold_audit_log.md §12.1):
+    # densification=off는 refine_stop_iter=0으로 강제해 adaptive density control(grow/prune)을
+    # 전부 끈다. step은 0부터 시작하고 strategy 내부 조건이 `step < refine_stop_iter`이므로
+    # 0으로 두면 어떤 step에서도 densify/prune가 트리거되지 않는다.
+    refine_stop_iter = 0 if args.densification == "off" else args.refine_stop_iter
+    strategy = DefaultStrategy(
+        verbose=False,
+        refine_start_iter=args.refine_start_iter,
+        refine_stop_iter=refine_stop_iter,
+        reset_every=args.reset_every,
+        grow_grad2d=args.grow_grad2d,
+        grow_scale3d=args.grow_scale3d,
+        prune_opa=args.prune_opa,
+    )
     strategy.check_sanity(params, optimizers)
     strategy_state = strategy.initialize_state(scene_scale=radius)
 
+    densification_dir_suffix = "" if args.densification == "on" else "_densoff"
     output_dir = Path(args.output_dir)
-    checkpoints_dir = output_dir / "checkpoints" / args.scene / f"{args.view_count}view_seed{args.seed}"
+    checkpoints_dir = output_dir / "checkpoints" / args.scene / f"{args.view_count}view_seed{args.seed}{densification_dir_suffix}"
     logs_dir = output_dir / "logs"
     checkpoints_dir.mkdir(parents=True, exist_ok=True)
     logs_dir.mkdir(parents=True, exist_ok=True)
@@ -356,7 +370,11 @@ def run(args: argparse.Namespace) -> None:
             print(f"[train] hit max_iterations={args.max_iterations} before budget exhausted, stopping.")
             break
 
-    log_path = logs_dir / f"{args.scene}_{args.method}_{args.view_count}view_seed{args.seed}.json"
+    # densification=off는 별도 log 파일로 남긴다 — 같은 scene/seed/view_count에서 on/off 두
+    # 조건을 모두 돌리는 게 C1-b 설계 자체이므로, 파일명이 같으면 batch driver의
+    # "log 있으면 skip" 로직이 두 번째 조건 실행을 막아버린다.
+    densification_suffix = "" if args.densification == "on" else "_densoff"
+    log_path = logs_dir / f"{args.scene}_{args.method}_{args.view_count}view_seed{args.seed}{densification_suffix}.json"
     log_path.write_text(json.dumps(trajectory, indent=2), encoding="utf-8")
     print(f"[done] trajectory written to {log_path}")
 
@@ -445,6 +463,7 @@ def _evaluate_and_checkpoint(
         "peak_vram": float(torch.cuda.max_memory_allocated() / (1024 * 1024)),
         "checkpoint_path": str(checkpoint_path),
         "init_source": init_source,
+        "densification": args.densification,
     }
 
 
@@ -473,6 +492,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="Dense sanity check처럼 특정 iteration에서 평가/checkpoint를 남길 때 사용한다.",
     )
     parser.add_argument("--num-init-points", type=int, default=100_000, help="COLMAP triangulation이 실패할 때만 쓰는 random-fallback 점 개수.")
+    parser.add_argument(
+        "--densification",
+        choices=["on", "off"],
+        default="on",
+        help="off면 DefaultStrategy의 refine_stop_iter=0으로 강제해 adaptive density control"
+        "(grow/prune)을 전부 끈다. C1-b densification on/off ablation용 (§12.1).",
+    )
+    parser.add_argument("--refine-start-iter", type=int, default=500, help="densification=on일 때만 적용.")
+    parser.add_argument("--refine-stop-iter", type=int, default=15_000, help="densification=on일 때만 적용.")
+    parser.add_argument("--reset-every", type=int, default=3_000)
+    parser.add_argument("--grow-grad2d", type=float, default=0.0002)
+    parser.add_argument("--grow-scale3d", type=float, default=0.01)
+    parser.add_argument("--prune-opa", type=float, default=0.005)
     parser.add_argument("--sh-degree", type=int, default=3)
     parser.add_argument("--output-dir", default=str(Path(__file__).resolve().parents[2] / "outputs"))
     parser.add_argument("--compute-lpips", action="store_true", default=True, help="AlexNet 기반 LPIPS도 함께 계산.")

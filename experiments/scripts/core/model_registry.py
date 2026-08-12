@@ -52,25 +52,31 @@ MODEL_REGISTRY = {
         name="DepthSplat",
         family="feedforward",
         requires_pose=True,
-        supports_views=[2, 4, 8, 12],
+        supports_views=[2, 4],  # 체크포인트 randview2-6 학습 분포 기준(§5.2, 2026-08-12). 8/12는 OOD.
         conda_env_python="/opt/conda/envs/depthsplat/bin/python3",
         runner_script=None,  # 아직 probe 스크립트뿐: experiments/scripts/probes/depthsplat_dl3dv_probe.py
         external_repo="/data/Re-feem/code/depthsplat",
         default_checkpoint="/data/Re-feem/code/depthsplat/pretrained/depthsplat-gs-base-dl3dv-256x448-randview2-6-02c7b19d.pth",
         notes="2026-08-10: DL3DV in-domain probe로 mean PSNR 20.0dB 확인(2-view, 공식 test subset). "
-        "4/8/12-view 및 정식 러너(protocol_utils 스키마)는 아직 미구현.",
+        "2026-08-12: README/config 확인 결과 이 체크포인트는 2~6-view 랜덤 샘플링으로 학습됨(randview2-6) — "
+        "supports_views를 [2,4]로 좁힘(6은 우리 view_counts 축에 없어 제외, 8/12는 분포 밖). "
+        "공식으로는 별도 체크포인트(randview4-10, 448x768)로 최대 12-view까지 지원하나 아직 미다운로드. "
+        "4/8/12-view 실측 및 정식 러너(protocol_utils 스키마)는 아직 미구현.",
     ),
     "MVSplat": ModelSpec(
         name="MVSplat",
         family="feedforward",
         requires_pose=True,
-        supports_views=[2, 4, 8, 12],
+        supports_views=[2],  # RE10K 학습 분포는 고정 2-view(§5.2, 2026-08-12). 4/8/12는 저자도 OOD로 간주.
         conda_env_python="/opt/conda/envs/mvsplat/bin/python3",
         runner_script="experiments/scripts/runners/mvsplat_runner.py",
         external_repo="/data/Re-feem/code/mvsplat",
         default_checkpoint="/data/Re-feem/code/mvsplat/checkpoints/re10k.ckpt",
         notes="2026-08-10: DTU zero-shot(2-view) 검증 + RE10K in-domain probe mean PSNR 25.6dB 확인. "
-        "정식 러너는 2-view만 검증됨, 4/8/12-view는 분포 밖(§5.2 미확정).",
+        "2026-08-12: config(`view_sampler/bounded.yaml`)가 RE10K를 고정 2-view로 학습시킴을 확인, "
+        "DTU 공식 eval index도 N=2,3만 제공. README가 직접 '12-view는 DepthSplat 쓰라'고 안내 — "
+        "supports_views를 [2]로 좁힘. DTU smoke(2026-08-11)에서 4/8/12-view forward pass 자체는 안 죽었지만 "
+        "이는 분포 밖 사용이지 공식 지원이 아님(§5.2).",
     ),
     "Vanilla3DGS": ModelSpec(
         name="Vanilla3DGS",

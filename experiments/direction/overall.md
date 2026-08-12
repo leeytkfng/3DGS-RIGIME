@@ -139,14 +139,16 @@ CUDA 최초 컴파일은 제외하되 모든 방법을 같은 조건으로 warm-
 
 ### 5.2 모델별 지원 view 수 — 스모크 테스트로 채울 표
 
-| 모델 | 학습 시 입력 view | 추론 가능 view | Pose 필요 | 입력 해상도 |
-|---|---|---|---|---|
-| DepthSplat | 확인 필요 | 확인 필요 | 필요 | 확인 필요 |
-| MVSplat | 확인 필요 | 확인 필요 | 필요 | 확인 필요 |
-| Vanilla 3DGS | 해당 없음 | 제한 없음 | 필요 | 가변 |
-| Sparse-view opt (택1) | 해당 없음 | 확인 필요 | 필요 | 확인 필요 |
+2026-08-12 갱신: 공식 repo(config/README)와 DTU smoke test(2/4/8/12-view forward pass) 결과로 채움. "학습 분포"와 "forward pass가 죽지 않는 범위"는 다른 질문이므로 열을 분리한다.
 
-학습 분포를 크게 벗어난 view 수의 결과는 정상 성능 비교가 아니라 분포 밖 사용 결과다. 지원 범위 초과 조건은 제외하거나 별도 표기한다.
+| 모델 | 학습 시 입력 view (체크포인트 기준) | 공식 문서상 지원 범위 | Forward pass 생존 확인(실측) | Pose 필요 | 입력 해상도 |
+|---|---|---|---|---|---|
+| MVSplat | RE10K: 고정 2-view (`num_context_views: 2`, `config/dataset/view_sampler/bounded.yaml`) | DTU eval index는 N=2,3만 공식 제공(`assets/evaluation_index_dtu_nctx{2,3}.json`). README가 직접 "12-view까지 필요하면 DepthSplat 쓰라"고 안내 — 저자 스스로 4-view 이상은 지원 범위 밖으로 간주 | 2/4/8/12 전부 crash 없이 통과(DTU scan1, 2026-08-11 smoke) — 단, "안 죽는다"≠"학습 분포 안" | 필요 | RE10K/DTU 256×256(`config/experiment/re10k.yaml`, `dtu.yaml`) |
+| DepthSplat | 체크포인트별로 다름. 우리가 쓰는 기본 체크포인트 `depthsplat-gs-base-dl3dv-256x448-randview2-6`는 **2~6-view 랜덤 샘플링으로 학습**(`view_sampler/boundedv2_360.yaml` 기본값 num_context_views=4, 체크포인트명의 randview2-6이 실제 학습 범위) | 공식 README: 별도 체크포인트(`randview4-10`, 448×768)로 4~10-view, 최대 12-view(512×960, A100 0.6초)까지 문서화·검증됨. 우리는 이 상위 체크포인트를 아직 받지 않음 | 2-view만 실측(DL3DV in-domain probe, mean PSNR 20.0dB). 4/8/12-view는 우리 쪽에서 아직 미실행 | 필요 | DL3DV 256×448(우리 체크포인트), RE10K 전용 체크포인트는 256×256 |
+| Vanilla 3DGS | 해당 없음(optimization) | 해당 없음 — view 수 제약 자체가 없는 방법론 | 2/4/8/12-view(DTU smoke) + 49-view(dense sanity, 42 train) 전부 정상 | 필요 | 가변 |
+| Sparse-view opt (SparseGS/FSGS, 택1) | 미착수 | 확인 필요 | 확인 필요 | 필요 | 확인 필요 |
+
+**결론:** main 실험 축의 view_counts=[2,4,8,12] 중, MVSplat은 사실상 2-view만 학습 분포 내이고 4/8/12는 저자 기준으로도 공식 범위 밖이다. DepthSplat은 우리 체크포인트 기준 2~6-view가 학습 분포이므로 8/12-view는 분포 밖, 4-view까지는 분포 내로 볼 수 있다(단 실측은 아직 2-view뿐). `model_registry.py`의 `supports_views`가 지금까지 네 모델 모두 `[2, 4, 8, 12]`로 동일한 placeholder였던 것을 이 표 기준으로 갱신했다(아래 참고). 학습 분포를 벗어난 view 수의 결과는 정상 성능 비교가 아니라 분포 밖 사용 결과이므로, 4/8/12-view MVSplat과 8/12-view DepthSplat 결과는 regime map 본문에서 "OOD 사용"으로 별도 표기하고 §5.2 경계 밖 취급한다.
 
 ### 5.3 Overlap 계산식 — 수식·집계·선택 편향 차단
 
@@ -165,7 +167,19 @@ CUDA 최초 컴파일은 제외하되 모든 방법을 같은 조건으로 warm-
 | 본 실험 | 장면 20~30개, 입력 view sampling seed 3회 |
 | 외부 검증(DTU) | 장면 8~15개 |
 
-최초 추정 약 1,200 optimization run이며, 초기화·평가·실패 재실행·C1-b·C2를 포함한 실사용은 **200~300 GPU-hour**로 잡는다. 평균, 표준편차 또는 95% CI, **장면별 win rate**를 함께 보고한다.
+**2026-08-12 재계산** — 최초 추정("약 1,200 run, 200~300 GPU-hour")은 감이었고, 8/9 audit에서 "budget을 별도 run으로 잘못 세면 실제로는 2.4배"라는 우려가 나왔다(`paper_scaffold_audit_log.md` §7). 이번엔 실제 manifest(`experiment_manifest.json`, 12,480 row)를 budget-checkpoint를 하나의 trajectory로 접어서(= budget은 재학습이 아니라 한 trajectory 안의 체크포인트) 실행 단위 수를 다시 세고, DTU smoke(2026-08-11)의 실측 wall-clock을 대입했다.
+
+| 구간 | Trajectory 수 | 근거 | per-trajectory 추정 | 소계 |
+|---|---:|---|---:|---:|
+| main, optimization(Vanilla3DGS+SparseGS) | 960 | 20 scene × 3 seed × 4 view × 2 overlap × 2 method | COLMAP 초기화 오버헤드(실측 평균 8.15s, DTU 10s-budget smoke 4건: 17.2~19.2s − 10s) + max budget 300s ≈ **308s** | 82.1 GPU-hour |
+| main, feed-forward(MVSplat+DepthSplat) | 960 | 20 scene × 3 seed × 4 view × 2 overlap × 2 method | MVSplat 실측 6.36~7.98s(DTU, 동일 256×256) 평균 ≈7s를 두 모델에 임시 적용(DepthSplat은 monodepth 백본이 있어 과소추정 가능성 있음, 미실측) | 1.9 GPU-hour |
+| C1-b, refinement=on | 960 | FF 초기값 고정 후 재최적화, main-optimization과 같은 trajectory 구조로 가정 | ≈308s(위와 동일 가정) | 82.1 GPU-hour |
+| C1-b, refinement=off | 960 | FF 출력을 그대로 렌더 등가성 gate만 통과시키는 평가 전용 | ≈7.5s(추정, 실측 없음) | 2.0 GPU-hour |
+| C2 (depth noise + scale bias) | 960 | 8 external scene × 3 seed × 4 조건 × (5 noise + 5 scale) | **budget_seconds가 manifest에 아예 없음(미결정)** — 60s 가정 시 18.1 / 300s 가정 시 82.1 GPU-hour | 18.1~82.1 GPU-hour |
+
+**합계: 약 186~250 GPU-hour** (초기화·평가 오버헤드는 위 per-trajectory 추정에 이미 포함, 실패 재실행 여유는 별도 가산 필요).
+
+결론: 최초 추정(200~300 GPU-hour)이 걱정했던 것과 달리 실측 기반 재계산도 대체로 같은 범위에 들어온다. 8/9 audit의 "2.4배" 우려는 budget을 trajectory로 접어 세면 해소된다(사실 audit 자신도 이미 이렇게 셌었다 — 2,880 "실제 optimization 실행"이라는 숫자 자체가 이 접힌 카운트였다). 범위가 좁혀지지 않는 핵심 원인은 **C2의 budget이 protocol에 아예 정의돼 있지 않다는 것**(4배 차이를 만드는 유일한 변수) — 파일럿 전에 반드시 결정해야 할 새 항목으로 §5.11 조기 종료 규칙과 함께 동결 대상에 추가한다. 그 외 가정: (a) SparseGS는 미구현이라 Vanilla3DGS와 같은 시간 프로파일로 가정, (b) DepthSplat 단독 실측 wall-clock 없음(probe 스크립트가 elapsed를 로깅하지 않음 — 정식 러너 승격 시 같이 고칠 것), (c) H200 병렬 실행으로 처리량이 늘지 않는다는 것은 이미 실측 확인됨(연산 병목)이므로 시간 단축 요인으로 넣지 않았다. 평균, 표준편차 또는 95% CI, **장면별 win rate**를 함께 보고한다.
 
 ### 5.5 Crossover 승패 판정 기준
 

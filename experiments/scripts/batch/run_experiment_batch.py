@@ -54,11 +54,15 @@ def run_one(
     view_count: int,
     output_dir: Path,
     vanilla_budget_seconds: float,
+    densification: str,
 ) -> dict:
     if spec.conda_env_python is None or spec.runner_script is None:
         return {"status": "no_runner", "reason": f"{spec.name}: conda_env_python/runner_script 미등록 (model_registry.py 확인)"}
 
-    log_path = output_dir / "logs" / f"{scene_name}_{spec.name}_{view_count}view_seed{seed}.json"
+    # densification=off는 vanilla_3dgs_runner.py가 별도 log 파일(_densoff suffix)로 남긴다.
+    # feed-forward 모델은 densification 개념이 없으므로 항상 "on" 취급(suffix 없음).
+    suffix = "_densoff" if (spec.family == "optimization" and densification == "off") else ""
+    log_path = output_dir / "logs" / f"{scene_name}_{spec.name}_{view_count}view_seed{seed}{suffix}.json"
     if log_path.exists():
         return {"status": "skipped_exists", "log": str(log_path)}
 
@@ -71,7 +75,7 @@ def run_one(
         "--output-dir", str(output_dir),
     ]
     if spec.family == "optimization":
-        cmd += ["--max-budget-seconds", str(vanilla_budget_seconds)]
+        cmd += ["--max-budget-seconds", str(vanilla_budget_seconds), "--densification", densification]
 
     result = subprocess.run(cmd, capture_output=True, text=True, env=_env_with_bin(spec.conda_env_python))
     if result.returncode != 0:
@@ -88,6 +92,12 @@ def main() -> int:
     parser.add_argument("--seeds", nargs="+", type=int, default=[0])
     parser.add_argument("--view-counts", nargs="+", type=int, default=[2])
     parser.add_argument("--vanilla-budget-seconds", type=float, default=300.0)
+    parser.add_argument(
+        "--densification",
+        choices=["on", "off"],
+        default="on",
+        help="optimization 계열 method에만 적용(C1-b ablation). feed-forward는 무시된다.",
+    )
     parser.add_argument("--output-dir", default=str(REPO_ROOT / "experiments/outputs"))
     args = parser.parse_args()
 
@@ -110,7 +120,7 @@ def main() -> int:
         for method in args.methods:
             spec = MODEL_REGISTRY[method]
             t0 = time.time()
-            result = run_one(spec, scene_dir, scene_name, seed, vc, output_dir, args.vanilla_budget_seconds)
+            result = run_one(spec, scene_dir, scene_name, seed, vc, output_dir, args.vanilla_budget_seconds, args.densification)
             result.update({"scene": scene_id, "seed": seed, "view_count": vc, "method": method, "elapsed": time.time() - t0})
             print(f"[{method}] {scene_name} seed{seed} {vc}view -> {result['status']} ({result['elapsed']:.1f}s)")
             summary.append(result)
