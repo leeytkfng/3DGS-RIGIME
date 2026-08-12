@@ -208,6 +208,13 @@ Feed-forward Gaussian을 gsplat/standard 3DGS 표현으로 변환할 때 **중�
 
 **렌더 등가성이 확보되지 않으면 C1-b를 진행하지 않는다.** 변환 자체의 오차가 refinement 효과로 오인될 수 있기 때문이다.
 
+**2026-08-12 구현·실측**: `core/ff_gaussian_convert.py`(covariance 고유분해 → scale/quaternion, opacity inverse-sigmoid, harmonics 재배열)와 `analysis/check_renderer_equivalence.py`(gsplat 재렌더링 vs MVSplat 자체 decoder render 비교, cross-env이므로 `mvsplat_runner.py`가 저장한 `gaussians.pt`/`render_reference.pt`를 통해 hand-off)로 구현했다. 검증 절차:
+
+- 변환 함수 자체는 합성 데이터 round-trip으로 먼저 검증(covariance 재구성 오차 최대 2.6e-6, quaternion 항상 unit-norm, 회전행렬 항상 det=+1) — 수학적으로 정확함을 확인.
+- DTU scan1 2-view 실제 MVSplat 출력(13만 Gaussian)으로 held-out 7-view 전부 재렌더링해 비교: **mean MSE 0.00006~0.00028, mean abs diff 0.005(픽셀값 0~1 기준 약 0.5%)**. 오차는 background(alpha≈0) 영역에서는 거의 0(5.5e-5 vs 5.58e-5)이고 alpha coverage와의 상관은 0.55 — 변환 버그가 아니라 서로 다른 두 CUDA rasterizer(MVSplat 자체 fork vs gsplat) 간 흔한 수치적 차이(경계 픽셀의 blending 순서/정밀도)로 해석된다.
+
+**config의 `renderer_equivalence_tolerance: 0.0001`은 파일럿 전에 채워야 할 추정치였는데, 실측해보니 이 값이 너무 타이트하다** — 두 개의 "정확히 같은" Gaussian을 서로 다른 정상 rasterizer로 렌더링해도 view별 MSE가 0.0001을 넘는 경우가 있었다(7-view 중 4개가 근소하게 초과). PSNR로 환산하면 실측 범위는 약 35.6~42.0dB — 우리가 실제로 비교하는 재구성 품질(대체로 8~25dB대)과는 충분히 구분되는 값이라, 이 정도 cross-renderer noise를 gate 통과 기준으로 삼아도 refinement 효과와 혼동될 위험은 낮다. **잠정 gate 기준을 MSE 0.0001(고정 픽셀 오차)에서 PSNR ≥ 33dB(view별)로 바꿀 것을 제안**하며, 최종 값은 §5.8 원칙대로 파일럿 전 동결한다.
+
 ### 5.9 C2 개입 실험 — 대상과 범위
 
 예측 depth를 back-projection해 초기 3D point를 만들 때 두 종류의 교란을 적용한다. 그 외 초기화 요소는 고정.

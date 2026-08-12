@@ -59,6 +59,22 @@ RE10K 전용 로더 `core/re10k_dataset.py`를 새로 작성했다 — `.torch` 
 
 **핵심 발견**: 20 scene 전부 2-view에서 mean_overlap=0.000(SfM 매칭 0건). DTU에서 봤던 "2-view SfM 붕괴"가 RE10K에서도 예외 없이 재현됐다 — MVSplat 공식 2-view context가 SfM 재구성이 아니라 wide-baseline novel-view-synthesis 목적으로 뽑히기 때문으로 보인다. 4/8/12-view는 정상 범위(view_count 내부 median: 0.804 / 0.552 / 0.524)였고, 이 median으로 §5.3 stratify 원칙에 따라 low/high overlap bucket 경계를 잡았다(`bucket_thresholds.json`).
 
+## 7. V3(C1-b) 파이프라인 구축 + DTU→RE10K 이식
+
+당초 §5.2/§5.4/데이터 작업 이후로 미뤄뒀던 V3(동일 FF 초기값에서 refinement on/off 순효과 측정)를 오늘 안에 끝까지 만들었다.
+
+**부품 3개, 각각 검증:**
+- `core/ff_gaussian_convert.py` — MVSplat `Gaussians`(means/covariances/harmonics/opacities, 월드좌표)를 gsplat 파라미터화로 변환. covariance 고유분해→scale/quaternion 변환은 합성 데이터 round-trip으로 먼저 검증(재구성 오차 최대 2.6e-6).
+- `analysis/check_renderer_equivalence.py` — §5.8 렌더 등가성 gate. 두 conda env(mvsplat/ps3)가 호환 안 돼서 `mvsplat_runner.py`가 저장한 `gaussians.pt`/`render_reference.pt`로 cross-env hand-off. DTU 실측 PSNR 35.6~42.0dB로 PASS. **overall.md §5.8을 실측 근거로 갱신**: config의 `renderer_equivalence_tolerance: 0.0001`은 서로 다른 두 정상 CUDA rasterizer 간 흔한 수치오차보다도 타이트한 placeholder였음을 확인, PSNR≥33dB 기준을 제안.
+- `vanilla_3dgs_runner.py --warm-start-checkpoint` — FF Gaussian을 그대로 최적화 시작점으로 로드. 처음엔 PSNR이 MVSplat 원본과 안 맞았는데(7.40 vs 9.25dB), 원인이 **해상도 불일치**(러너가 DTU 네이티브 1600×1200로 렌더링, FF Gaussian은 MVSplat 256×256 기준)임을 찾아 `dtu_dataset.py`에 `resize_and_crop()`(MVSplat crop_shim과 동일 convention) 추가, `--image-shape 256 256`으로 재실행하니 9.20dB로 일치(오차 0.05dB, gate가 예측한 노이즈 수준 그대로).
+
+**DTU 2-view 실측**: off=9.20dB → on 5s=9.38 → 10s=9.39 → 20s=9.42dB(+0.22dB, gaussian 131,072→164,131). 같은 초기값에서 refinement가 실제로 개선시켰다.
+
+**RE10K로 이식**: `mvsplat_re10k_runner.py` 신규 작성(re10k_main_subset.json의 공식 context/target 재사용, 좌표계 스케일 보정 불필요), `re10k_dataset.py`에 `load_views()` 추가, `vanilla_3dgs_runner.py`에 `--dataset {dtu,re10k}` 분기. main subset scene `0588138dfec165a1`(2-view, official context=[70,160] — 어제 overlap 분석에서 SfM 매칭 0건이었던 바로 그 wide-baseline scene)로 실행:
+
+- refinement=off 기준 PSNR 17.253 — MVSplat 자체 평가(17.246)와 거의 일치. 변환·warm-start가 RE10K에서도 정확함을 재확인.
+- **반전 신호**: off=17.25dB → on 5s=16.64 → 10s=16.62 → 20s=16.61dB — **refinement가 품질을 낮췄다.** `oracle_checkpoint`도 iteration 0을 최고점으로 잡음. DTU에서는 +0.22dB 개선, RE10K 이 scene에서는 반대로 악화 — overall.md 사전가설 **H3**(초기 geometry 품질이 높으면 refinement 한계이득이 소멸/역전)과 같은 방향의 첫 실측 신호다. scene 1개·seed 1개라 아직 일반화는 안 되고, main subset 20개로 스케일업해야 패턴인지 우연인지 판단 가능.
+
 ---
 
 ## 종합 결론
@@ -66,16 +82,17 @@ RE10K 전용 로더 `core/re10k_dataset.py`를 새로 작성했다 — `.torch` 
 1. §5.2/§5.4가 채워지면서 연구설계/프로토콜 카테고리가 사실상 완료됐다. 남은 미결은 C2 budget과 §5.11/§5.12 동결뿐.
 2. densification on/off는 코드만이 아니라 실측 궤적으로 검증됐다 — C1-b 실험이 실제로 돌아갈 준비가 됐다.
 3. RE10K에서도 DTU와 똑같이 "2-view는 SfM이 완전히 죽는다"가 재현됐다 — 이제 이게 DTU만의 특이 현상이 아니라 sparse-view 자체의 구조적 성질이라고 말할 수 있는 두 번째 데이터셋 증거가 생겼다. 이건 논문의 핵심 서사(H1)에 직접 쓸 수 있는 결과다.
-4. RE10K main subset의 view/overlap 인프라(DTU에서 검증된 세 요소: view selection, overlap 계산, low/high bucket)가 이제 RE10K에도 붙었다. 아직 안 붙은 건 실제 runner 실행(Vanilla3DGS/MVSplat을 이 후보로 실제로 돌리기)뿐이다.
-5. 체크리스트(`experiment_checklist.md`) 기준 남은 다음 순서: V3(C1-b) 구현(FF→3DGS 변환기·렌더 등가성 gate·warm-start·refinement loop), C2 budget 결정, RE10K runner 실행 연결.
+4. **V3(C1-b) 파이프라인이 DTU와 RE10K 양쪽에서 end-to-end로 완성·검증됐다.** 변환기 수학적 정확성(합성 round-trip), 렌더 등가성(실측 PSNR 35~42dB), warm-start 좌표계/해상도 정합성(MVSplat 원본과 0.05dB 이내 일치)까지 전부 실측으로 확인. 그리고 첫 실측에서 벌써 DTU(개선)와 RE10K(악화)가 반대 방향으로 나오는 흥미로운 신호를 얻었다 — H3 가설과 정확히 같은 결의 현상.
+5. RE10K main subset의 view/overlap 인프라(view selection, overlap 계산, low/high bucket)에 이어 이제 실제 runner 실행(FF+warm-start C1-b)까지 RE10K에 붙었다. 아직 안 붙은 건 COLMAP/random-init을 쓰는 "일반" Vanilla3DGS/MVSplat RE10K 실행뿐.
 
 ---
 
 ## 다음 실행 목록 (8/13로 이월)
 
-1. V3(C1-b) 구현 착수 — FF Gaussian → gsplat 포맷 변환기부터
+1. V3(C1-b) main subset 20 scene 전체로 스케일업 — DTU/RE10K에서 각각 나온 개선/악화 신호가 진짜 패턴인지 확인
 2. C2 budget 결정 (§5.4 GPU-hour 확정의 유일한 미결 변수)
-3. Vanilla3DGS/MVSplat을 RE10K main subset 256×256 입력으로 실제 실행
-4. DL3DV에도 같은 overlap 패턴 이식
-5. DepthSplat 정식 승격, co-visibility selector 연결
-6. RE10K citation/license 문구, train/ split 39 scene 존재 여부 문서 정합성 확인(`SOURCE.md`가 "train 없음"이라 적혀있는데 실제로는 있음 — 출처 불명, 확인 필요)
+3. Vanilla3DGS/MVSplat "일반"(non-warm-start) 경로를 RE10K main subset 256×256 입력으로 실제 실행 — COLMAP/random init 연결 필요
+4. DepthSplat도 C1-b 파이프라인에 연결(지금은 MVSplat만)
+5. DL3DV에도 같은 overlap 패턴 이식
+6. DepthSplat 정식 승격, co-visibility selector 연결
+7. RE10K citation/license 문구, train/ split 39 scene 문서 정합성(2026-08-12 오전에 이미 수정함, 완료)

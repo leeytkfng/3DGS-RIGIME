@@ -29,7 +29,7 @@
 - [x] DTU 공식 split 16 scan + extra 13 scan = 29 scan
 - [x] RE10K test 114 scene (probe 41 + mirror 73)
 - [x] DL3DV pilot 25 scene, 공식 benchmark split과 중복 0 확인
-- [x] RE10K/DL3DV `SOURCE.md` 작성
+- [x] RE10K/DL3DV `SOURCE.md` 작성 — 2026-08-12: RE10K SOURCE.md의 "train split 없음" 오기 정정. 실제로 `train/`에 39 scene 존재(8/10 `re10k_subset.zip` 다운로드에 원래 딸려 온 것, `critical_path_2026-08-10.md`에 이미 기록돼 있었음). 데이터 자체는 문제없고 의도적 미사용 상태 — 문서만 안 맞았던 것
 - [x] RE10K main subset(20~30 scene) index 생성 — 2026-08-12, `generate_re10k_main_subset.py` 작성·실행. 로컬 114 scene ∩ MVSplat 공식 evaluation index(`assets/evaluation_index_re10k.json`, non-null 6,474건) ∩ frame수≥50 ∩ context/target 안 겹침 조건으로 96개 후보 중 seed=0으로 20개 결정론적 선정. 2-view는 공식 context/target 그대로, 4/8/12-view는 target(3-view, view_count 불문 고정)을 제외한 pool에서 seeded 생성. 출력: `experiments/outputs/re10k_main_subset/re10k_main_subset.json`. 검증: 20 scene × 4 view_count 전부 context/target 겹침 없음, index 범위 안(스크립트로 재확인). **부수 발견**: 공식 index 자체에 context/target이 겹치는 scene이 2개 있었음(`aadc1e2dc74fd644`, `cdf439b17a6a98d4`) — leakage 방지를 위해 main subset에서 제외
 - [x] RE10K 2/4/8/12-view candidate에 대한 overlap 계산 — 2026-08-12. `colmap_init.py`를 DTU 전용에서 데이터셋 무관 공용 코어(`triangulate_sfm_points_from_cameras`)로 리팩터(DTU 경로는 얇은 wrapper로 남겨 기존 동작 그대로 유지 — scan1 4-view 313 SfM point로 재검증). RE10K 전용 로더 `core/re10k_dataset.py`(`.torch` chunk에서 필요한 frame만 디스크로 풀고 정규화된 카메라를 픽셀 K로 변환) + `analysis/generate_re10k_view_overlap.py` 신규 작성. main subset 20 scene × 4 view_count = 80 combo 전부 COLMAP 실행 완료(`experiments/outputs/re10k_main_subset/overlap/all_scenes_summary.json`). **핵심 발견**: 2-view는 20 scene 전부 mean_overlap=0.000(SfM 매칭 0건) — DTU에서 봤던 "2-view SfM 붕괴"가 RE10K에서도 100% 재현됨(MVSplat 공식 2-view context가 SfM 매칭 목적이 아니라 wide-baseline NVS 목적으로 뽑혀서 그런 것으로 추정). 4/8/12-view는 정상 범위(median 0.80/0.55/0.52)
 - [x] RE10K/DL3DV용 overlap bucket (low/high threshold) 산출 — RE10K는 위 실측으로 완료(§5.3 stratify_thresholds_within_view_count 원칙대로 view_count별 median split): 4-view 0.804, 8-view 0.552, 12-view 0.524. 2-view는 분리 불가(전부 0). 결과: `experiments/outputs/re10k_main_subset/overlap/bucket_thresholds.json`. **DL3DV는 아직 미착수**
@@ -49,11 +49,15 @@
 - [ ] Vanilla3DGS/MVSplat을 RE10K 256x256에서 실제로 실행 — outputs 디렉토리에 RE10K 관련 로그 0건(확인함)
 - [x] densification on/off CLI 추가 — 2026-08-12, `vanilla_3dgs_runner.py`에 `--densification {on,off}` 추가(off는 `refine_stop_iter=0` 강제), `run_experiment_batch.py`에도 pass-through 배선. DTU scan1 4-view 90s 실측으로 검증: on은 gaussians 313→516→799→2120(30/60/90s), off는 끝까지 313 고정. 로그 파일명에 `_densoff` suffix를 붙여 on/off 결과가 서로 덮어쓰지 않게 함. **아직 미커밋**
 - [ ] co-visibility 기반 view selector 구현 — overlap 계산 도구(`generate_overlap.py`)는 있지만 "선택" 로직 자체가 없음(grep 0건)
-- [ ] **V3/C1-b 실제 구현** (2026-08-12 새로 식별된 항목, 이전 체크리스트에 없었음):
-  - [ ] FF(MVSplat/DepthSplat) Gaussian 출력 -> standard 3DGS(gsplat) 포맷 변환기
-  - [ ] 렌더 등가성 gate 검사 함수 (지금은 config에 tolerance 숫자만 있고 이걸 읽어 비교하는 코드가 없음)
-  - [ ] `vanilla_3dgs_runner.py`의 `init_gaussians()`에 FF warm-start 경로 추가 (현재는 `colmap_sfm`/`random_sphere_fallback` 둘뿐)
-  - [ ] refinement off(0s) vs on(10/60/300s) 비교 루프
+- [x] **V3/C1-b 파이프라인(메커니즘) 완성 + DTU로 end-to-end 검증** (2026-08-12):
+  - [x] FF(MVSplat/DepthSplat) Gaussian → gsplat 포맷 변환기(`core/ff_gaussian_convert.py`) — covariance 고유분해→scale/quat, opacity inverse-sigmoid, harmonics 재배열. 합성 데이터 round-trip으로 검증(covariance 재구성 오차 최대 2.6e-6)
+  - [x] 렌더 등가성 gate 검사 함수(`analysis/check_renderer_equivalence.py`) — DTU scan1 2-view 실제 MVSplat 출력(13만 Gaussian)으로 held-out 7-view 재렌더링 비교, PSNR 35.6~42.0dB로 PASS. `overall.md` §5.8에 실측 근거로 tolerance 재정의(MSE 0.0001→PSNR≥33dB 제안, 파일럿 전 확정 필요)
+  - [x] `vanilla_3dgs_runner.py`에 `--warm-start-checkpoint`/`--pose-scale-factor`/`--initial-sh-degree`/`--image-shape` 추가, `init_source="ff_warm_start"` 로깅. refinement=off(0s) baseline 평가 구현
+  - [x] **해상도 불일치 블로커 해결**: `dtu_dataset.py`에 `resize_and_crop()`(MVSplat `crop_shim.py`와 동일 convention — Lanczos resize+center crop, cx/cy는 MVSplat과 동일하게 정중앙 강제) 추가, `load_scan(..., target_shape=)`로 연결. `--image-shape 256 256`으로 재실행하니 PSNR 9.20/SSIM 0.307/LPIPS 0.477 — MVSplat 자체 평가(9.25/0.308/0.480)와 노이즈 수준 오차로 일치
+  - [x] refinement off(0s) vs on(5/10/20s) 실측(DTU scan1 2-view): off=9.20dB → on 5s=9.38 → 10s=9.39 → 20s=9.42dB, gaussian 수 131,072→164,131(densify 작동). **같은 초기값에서 refinement 효과가 실측으로 단조 증가함을 확인** — V3가 측정하려던 현상이 실제로 나옴
+  - [x] **RE10K로 이식** (2026-08-12, 같은 세션) — `mvsplat_re10k_runner.py` 신규 작성(re10k_main_subset.json의 공식 context/target 재사용, DTU_SCALE_FACTOR 없이 raw RE10K pose 그대로), `re10k_dataset.py`에 `load_views()` 추가(dtu_dataset.load_scan과 동일 dict 형태 반환), `vanilla_3dgs_runner.py`에 `--dataset {dtu,re10k}` 분기 추가. RE10K main subset scene 1개(`0588138dfec165a1`, 2-view, official context=[70,160] — 앞서 overlap 분석에서 SfM 매칭 0건이었던 바로 그 wide-baseline 케이스)로 end-to-end 실행: refinement=off 기준 PSNR 17.253이 MVSplat 자체 평가(17.246)와 거의 일치(오차 0.007dB) → 변환·warm-start가 RE10K에서도 정확함을 확인
+  - [x] **실측 결과 — 흥미로운 반전 신호**: 이 scene에서는 refinement가 품질을 **낮췄다**(off=17.25dB → on 5s=16.64 → 10s=16.62 → 20s=16.61dB). `oracle_checkpoint`도 정확히 iteration 0(=refinement 전)을 최고점으로 잡음. DTU 2-view(같은 세션 앞부분)에서는 반대로 refinement가 +0.22dB 개선시켰던 것과 대비됨 — overall.md의 사전 가설 **H3(초기 geometry 품질이 높으면 refinement 한계이득이 소멸/역전)**과 정확히 같은 방향의 첫 실측 신호. 다만 scene 1개·seed 1개 결과라 일반화 불가, main subset 20개 스케일로 반복해야 진짜 패턴인지 판단 가능
+  - [ ] **남은 일**: main subset 20 scene 전체 스케일 실행(현재는 1개 scene 증명), 4/8/12-view 조건도 반복, DepthSplat도 같은 방식으로 연결, renderer_equivalence_tolerance 최종 동결, RE10K 일반 COLMAP/random-init 경로(warm-start 아닌 케이스)는 여전히 미구현
 
 ## 검증 결과
 

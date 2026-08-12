@@ -83,15 +83,37 @@ def psnr(pred: torch.Tensor, target: torch.Tensor) -> float:
 # ---------------------------------------------------------------------------
 # Camera / init helpers
 # ---------------------------------------------------------------------------
-def build_camera_tensors(view: dict, device: torch.device) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    """view dict(dtu_dataset.load_scan 결과 원소 하나)에서 rasterization() 입력을 만든다."""
+def build_camera_tensors(
+    view: dict, device: torch.device, pose_scale_factor: float = 1.0
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """view dict(dtu_dataset.load_scan 결과 원소 하나)에서 rasterization() 입력을 만든다.
+
+    pose_scale_factor: C1-b FF warm-start 전용. MVSplat DTU 경로(mvsplat_runner.py)는
+    world-to-camera translation에 DTU_SCALE_FACTOR(1/200)를 곱해서 씀 — Gaussian means도
+    그 축소된 좌표계로 나온다. 여기서 로드하는 카메라가 원본(축소 안 된) DTU 좌표계라서,
+    warm-start로 불러온 Gaussians와 좌표계를 맞추려면 같은 배율을 translation에 적용해야
+    한다. 기본값 1.0(원본 DTU 좌표계, 기존 동작 그대로)이면 아무 영향 없다.
+    """
 
     viewmat = torch.eye(4, dtype=torch.float32, device=device)
     viewmat[:3, :3] = torch.from_numpy(view["R"]).float()
-    viewmat[:3, 3] = torch.from_numpy(view["t"]).float()
+    viewmat[:3, 3] = torch.from_numpy(view["t"]).float() * pose_scale_factor
     k = torch.from_numpy(view["K"]).float().to(device)
     image = torch.from_numpy(view["image"]).float().to(device).permute(2, 0, 1)  # [3,H,W]
     return viewmat, k, image
+
+
+def _load_warm_start_params(checkpoint_path: Path, device: torch.device) -> tuple[dict[str, torch.nn.Parameter], str]:
+    """mvsplat_runner.py(또는 향후 depthsplat_runner.py)가 저장한 `gaussians.pt`를 로드해
+    gsplat 파라미터화로 변환한다. §5.8 렌더 등가성 gate 통과 여부는 호출측 책임."""
+
+    from ff_gaussian_convert import gaussians_to_gsplat_params
+
+    raw = torch.load(checkpoint_path, map_location="cpu")
+    means, covariances = raw["means"][0], raw["covariances"][0]
+    harmonics, opacities = raw["harmonics"][0], raw["opacities"][0]
+    params = gaussians_to_gsplat_params(means, covariances, harmonics, opacities, device)
+    return params, "ff_warm_start"
 
 
 def _random_points_in_sphere(center: np.ndarray, radius: float, num_points: int, seed: int) -> tuple[np.ndarray, np.ndarray]:
@@ -185,37 +207,81 @@ def run(args: argparse.Namespace) -> None:
     from gsplat.strategy import DefaultStrategy
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    scan_dir = Path(args.scan_dir)
+    target_shape = tuple(args.image_shape) if args.image_shape else None
 
-    all_view_ids = list(range(1, 50))
-    test_ids = all_view_ids[::7]  # 1,8,15,...,43 -> 고정 held-out test split
-    train_pool = [v for v in all_view_ids if v not in test_ids]
+    if args.dataset == "re10k":
+        # RE10K 경로는 지금 C1-b warm-start 전용이다. COLMAP/random init을 통한 일반 RE10K
+        # 학습(=checklist의 "Vanilla3DGS RE10K 256x256 input path")은 별도 항목으로 남아있고
+        # 여기서는 다루지 않는다 — scan_dir 기반 COLMAP triangulate가 DTU 전용이라 그대로
+        # 재사용할 수 없기 때문.
+        if not args.warm_start_checkpoint:
+            raise SystemExit(
+                "--dataset re10k는 지금 C1-b warm-start 전용이다. --warm-start-checkpoint를 "
+                "함께 줘야 한다 (일반 RE10K COLMAP/random init 경로는 아직 미구현)."
+            )
+        from re10k_dataset import get_scene_item, load_views
 
-    rng = np.random.default_rng(args.seed)
-    train_ids = sorted(rng.choice(train_pool, size=min(args.view_count, len(train_pool)), replace=False).tolist())
+        subset = json.loads(Path(args.re10k_subset_index).read_text())
+        entry = subset[args.re10k_scene_key]
+        candidate = entry["view_candidates"][str(args.view_count)]
+        if candidate.get("context") is None:
+            raise SystemExit(f"{args.re10k_scene_key} view_count={args.view_count}: candidate 없음(too short)")
+        train_ids, test_ids = candidate["context"], candidate["target"]
+        print(f"[data] RE10K scene={args.re10k_scene_key} train(context)={train_ids} test(target)={test_ids}")
 
-    print(f"[data] train views ({len(train_ids)}): {train_ids}")
-    print(f"[data] test views ({len(test_ids)}): {test_ids}")
+        item = get_scene_item(Path("/data/Re-feem/datasets/re10k/test") / entry["chunk_file"], args.re10k_scene_key)
+        train_views = load_views(item, train_ids, target_shape=target_shape)
+        test_views = load_views(item, test_ids, target_shape=target_shape)
 
-    train_views = load_scan(scan_dir, train_ids)
-    test_views = load_scan(scan_dir, test_ids)
-
-    cameras_for_sphere = [load_camera(scan_dir / "cameras", v) for v in all_view_ids]
-    center, radius = estimate_scene_sphere(cameras_for_sphere)
-    print(f"[init] estimated scene center={center}, radius={radius:.3f}")
-
-    colmap_workdir = Path(args.output_dir) / "colmap_work" / args.scene / f"{args.view_count}view_seed{args.seed}"
-    sfm_points, sfm_colors = triangulate_sfm_points(scan_dir, train_ids, colmap_workdir)
-    if sfm_points.shape[0] >= MIN_SFM_POINTS:
-        init_source = "colmap_sfm"
-        points, colors = sfm_points, sfm_colors
+        # DTU의 estimate_scene_sphere() 대응물 — RE10K는 calibration 기반 sphere-fit이 아직
+        # 없어서, context view 카메라 중심들의 산포로 간단히 scene scale을 근사한다
+        # (optimizer LR 스케일링에만 쓰이므로 정밀할 필요는 없다).
+        centers = np.stack([v["center"] for v in train_views])
+        radius = float(np.median(np.linalg.norm(centers - centers.mean(axis=0), axis=1))) or 1.0
+        print(f"[init] RE10K scene scale(centroid-median) radius={radius:.4f}")
     else:
-        init_source = "random_sphere_fallback"
-        points, colors = _random_points_in_sphere(center, radius, args.num_init_points, args.seed)
-    print(f"[init] source={init_source}, num_points={points.shape[0]}")
+        if not args.scan_dir:
+            raise SystemExit("--dataset dtu는 --scan-dir가 필요하다.")
+        scan_dir = Path(args.scan_dir)
+        all_view_ids = list(range(1, 50))
+        test_ids = all_view_ids[::7]  # 1,8,15,...,43 -> 고정 held-out test split
+        train_pool = [v for v in all_view_ids if v not in test_ids]
 
-    params = init_gaussians(points, colors, device)
-    optimizers = build_optimizers(params, scene_scale=radius)
+        rng = np.random.default_rng(args.seed)
+        train_ids = sorted(rng.choice(train_pool, size=min(args.view_count, len(train_pool)), replace=False).tolist())
+
+        print(f"[data] train views ({len(train_ids)}): {train_ids}")
+        print(f"[data] test views ({len(test_ids)}): {test_ids}")
+
+        train_views = load_scan(scan_dir, train_ids, target_shape=target_shape)
+        test_views = load_scan(scan_dir, test_ids, target_shape=target_shape)
+
+        cameras_for_sphere = [load_camera(scan_dir / "cameras", v) for v in all_view_ids]
+        center, radius = estimate_scene_sphere(cameras_for_sphere)
+        print(f"[init] estimated scene center={center}, radius={radius:.3f}")
+
+    if args.warm_start_checkpoint:
+        # C1-b: FF(MVSplat/DepthSplat) Gaussian 출력을 그대로 최적화 시작점으로 쓴다.
+        # COLMAP triangulation/random init은 건너뛴다 — §5.8 렌더 등가성 gate를
+        # `check_renderer_equivalence.py`로 먼저 통과시킨 체크포인트만 여기 넣어야 한다.
+        params, init_source = _load_warm_start_params(Path(args.warm_start_checkpoint), device)
+        print(
+            f"[init] source={init_source}, num_points={params['means'].shape[0]} "
+            f"(FF warm-start, pose_scale_factor={args.pose_scale_factor})"
+        )
+    else:
+        colmap_workdir = Path(args.output_dir) / "colmap_work" / args.scene / f"{args.view_count}view_seed{args.seed}"
+        sfm_points, sfm_colors = triangulate_sfm_points(scan_dir, train_ids, colmap_workdir)
+        if sfm_points.shape[0] >= MIN_SFM_POINTS:
+            init_source = "colmap_sfm"
+            points, colors = sfm_points, sfm_colors
+        else:
+            init_source = "random_sphere_fallback"
+            points, colors = _random_points_in_sphere(center, radius, args.num_init_points, args.seed)
+        print(f"[init] source={init_source}, num_points={points.shape[0]}")
+        params = init_gaussians(points, colors, device)
+
+    optimizers = build_optimizers(params, scene_scale=radius * args.pose_scale_factor)
 
     # C1-b densification on/off ablation (paper_scaffold_audit_log.md §12.1):
     # densification=off는 refine_stop_iter=0으로 강제해 adaptive density control(grow/prune)을
@@ -232,7 +298,7 @@ def run(args: argparse.Namespace) -> None:
         prune_opa=args.prune_opa,
     )
     strategy.check_sanity(params, optimizers)
-    strategy_state = strategy.initialize_state(scene_scale=radius)
+    strategy_state = strategy.initialize_state(scene_scale=radius * args.pose_scale_factor)
 
     densification_dir_suffix = "" if args.densification == "on" else "_densoff"
     output_dir = Path(args.output_dir)
@@ -241,8 +307,13 @@ def run(args: argparse.Namespace) -> None:
     checkpoints_dir.mkdir(parents=True, exist_ok=True)
     logs_dir.mkdir(parents=True, exist_ok=True)
 
-    train_cams = [build_camera_tensors(v, device) for v in train_views]
-    test_cams = [build_camera_tensors(v, device) for v in test_views]
+    if args.dataset == "re10k":
+        # DTU 분기는 view 선택에 쓴 rng를 셔플에도 이어서 쓰지만, re10k 분기는 view를 seed 기반
+        # rng로 뽑지 않으므로(§subset_index candidate 재사용) 셔플 전용 rng가 따로 필요하다.
+        rng = np.random.default_rng(args.seed)
+
+    train_cams = [build_camera_tensors(v, device, args.pose_scale_factor) for v in train_views]
+    test_cams = [build_camera_tensors(v, device, args.pose_scale_factor) for v in test_views]
     height, width = train_views[0]["height"], train_views[0]["width"]
 
     # --- CUDA warm-up: 프로토콜(runtime.cuda_warmup=true)에 따라 최초 컴파일 시간은 측정에서 뺀다.
@@ -254,7 +325,7 @@ def run(args: argparse.Namespace) -> None:
     order = list(range(len(train_cams)))
     step = 0
     elapsed = 0.0
-    active_sh_degree = 0
+    active_sh_degree = args.initial_sh_degree
     next_snapshot_targets = sorted(set(args.budget_snapshots))
     snapshot_idx = 0
     # Dense-view sanity check처럼 "30k iteration에서 정확히 평가"해야 하는 경우를 위해
@@ -264,7 +335,39 @@ def run(args: argparse.Namespace) -> None:
 
     lpips_metric = LPIPSMetric(device) if args.compute_lpips else None
 
-    print(f"[train] starting optimization, budget={args.max_budget_seconds}s, init_points={points.shape[0]} ({init_source})")
+    print(
+        f"[train] starting optimization, budget={args.max_budget_seconds}s, "
+        f"init_points={params['means'].shape[0]} ({init_source})"
+    )
+
+    if init_source == "ff_warm_start":
+        # C1-b refinement=off(0s) baseline: 방금 불러온 FF Gaussian을 최적화 스텝 없이
+        # 그대로 평가한다. max_budget_seconds가 0이어도(=refinement off 조건) 이 한 줄이
+        # 있어야 trajectory가 비어있지 않다 — while 루프는 elapsed(0.0) < 0.0이라 한 번도
+        # 안 돈다.
+        baseline_row = _evaluate_and_checkpoint(
+            params=params,
+            rasterization=rasterization,
+            test_cams=test_cams,
+            height=height,
+            width=width,
+            active_sh_degree=args.sh_degree,
+            step=0,
+            elapsed=0.0,
+            train_loss=None,
+            checkpoints_dir=checkpoints_dir,
+            args=args,
+            checkpoint_label="ff_warm_start_baseline",
+            lpips_metric=lpips_metric,
+            init_source=init_source,
+        )
+        trajectory.append(baseline_row)
+        lpips_str = f"{baseline_row['test_lpips']:.3f}" if baseline_row["test_lpips"] is not None else "n/a"
+        print(
+            f"[ckpt] ff_warm_start_baseline (refinement=off 기준점) test_psnr={baseline_row['test_psnr']:.3f} "
+            f"test_lpips={lpips_str}"
+        )
+
     while elapsed < args.max_budget_seconds:
         if step % len(order) == 0:
             rng.shuffle(order)
@@ -469,8 +572,15 @@ def _evaluate_and_checkpoint(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Vanilla 3DGS (gsplat) runner for a single DTU scan.")
-    parser.add_argument("--scan-dir", required=True, help="e.g. /data/Re-feem/datasets/dtu/scan1")
+    parser.add_argument("--dataset", choices=["dtu", "re10k"], default="dtu")
+    parser.add_argument("--scan-dir", default=None, help="dataset=dtu일 때만 필요. e.g. /data/Re-feem/datasets/dtu/scan1")
     parser.add_argument("--scene", required=True, help="scene id used in logs, e.g. dtu_scan1")
+    parser.add_argument(
+        "--re10k-subset-index",
+        default="experiments/outputs/re10k_main_subset/re10k_main_subset.json",
+        help="dataset=re10k일 때만 사용. generate_re10k_main_subset.py 출력.",
+    )
+    parser.add_argument("--re10k-scene-key", default=None, help="dataset=re10k일 때 필요. re10k_main_subset.json의 scene key.")
     parser.add_argument("--method", default="Vanilla3DGS")
     parser.add_argument("--experiment-id", default="regime-map-20260806")
     parser.add_argument("--view-count", type=int, default=8)
@@ -493,6 +603,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--num-init-points", type=int, default=100_000, help="COLMAP triangulation이 실패할 때만 쓰는 random-fallback 점 개수.")
     parser.add_argument(
+        "--image-shape",
+        type=int,
+        nargs=2,
+        default=None,
+        metavar=("HEIGHT", "WIDTH"),
+        help="지정하면 dtu_dataset.resize_and_crop()으로 이 해상도에 맞춘다(MVSplat"
+        " crop_shim과 동일 convention). FF checkpoint 학습 해상도를 상속해야 하는"
+        " C1-b/warm-start에 필요. 기본(미지정)은 기존 동작 그대로 네이티브 해상도.",
+    )
+    parser.add_argument(
         "--densification",
         choices=["on", "off"],
         default="on",
@@ -506,6 +626,29 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--grow-scale3d", type=float, default=0.01)
     parser.add_argument("--prune-opa", type=float, default=0.005)
     parser.add_argument("--sh-degree", type=int, default=3)
+    parser.add_argument(
+        "--initial-sh-degree",
+        type=int,
+        default=0,
+        help="training loop 시작 시 active_sh_degree. FF warm-start는 이미 최종 SH 계수를"
+        " 갖고 있으므로 0에서부터 다시 ramp-up하면 안 된다 — warm-start 시 --sh-degree와"
+        " 같은 값으로 준다(예: MVSplat sh_degree=4).",
+    )
+    parser.add_argument(
+        "--warm-start-checkpoint",
+        default=None,
+        help="C1-b: mvsplat_runner.py 등이 저장한 gaussians.pt 경로. 주어지면 COLMAP/random"
+        " init을 건너뛰고 이 Gaussian을 그대로 최적화 시작점으로 쓴다. §5.8 렌더 등가성"
+        " gate(check_renderer_equivalence.py)를 먼저 통과한 체크포인트만 써야 한다.",
+    )
+    parser.add_argument(
+        "--pose-scale-factor",
+        type=float,
+        default=1.0,
+        help="카메라 translation에 곱할 배율. warm-start 소스가 좌표계를 스케일해서 썼다면"
+        "(예: mvsplat_runner.py의 DTU_SCALE_FACTOR=1/200) 반드시 같은 값을 줘야 Gaussian과"
+        " 카메라 좌표계가 맞는다. 기본 1.0은 기존 동작(원본 DTU 좌표계)과 동일.",
+    )
     parser.add_argument("--output-dir", default=str(Path(__file__).resolve().parents[2] / "outputs"))
     parser.add_argument("--compute-lpips", action="store_true", default=True, help="AlexNet 기반 LPIPS도 함께 계산.")
     parser.add_argument("--no-lpips", dest="compute_lpips", action="store_false")

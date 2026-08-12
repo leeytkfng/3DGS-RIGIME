@@ -140,11 +140,53 @@ def estimate_scene_sphere(cameras: Sequence[DTUCamera]) -> tuple[np.ndarray, flo
     return center, radius
 
 
+def resize_and_crop(image: np.ndarray, K: np.ndarray, target_shape: tuple[int, int]) -> tuple[np.ndarray, np.ndarray]:
+    """네이티브 해상도 image/K를 target_shape=(h_out, w_out)에 맞춘다.
+
+    MVSplat의 `src/dataset/shims/crop_shim.py::rescale_and_crop`과 동일한 convention
+    (짧은 변 기준 Lanczos resize -> center crop)을 따른다 — C1-b에서 FF checkpoint가 만든
+    Gaussian과 같은 화면을 봐야 렌더 비교가 의미 있기 때문에, 리사이즈 방식이 어긋나면 안 된다.
+
+    주의(의도적 단순화, MVSplat과 동일하게 맞춤): crop 후 principal point를 실제 DTU
+    calibration 값(예: scan1은 (823, 619), 정중앙 (800,600)과 약 1.5% 어긋남)을 유지하지
+    않고 이미지 정중앙(target_w/2, target_h/2)으로 강제한다. `mvsplat_runner.py::build_view()`
+    가 애초에 DTU 실제 cx/cy 대신 0.5(정중앙)을 쓰기 때문에, warm-start로 불러오는 Gaussian과
+    좌표계를 맞추려면 여기서도 같은 단순화를 반복해야 한다. DTU 정밀 calibration을 그대로
+    쓰는 기존 경로(dense-sanity 등, target_shape=None)는 이 함수를 타지 않으므로 영향 없다.
+    """
+
+    h_in, w_in, _ = image.shape
+    h_out, w_out = target_shape
+    scale_factor = max(h_out / h_in, w_out / w_in)
+    h_scaled = round(h_in * scale_factor)
+    w_scaled = round(w_in * scale_factor)
+
+    pil_image = Image.fromarray((image * 255.0).clip(0, 255).astype(np.uint8))
+    pil_image = pil_image.resize((w_scaled, h_scaled), Image.LANCZOS)
+    scaled = np.asarray(pil_image, dtype=np.float32) / 255.0
+
+    row = (h_scaled - h_out) // 2
+    col = (w_scaled - w_out) // 2
+    cropped = scaled[row : row + h_out, col : col + w_out]
+
+    K_out = K.copy()
+    K_out[0, 0] *= w_scaled / w_in  # fx
+    K_out[1, 1] *= h_scaled / h_in  # fy
+    K_out[0, 2] = w_out / 2.0  # cx -> 정중앙 강제 (MVSplat 파이프라인과 동일한 단순화)
+    K_out[1, 2] = h_out / 2.0  # cy
+
+    return cropped, K_out
+
+
 def load_scan(
     scan_dir: Path,
     view_ids: Sequence[int],
+    target_shape: tuple[int, int] | None = None,
 ) -> list[dict[str, object]]:
     """scan_dir(예: .../dtu/scan1) 아래 images/, cameras/ 에서 지정한 view들을 읽는다.
+
+    target_shape=(h_out, w_out)를 주면 `resize_and_crop()`으로 리사이즈한다(FF warm-start
+    비교용). None(기본값)이면 기존 동작 그대로 네이티브 해상도를 쓴다.
 
     예상 결과:
     - 각 원소는 {"view_id", "image", "K", "R", "t", "center", "width", "height"}를 갖는 dict.
@@ -157,12 +199,15 @@ def load_scan(
     for view_id in view_ids:
         camera = load_camera(calibration_dir, view_id)
         image = load_image(images_dir, view_id)
+        K = camera.K
+        if target_shape is not None:
+            image, K = resize_and_crop(image, K, target_shape)
         height, width = image.shape[:2]
         views.append(
             {
                 "view_id": view_id,
                 "image": image,
-                "K": camera.K,
+                "K": K,
                 "R": camera.R,
                 "t": camera.t,
                 "center": camera.center,
