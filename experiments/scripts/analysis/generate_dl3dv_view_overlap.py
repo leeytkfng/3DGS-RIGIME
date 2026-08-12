@@ -3,11 +3,26 @@
 
 RE10K용 `generate_re10k_view_overlap.py`와 같은 패턴(known-pose COLMAP triangulation ->
 zero-included overlap report)을 DL3DV로 이식한 것. RE10K와의 차이:
-- MVSplat 같은 공식 2-view context/target index가 DL3DV엔 없다(DepthSplat은 애초에
-  4-view 위주로 학습됨, `boundedv2_360.yaml` 기본 num_context_views=4). 그래서 DTU smoke와
-  같은 방식(seed 기반 rng)으로 view candidate를 직접 뽑는다.
+- MVSplat 같은 공식 2-view context/target index가 DL3DV엔 없다. 대신 DepthSplat이
+  test-time에 실제로 쓰는 view selection 알고리즘을 코드로 확인해서(`view_sampler_bounded_v2.py`
+  ::sample(), 2026-08-12) 그대로 재현한다 — §Ⅴ 참고.
 - 이미지가 이미 디스크 파일(`images_8/frame_*.png`)이라 RE10K처럼 `.torch`에서 풀어낼
   필요가 없다.
+
+## Ⅴ. DepthSplat test-time view selection 재현 (2026-08-12, v2)
+
+최초 버전(v1, 2026-08-12 오전)은 전체 영상에서 순수 랜덤으로 context를 뽑았는데, 그 결과
+4-view도 56%(14/25 scene)가 SfM overlap 0으로 나왔다. 원인을 코드로 추적한 결과, DepthSplat
+자신의 test-time 샘플러는 전체 영상 랜덤이 아니라:
+1. `index_context_left = 0`으로 고정(항상 scene 시작 프레임부터)
+2. `context_gap = max_distance_between_context_views`로 고정 (우리 config 기준 50)
+3. window `[0, context_gap]` 안에서 카메라 위치 기준 **farthest-point sampling**으로
+   `num_context_views`개를 뽑는다(`farthest_point_sample()`, 원본 로직을 numpy로 재현)
+
+이 스크립트는 이제 이 알고리즘을 재현한다. target(held-out 3-view)은 DepthSplat 원본처럼
+context window 안의 전체 프레임을 다 쓰지 않고(우리 프로토콜은 고정 3-view 필요), 같은
+window 안에서 context와 겹치지 않게 seed 기반으로 3개를 뽑는다(window이 너무 짧으면
+window 밖까지 허용).
 
 예상 결과:
 - output_dir/<scene>/<N>view_seed0/{summary.json, visibility.json, pairwise_overlap.csv}
@@ -34,10 +49,64 @@ VIEW_COUNTS = [2, 4, 8, 12]
 NUM_TARGET = 3
 MIN_FRAMES = 60  # 12-view 후보를 뽑기에 너무 짧은 scene 제외
 SEED = 0
+MAX_CONTEXT_GAP = 50  # boundedv2_360.yaml의 max_distance_between_context_views(공식값)
+BLENDER_TO_OPENCV = np.diag([1.0, -1.0, -1.0, 1.0])
 
 
 def list_scenes() -> list[str]:
     return sorted(p.name for p in DL3DV_ROOT.iterdir() if p.is_dir())
+
+
+def camera_center(meta: dict, idx: int, undo_applied_transform: bool = True) -> np.ndarray:
+    """c2w[:3,3]이 곧 world 좌표계에서의 카메라 위치다 — R,t로 분해할 필요 없음."""
+
+    applied = np.eye(4)
+    if undo_applied_transform and "applied_transform" in meta:
+        applied[:3, :4] = np.array(meta["applied_transform"])
+    frame = meta["frames"][idx]
+    c2w = applied @ np.array(frame["transform_matrix"]) @ BLENDER_TO_OPENCV
+    return c2w[:3, 3]
+
+
+def farthest_point_sample(positions: np.ndarray, npoint: int) -> list[int]:
+    """DepthSplat `view_sampler_bounded_v2.py::farthest_point_sample()`을 numpy/단일 배치로
+    재현. centroid에서 가장 먼 점부터 시작해, 매번 이미 뽑힌 집합에서 가장 먼 점을 추가한다."""
+
+    n = positions.shape[0]
+    distance = np.full(n, 1e10)
+    centroid = positions.mean(axis=0)
+    farthest = int(np.argmax(np.sum((positions - centroid) ** 2, axis=1)))
+    selected: list[int] = []
+    for _ in range(npoint):
+        selected.append(farthest)
+        dist = np.sum((positions - positions[farthest]) ** 2, axis=1)
+        mask = dist < distance
+        distance[mask] = dist[mask]
+        farthest = int(np.argmax(distance))
+    return selected
+
+
+def select_view_candidates(
+    meta: dict, num_frames: int, view_count: int, seed: int = SEED
+) -> tuple[list[int], list[int]] | tuple[None, None]:
+    """DepthSplat test-time 알고리즘 재현: window=[0, MAX_CONTEXT_GAP] 안에서 farthest-point로
+    context를 뽑고, 같은 window 안에서 겹치지 않게 target을 시드 기반으로 뽑는다."""
+
+    window_right = min(MAX_CONTEXT_GAP, num_frames - 1)
+    window_indices = list(range(window_right + 1))
+    if view_count > len(window_indices):
+        return None, None
+
+    centers = np.stack([camera_center(meta, i) for i in window_indices])
+    fps_local = farthest_point_sample(centers, view_count)
+    context_indices = sorted(window_indices[i] for i in fps_local)
+
+    rng = np.random.default_rng(seed)
+    target_pool = [i for i in window_indices if i not in set(context_indices)]
+    if len(target_pool) < NUM_TARGET:
+        target_pool = [i for i in range(num_frames) if i not in set(context_indices)]
+    target_indices = sorted(rng.choice(target_pool, size=min(NUM_TARGET, len(target_pool)), replace=False).tolist())
+    return context_indices, target_indices
 
 
 def visibility_from_reconstruction(model_dir: Path) -> dict[str, set[str]]:
@@ -83,18 +152,12 @@ def main() -> int:
             print(f"[skip] {scene}: num_frames={num_frames} < {MIN_FRAMES}")
             continue
 
-        rng = np.random.default_rng(SEED)
-        # 비디오 프레임이라 인접 프레임끼리는 사실상 동일 view다 - 전체 범위에서 목표(target)
-        # 3장을 먼저 고정하고, 나머지 pool에서 context를 뽑는다(RE10K와 동일한 원칙).
-        target_indices = sorted(rng.choice(num_frames, size=NUM_TARGET, replace=False).tolist())
-        pool = [i for i in range(num_frames) if i not in set(target_indices)]
-
         for view_count in args.view_counts:
             label = f"{view_count}view_seed{SEED}"
-            if view_count > len(pool):
-                print(f"[skip] {scene} {label}: pool보다 view_count가 큼")
+            context_indices, target_indices = select_view_candidates(meta, num_frames, view_count)
+            if context_indices is None:
+                print(f"[skip] {scene} {label}: window(0~{MAX_CONTEXT_GAP})보다 view_count가 큼")
                 continue
-            context_indices = sorted(rng.choice(pool, size=view_count, replace=False).tolist())
 
             report_dir = output_root / scene / label
             workdir = colmap_root / scene / label
