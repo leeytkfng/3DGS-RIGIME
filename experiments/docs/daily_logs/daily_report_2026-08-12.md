@@ -124,24 +124,42 @@ MVSplat은 view가 늘수록 refinement 효과가 폭발적으로 커지는데(-
 
 **DL3DV view 선택 수정**: DepthSplat 실제 test-time 알고리즘(`view_sampler_bounded_v2.py`: window=[0,50] 고정 + farthest-point sampling, 전체 영상 랜덤 아님)을 그대로 재현하도록 `generate_dl3dv_view_overlap.py`를 재작성. 25 scene 재실행 결과 4-view zero-overlap 비율이 **56%(14/25) → 4%(1/25)**로 급감, median overlap 0.000→0.615 — 오늘 오후에 세웠던 가설(우리 선택 방식 탓)이 맞았다. 결과는 `dl3dv_overlap_v2/`(기존 `dl3dv_overlap/`은 동시에 돌던 DepthSplat 스케일업이 읽고 있어서 보존).
 
+## 11. Vanilla3DGS 일반 경로 연결 + C1-a 첫 파일럿 (하루 마무리)
+
+**Vanilla3DGS "일반"(COLMAP/random init, warm-start 아님) 경로를 RE10K/DL3DV에 연결**: `_colmap_init_from_loaded_views()` 추가 — 이미 메모리에 로드된 RE10K/DL3DV view를 임시 디렉토리에 써서 known-pose COLMAP triangulation을 돌린다(overlap 스크립트들과 같은 공용 코어 재사용). RE10K 12-view에서 `init_source=colmap_sfm`(593 point)으로 15초 만에 20.9→28.4dB로 정상 학습 확인, RE10K 4-view/DL3DV 8-view는 random_sphere_fallback 경로도 정상 작동 확인. MVSplat 쪽은 `mvsplat_re10k_runner.py`가 이미 이 역할(추론 전용)을 하고 있어 추가 작업 불필요. **이걸로 C1-a(진짜 Regime Map) 착수의 마지막 관문이 열렸다.**
+
+**C1-a 첫 파일럿**: `run_re10k_c1a_pilot.py` 신규. RE10K 5 scene × 2/4/8/12-view, budget[1,10,60]s로 Vanilla3DGS(일반) vs MVSplat을 처음으로 정면 비교했다.
+
+| view | budget | MVSplat | Vanilla3DGS | 승자 |
+|---:|---:|---:|---:|---|
+| 2 | 1~60s | 21.7dB | 11.0~11.1dB | MVSplat 압승 |
+| 4 | 1~60s | 16.3dB | 7.3~7.8dB | MVSplat 압승 |
+| 8 | 1s | 16.5dB | 10.5dB | MVSplat |
+| 8 | 10~60s | 16.5dB | 16.8~17.0dB | Vanilla3DGS 역전 |
+| 12 | 1s | 17.1dB | 12.3dB | MVSplat |
+| 12 | 10s | 17.1dB | 17.1dB | 거의 동률 |
+| 12 | 60s | 17.1dB | **20.6dB** | Vanilla3DGS 완승 |
+
+**이게 §2 연구 질문("역전 경계는 무엇이 결정하는가")에 대한 첫 실측 증거다.** 2/4-view는 예산을 아무리 줘도 Vanilla3DGS가 못 따라잡는데, 8-view부터는 10초만 줘도 역전되고 12-view/60초에서는 크게 앞선다 — view 수와 시간 예산이 함께 늘 때 optimization이 이긴다는 패턴이 처음으로 실측됐다. 다만 seed 1회·scene 5개뿐인 파일럿이라 통계적 결론은 아니다(4-view Vanilla3DGS가 2-view보다 낮게 나온 것도 표본 부족일 가능성).
+
 ---
 
-## 종합 결론
+## 종합 결론 (오늘 하루 전체)
 
-1. §5.2/§5.4가 채워지면서 연구설계/프로토콜 카테고리가 사실상 완료됐다. 남은 미결은 §5.11/§5.12 동결뿐(C2 budget은 오늘 저녁 확정).
-2. densification on/off는 코드만이 아니라 실측 궤적으로 검증됐다 — C1-b 실험이 실제로 돌아갈 준비가 됐다.
-3. RE10K, DL3DV 모두에서 "2-view는 SfM이 완전히 죽는다"가 재현됐다 — DTU까지 포함해 세 데이터셋 전부에서 나온, sparse-view 자체의 구조적 성질이라는 증거. 논문 핵심 서사(H1)에 바로 쓸 수 있는 결과다.
-4. **V3(C1-b) 파이프라인이 DTU+RE10K+DL3DV, MVSplat+DepthSplat 두 모델 모두에서 완성·검증됐다.** RE10K/MVSplat에서 나온 "view 수가 늘수록 refinement 효과가 커진다"는 패턴이, DepthSplat(분포 안 모델)으로 반복해보니 사라졌다 — MVSplat의 분포 밖 사용이 진짜 원인이었다는 게 오늘 밤 확인됐다. 교란요인 하나를 완전히 풀어낸 것.
-5. A-1(가우스-뉴턴) 완료 후 사용자와 직접 분석한 결과, geometry uncertainty의 overlap-baseline confound도 "가짜 잔차"였음이 밝혀지고 정리됐다 — 논문에 바로 쓸 수 있는 문장까지 작성됨.
-6. DL3DV view 선택 방법론 문제도 오늘 안에 발견하고 수정까지 마쳤다 — 발견-가설-검증-수정이 하루 안에 한 바퀴 돌았다.
+1. §5.2/§5.4/§5.9(C2 budget)가 전부 채워지면서 연구설계/프로토콜 카테고리가 사실상 완료됐다. 남은 미결은 §5.11/§5.12 동결뿐.
+2. RE10K, DL3DV, DTU 세 데이터셋 전부에서 "2-view는 SfM이 완전히 죽는다"가 재현됐다 — sparse-view 자체의 구조적 성질이라는 증거, 논문 핵심 서사(H1)에 바로 쓸 수 있다.
+3. **V3(C1-b) 파이프라인이 DTU+RE10K+DL3DV, MVSplat+DepthSplat 두 모델 모두에서 완성·검증됐다.** RE10K/MVSplat에서 나온 "view 수가 늘수록 refinement 효과가 커진다"는 패턴이 DepthSplat(분포 안 모델)으로는 사라졌다 — MVSplat의 분포 밖 사용이 진짜 원인이었음을 확인, 교란요인 하나를 완전히 풀어냈다.
+4. A-1(가우스-뉴턴) 완료 후 사용자와 직접 분석해 geometry uncertainty의 overlap-baseline confound가 "가짜 잔차"(선형 통제의 함수형 오지정)였음을 밝히고, 논문에 바로 쓸 수 있는 문장까지 작성했다.
+5. DL3DV view 선택 방법론 문제를 발견-가설-검증-수정까지 하루 안에 끝냈다(4-view zero-overlap 56%→4%).
+6. **Vanilla3DGS 일반 경로가 RE10K/DL3DV에 연결되며 C1-a(진짜 Regime Map)의 마지막 관문이 열렸고, 첫 파일럿에서 바로 역전 패턴(view 8~12 + budget 10초 이상에서 optimization이 이김)이 나왔다.** 오늘 하루가 "배관 검증"에서 시작해 "본 실험의 첫 데이터"로 끝났다.
 
 ---
 
 ## 다음 실행 목록 (8/13로 이월)
 
-1. DepthSplat C1-b를 DL3DV v2(고친 view 선택)로 재실행 — 더 깨끗한 MVSplat-vs-DepthSplat 비교 확보
-2. Vanilla3DGS/MVSplat "일반"(non-warm-start) 경로를 RE10K main subset 256×256 입력으로 실제 실행 — COLMAP/random init 연결 필요, C1-a(진짜 Regime Map)로 가는 마지막 관문
+1. C1-a를 main subset 20 scene × seed 3회로 스케일업 — 오늘 파일럿(5 scene, seed 1회)의 역전 패턴이 통계적으로 유의한지 확인
+2. DepthSplat C1-b를 DL3DV v2(고친 view 선택)로 재실행 — 더 깨끗한 MVSplat-vs-DepthSplat 비교 확보
 3. renderer_equivalence_tolerance 최종 동결 — 여러 scene 실측 반영
-4. DepthSplat 정식 승격, co-visibility selector 연결
-5. SparseGS 통합 (0%, 아직 미착수)
-6. RE10K citation/license 문구, train/ split 39 scene 문서 정합성(2026-08-12 오전에 이미 수정함, 완료)
+4. DepthSplat 정식 승격(RE10K 체크포인트 다운로드 검토), co-visibility selector 연결
+5. SparseGS 통합 (0%, 아직 미착수) — 남은 가장 큰 구멍
+6. RE10K citation/license 문구, §5.11/§5.12 동결

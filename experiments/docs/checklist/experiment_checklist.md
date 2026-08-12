@@ -16,8 +16,8 @@
 - [x] C1-b / C2 통제 실험 축 설계 (개념 설계만 — 구현은 "모델/러너" 섹션 참고, 별개임)
 - [x] dense-view sanity 필요성 반영 및 실행
 - [x] main benchmark 해상도 = checkpoint 상속 원칙 확정
-- [x] §5.2 모델별 지원 view 수 표 완성 — 2026-08-12, MVSplat/DepthSplat 공식 config·README 기준으로 채움, `model_registry.py`의 `supports_views`도 동기화(MVSplat→`[2]`, DepthSplat→`[2,4]`). **아직 미커밋** (`git status`: overall.md, model_registry.py modified)
-- [x] §5.4 GPU-hour 예산 재계산 — 2026-08-12, manifest trajectory 수 × 실측 wall-clock 기반으로 재계산(약 186~250 GPU-hour). **아직 미커밋**
+- [x] §5.2 모델별 지원 view 수 표 완성 — 2026-08-12, MVSplat/DepthSplat 공식 config·README 기준으로 채움, `model_registry.py`의 `supports_views`도 동기화(MVSplat→`[2]`, DepthSplat→`[2,4]`).
+- [x] §5.4 GPU-hour 예산 재계산 — 2026-08-12, manifest trajectory 수 × 실측 wall-clock 기반으로 재계산, 이후 250 GPU-hour로 확정(아래 C2 budget 결정 항목 참고).
 - [ ] confidence 출력 열 — MVSplat/DepthSplat 둘 다 confidence/uncertainty 출력이 소스코드에 없음을 확인(grep 결과 0건). 표에는 "없음"으로 채워졌으나, 논문에서 이걸 어떻게 다룰지(대체 지표 필요한지) 결정 안 됨
 - [x] C2 budget 결정 — 2026-08-12. main phase/C1-b와 동일하게 단일 300s trajectory + `budget_snapshots=[1,10,60,300]`로 확정(근거: overall.md §5.9). `experiment_config.yaml`/`run_experiment.py`에 반영, manifest 재생성으로 확인(c2 row에 `max_budget_seconds`/`budget_snapshots` 필드 생김). §5.4 GPU-hour 합계도 186~250h 범위에서 **250h로 확정**
 - [ ] §5.11 조기 종료 규칙 동결 (미결 항목으로 문서에 이미 표시돼 있음)
@@ -46,11 +46,11 @@
 - [x] model_registry 구조 + batch driver 일반화
 - [x] DTU 공식 split 16 scan x 2-view x seed0 batch
 - [x] DTU scan1 2/4/8/12-view 통제 스모크 — Vanilla3DGS/MVSplat 둘 다 8개 run 전부 `status: ok` (`experiments/outputs_smoke_20260811/logs/batch_summary.json` 직접 확인)
-- [ ] DepthSplat probe -> 정식 runner 승격 (elapsed/wall_clock 로깅도 없어서 §5.4 GPU-hour 추정에 DepthSplat 실측치를 못 넣었음 — 승격 시 같이 고칠 것)
+- [x] DepthSplat probe -> 정식 runner 승격(부분) — 2026-08-12 밤, `runners/depthsplat_dl3dv_runner.py`가 wall_clock/test_psnr/gaussian_count를 protocol 스키마로 로깅하며 C1-b 파이프라인에 연결됨(§V3 참고). 다만 아직 DL3DV 전용(RE10K 체크포인트 미다운로드)이고 budget_checkpoint 등 full trajectory 로깅은 없음 — 완전한 "정식 runner"까지는 아님
 - [ ] SparseGS/FSGS 통합 — 코드 자체가 없음(`/data/Re-feem/code`에 sparse/fsgs 디렉토리 없음, 확인함)
-- [ ] RE10K `.torch` chunk를 정식 runner 입력으로 연결
-- [ ] Vanilla3DGS/MVSplat을 RE10K 256x256에서 실제로 실행 — outputs 디렉토리에 RE10K 관련 로그 0건(확인함)
-- [x] densification on/off CLI 추가 — 2026-08-12, `vanilla_3dgs_runner.py`에 `--densification {on,off}` 추가(off는 `refine_stop_iter=0` 강제), `run_experiment_batch.py`에도 pass-through 배선. DTU scan1 4-view 90s 실측으로 검증: on은 gaussians 313→516→799→2120(30/60/90s), off는 끝까지 313 고정. 로그 파일명에 `_densoff` suffix를 붙여 on/off 결과가 서로 덮어쓰지 않게 함. **아직 미커밋**
+- [x] RE10K `.torch` chunk를 정식 runner 입력으로 연결 — 2026-08-12, `core/re10k_dataset.py::load_views()`가 vanilla_3dgs_runner.py/mvsplat_re10k_runner.py 양쪽에서 실사용 중
+- [x] Vanilla3DGS/MVSplat을 RE10K 256x256에서 실제로 실행 — 2026-08-12 밤 완료. C1-b(warm-start) 20-scene × 4 view_count, C1-a 파일럿(일반 COLMAP init) 5-scene × 4 view_count, 둘 다 실측 로그 있음(아래 V3/C1-a 항목 참고)
+- [x] densification on/off CLI 추가 — 2026-08-12, `vanilla_3dgs_runner.py`에 `--densification {on,off}` 추가(off는 `refine_stop_iter=0` 강제), `run_experiment_batch.py`에도 pass-through 배선. DTU scan1 4-view 90s 실측으로 검증: on은 gaussians 313→516→799→2120(30/60/90s), off는 끝까지 313 고정. 로그 파일명에 `_densoff` suffix를 붙여 on/off 결과가 서로 덮어쓰지 않게 함.
 - [ ] co-visibility 기반 view selector 구현 — overlap 계산 도구(`generate_overlap.py`)는 있지만 "선택" 로직 자체가 없음(grep 0건)
 - [x] **V3/C1-b 파이프라인(메커니즘) 완성 + DTU로 end-to-end 검증** (2026-08-12):
   - [x] FF(MVSplat/DepthSplat) Gaussian → gsplat 포맷 변환기(`core/ff_gaussian_convert.py`) — covariance 고유분해→scale/quat, opacity inverse-sigmoid, harmonics 재배열. 합성 데이터 round-trip으로 검증(covariance 재구성 오차 최대 2.6e-6)
@@ -133,5 +133,7 @@
 6. ~~DepthSplat을 C1-b 파이프라인에 연결~~ ✅ (2026-08-12, 1개 scene으로 end-to-end 검증. 아래 새 항목으로 이어짐)
 7. ~~DL3DV view 선택을 DepthSplat 방식으로 재실행~~ ✅ (2026-08-12) — 가설 확인됨. 4-view zero-overlap 56%(14/25)→4%(1/25), median 0.000→0.615. 8/12-view도 개선. 2-view는 여전히 25개 전부 0(다른 데이터셋과 동일, 진짜 현상). 결과: `experiments/outputs/dl3dv_overlap_v2/`(기존 `dl3dv_overlap/`은 다른 작업이 읽고 있어 보존) — 앞으로 DL3DV는 v2 사용
 8. ~~Vanilla3DGS "일반"(non-warm-start) 경로를 RE10K/DL3DV에 연결~~ ✅ (2026-08-12 밤) — C1-a(진짜 Regime Map)로 가는 마지막 관문. `vanilla_3dgs_runner.py`에 `_colmap_init_from_loaded_views()` 추가(이미 메모리에 로드된 RE10K/DL3DV view를 임시 디렉토리에 써서 known-pose COLMAP triangulation — `generate_re10k_view_overlap.py`류와 같은 공용 코어 재사용), `--dataset re10k/dl3dv`의 "warm-start 필수" 제약 제거. 실측 검증: RE10K 12-view에서 `init_source=colmap_sfm`(593 point)으로 15초 만에 20.9→28.4dB로 정상 학습(4-view는 SfM point 부족으로 random_sphere_fallback, 이것도 의도된 정상 동작). DL3DV 8-view도 동작 확인(fallback 경로). MVSplat 쪽은 `mvsplat_re10k_runner.py`가 이미 이 역할(추론 전용, C1-b 아닌 C1-a용)을 하고 있어 추가 작업 없음 — **이제 RE10K에서 두 패러다임(Vanilla3DGS optimization / MVSplat feed-forward)을 같은 scene·view에서 다 돌릴 수 있어 C1-a 착수 가능**
-9. renderer_equivalence_tolerance 최종 동결(RE10K 20-scene 실측 반영)
-10. co-visibility selector 연결
+9. ~~C1-a 첫 파일럿 실행~~ ✅ (2026-08-12 밤, `run_re10k_c1a_pilot.py`) — RE10K 5 scene × 2/4/8/12-view, budget[1,10,60]s, Vanilla3DGS(일반 COLMAP init) vs MVSplat 정면 비교. **역전 패턴 확인됨**: 2/4-view는 예산과 무관하게 MVSplat 압승(21.7/16.3dB vs 7~11dB). 8-view부터 10초만 줘도 Vanilla3DGS가 역전(16.8 vs 16.5dB). 12-view/60s에서는 Vanilla3DGS가 크게 앞섬(20.6 vs 17.1dB). §2 연구 질문("역전 경계가 무엇으로 결정되는가")에 대한 첫 실측 증거 — view 수와 시간 예산이 함께 늘 때 optimization이 이긴다. **주의**: seed 1회·scene 5개뿐이라 파일럿 단계, 통계적 결론 아님(4-view Vanilla3DGS가 2-view보다 낮게 나온 것도 표본이 적어서일 가능성). 원본: `experiments/outputs/re10k_c1a_pilot/c1a_pilot_summary.json`
+10. renderer_equivalence_tolerance 최종 동결(RE10K 20-scene 실측 반영)
+11. co-visibility selector 연결
+12. C1-a를 main subset 20 scene × seed 3회로 스케일업(진짜 본 실험)
