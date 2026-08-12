@@ -132,6 +132,6 @@
 5. ~~DL3DV overlap 이식~~ ✅ (view 선택 방식 한계 있음, 아래 6번)
 6. ~~DepthSplat을 C1-b 파이프라인에 연결~~ ✅ (2026-08-12, 1개 scene으로 end-to-end 검증. 아래 새 항목으로 이어짐)
 7. ~~DL3DV view 선택을 DepthSplat 방식으로 재실행~~ ✅ (2026-08-12) — 가설 확인됨. 4-view zero-overlap 56%(14/25)→4%(1/25), median 0.000→0.615. 8/12-view도 개선. 2-view는 여전히 25개 전부 0(다른 데이터셋과 동일, 진짜 현상). 결과: `experiments/outputs/dl3dv_overlap_v2/`(기존 `dl3dv_overlap/`은 다른 작업이 읽고 있어 보존) — 앞으로 DL3DV는 v2 사용
-8. Vanilla3DGS/MVSplat "일반"(non-warm-start) 경로를 RE10K에 연결
+8. ~~Vanilla3DGS "일반"(non-warm-start) 경로를 RE10K/DL3DV에 연결~~ ✅ (2026-08-12 밤) — C1-a(진짜 Regime Map)로 가는 마지막 관문. `vanilla_3dgs_runner.py`에 `_colmap_init_from_loaded_views()` 추가(이미 메모리에 로드된 RE10K/DL3DV view를 임시 디렉토리에 써서 known-pose COLMAP triangulation — `generate_re10k_view_overlap.py`류와 같은 공용 코어 재사용), `--dataset re10k/dl3dv`의 "warm-start 필수" 제약 제거. 실측 검증: RE10K 12-view에서 `init_source=colmap_sfm`(593 point)으로 15초 만에 20.9→28.4dB로 정상 학습(4-view는 SfM point 부족으로 random_sphere_fallback, 이것도 의도된 정상 동작). DL3DV 8-view도 동작 확인(fallback 경로). MVSplat 쪽은 `mvsplat_re10k_runner.py`가 이미 이 역할(추론 전용, C1-b 아닌 C1-a용)을 하고 있어 추가 작업 없음 — **이제 RE10K에서 두 패러다임(Vanilla3DGS optimization / MVSplat feed-forward)을 같은 scene·view에서 다 돌릴 수 있어 C1-a 착수 가능**
 9. renderer_equivalence_tolerance 최종 동결(RE10K 20-scene 실측 반영)
 10. co-visibility selector 연결

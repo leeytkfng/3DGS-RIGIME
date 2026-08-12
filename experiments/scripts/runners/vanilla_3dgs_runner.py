@@ -34,7 +34,7 @@ from scipy.spatial import cKDTree
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "core"))
 
-from colmap_init import triangulate_sfm_points  # noqa: E402
+from colmap_init import CameraParams, triangulate_sfm_points, triangulate_sfm_points_from_cameras  # noqa: E402
 from dtu_dataset import estimate_scene_sphere, load_camera, load_scan  # noqa: E402
 from protocol_utils import budget_checkpoint, oracle_checkpoint  # noqa: E402
 
@@ -114,6 +114,32 @@ def _load_warm_start_params(checkpoint_path: Path, device: torch.device) -> tupl
     harmonics, opacities = raw["harmonics"][0], raw["opacities"][0]
     params = gaussians_to_gsplat_params(means, covariances, harmonics, opacities, device)
     return params, "ff_warm_start"
+
+
+def _colmap_init_from_loaded_views(train_views: list[dict], workdir: Path) -> tuple[np.ndarray, np.ndarray]:
+    """RE10K/DL3DV처럼 이미 메모리에 로드된 view(image/K/R/t/width/height)로 known-pose
+    COLMAP triangulation을 돌린다. DTU의 `triangulate_sfm_points()`와 달리 원본 이미지
+    파일을 다시 찾지 않고, `load_views()`가 만든(리사이즈까지 끝난) 이미지를 그대로
+    임시 디렉토리에 써서 쓴다 — `generate_re10k_view_overlap.py`/`generate_dl3dv_view_overlap.py`
+    가 쓰는 것과 같은 공용 코어(`triangulate_sfm_points_from_cameras`)를 재사용한다.
+    """
+
+    from PIL import Image
+
+    image_dir = workdir / "images"
+    image_dir.mkdir(parents=True, exist_ok=True)
+    image_names = []
+    camera_by_name: dict[str, CameraParams] = {}
+    for view in train_views:
+        name = f"{view['view_id']:04d}.png"
+        image_names.append(name)
+        image_uint8 = (np.clip(view["image"], 0.0, 1.0) * 255.0).astype(np.uint8)
+        Image.fromarray(image_uint8).save(image_dir / name)
+        camera_by_name[name] = CameraParams(
+            K=view["K"], R=view["R"], t=view["t"], width=view["width"], height=view["height"]
+        )
+
+    return triangulate_sfm_points_from_cameras(image_dir, image_names, camera_by_name, workdir)
 
 
 def _random_points_in_sphere(center: np.ndarray, radius: float, num_points: int, seed: int) -> tuple[np.ndarray, np.ndarray]:
@@ -210,15 +236,6 @@ def run(args: argparse.Namespace) -> None:
     target_shape = tuple(args.image_shape) if args.image_shape else None
 
     if args.dataset == "re10k":
-        # RE10K 경로는 지금 C1-b warm-start 전용이다. COLMAP/random init을 통한 일반 RE10K
-        # 학습(=checklist의 "Vanilla3DGS RE10K 256x256 input path")은 별도 항목으로 남아있고
-        # 여기서는 다루지 않는다 — scan_dir 기반 COLMAP triangulate가 DTU 전용이라 그대로
-        # 재사용할 수 없기 때문.
-        if not args.warm_start_checkpoint:
-            raise SystemExit(
-                "--dataset re10k는 지금 C1-b warm-start 전용이다. --warm-start-checkpoint를 "
-                "함께 줘야 한다 (일반 RE10K COLMAP/random init 경로는 아직 미구현)."
-            )
         from re10k_dataset import get_scene_item, load_views
 
         subset = json.loads(Path(args.re10k_subset_index).read_text())
@@ -237,16 +254,13 @@ def run(args: argparse.Namespace) -> None:
         # 없어서, context view 카메라 중심들의 산포로 간단히 scene scale을 근사한다
         # (optimizer LR 스케일링에만 쓰이므로 정밀할 필요는 없다).
         centers = np.stack([v["center"] for v in train_views])
-        radius = float(np.median(np.linalg.norm(centers - centers.mean(axis=0), axis=1))) or 1.0
+        center = centers.mean(axis=0)
+        radius = float(np.median(np.linalg.norm(centers - center, axis=1))) or 1.0
         print(f"[init] RE10K scene scale(centroid-median) radius={radius:.4f}")
     elif args.dataset == "dl3dv":
-        # RE10K와 같은 이유로 C1-b warm-start 전용. view 후보는 generate_dl3dv_view_overlap.py가
-        # 저장한 context/target을 그대로 재사용한다(overlap 계산에 쓴 것과 같은 view라야 함).
-        if not args.warm_start_checkpoint:
-            raise SystemExit(
-                "--dataset dl3dv는 지금 C1-b warm-start 전용이다. --warm-start-checkpoint를 "
-                "함께 줘야 한다 (일반 DL3DV COLMAP/random init 경로는 아직 미구현)."
-            )
+        # view 후보는 generate_dl3dv_view_overlap.py가 저장한 context/target을 그대로
+        # 재사용한다(overlap 계산에 쓴 것과 같은 view라야 함). warm-start와 COLMAP/random init
+        # 둘 다 지원(RE10K와 동일).
         from dl3dv_dataset import load_metadata, load_views
 
         overlap_summary = json.loads(Path(args.dl3dv_overlap_summary).read_text())
@@ -262,7 +276,8 @@ def run(args: argparse.Namespace) -> None:
         test_views = load_views(scene_dir, meta, test_ids, target_shape=target_shape)
 
         centers = np.stack([v["center"] for v in train_views])
-        radius = float(np.median(np.linalg.norm(centers - centers.mean(axis=0), axis=1))) or 1.0
+        center = centers.mean(axis=0)
+        radius = float(np.median(np.linalg.norm(centers - center, axis=1))) or 1.0
         print(f"[init] DL3DV scene scale(centroid-median) radius={radius:.4f}")
     else:
         if not args.scan_dir:
@@ -296,7 +311,14 @@ def run(args: argparse.Namespace) -> None:
         )
     else:
         colmap_workdir = Path(args.output_dir) / "colmap_work" / args.scene / f"{args.view_count}view_seed{args.seed}"
-        sfm_points, sfm_colors = triangulate_sfm_points(scan_dir, train_ids, colmap_workdir)
+        if args.dataset == "dtu":
+            sfm_points, sfm_colors = triangulate_sfm_points(scan_dir, train_ids, colmap_workdir)
+        else:
+            # RE10K/DL3DV: 이미 메모리에 로드된 train_views(image/K/R/t)를 그대로 임시
+            # 디렉토리에 써서 known-pose triangulation을 돌린다 — generate_re10k_view_overlap.py/
+            # generate_dl3dv_view_overlap.py와 같은 공용 코어(triangulate_sfm_points_from_cameras)
+            # 를 재사용한다.
+            sfm_points, sfm_colors = _colmap_init_from_loaded_views(train_views, colmap_workdir)
         if sfm_points.shape[0] >= MIN_SFM_POINTS:
             init_source = "colmap_sfm"
             points, colors = sfm_points, sfm_colors
