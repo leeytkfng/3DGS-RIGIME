@@ -239,6 +239,31 @@ def run(args: argparse.Namespace) -> None:
         centers = np.stack([v["center"] for v in train_views])
         radius = float(np.median(np.linalg.norm(centers - centers.mean(axis=0), axis=1))) or 1.0
         print(f"[init] RE10K scene scale(centroid-median) radius={radius:.4f}")
+    elif args.dataset == "dl3dv":
+        # RE10K와 같은 이유로 C1-b warm-start 전용. view 후보는 generate_dl3dv_view_overlap.py가
+        # 저장한 context/target을 그대로 재사용한다(overlap 계산에 쓴 것과 같은 view라야 함).
+        if not args.warm_start_checkpoint:
+            raise SystemExit(
+                "--dataset dl3dv는 지금 C1-b warm-start 전용이다. --warm-start-checkpoint를 "
+                "함께 줘야 한다 (일반 DL3DV COLMAP/random init 경로는 아직 미구현)."
+            )
+        from dl3dv_dataset import load_metadata, load_views
+
+        overlap_summary = json.loads(Path(args.dl3dv_overlap_summary).read_text())
+        row = next(
+            r for r in overlap_summary if r["scene"] == args.dl3dv_scene_key and r["view_count"] == args.view_count
+        )
+        train_ids, test_ids = row["context_indices"], row["target_indices"]
+        print(f"[data] DL3DV scene={args.dl3dv_scene_key} train(context)={train_ids} test(target)={test_ids}")
+
+        scene_dir = Path("/data/Re-feem/datasets/dl3dv") / args.dl3dv_scene_key
+        meta = load_metadata(scene_dir)
+        train_views = load_views(scene_dir, meta, train_ids, target_shape=target_shape)
+        test_views = load_views(scene_dir, meta, test_ids, target_shape=target_shape)
+
+        centers = np.stack([v["center"] for v in train_views])
+        radius = float(np.median(np.linalg.norm(centers - centers.mean(axis=0), axis=1))) or 1.0
+        print(f"[init] DL3DV scene scale(centroid-median) radius={radius:.4f}")
     else:
         if not args.scan_dir:
             raise SystemExit("--dataset dtu는 --scan-dir가 필요하다.")
@@ -307,9 +332,10 @@ def run(args: argparse.Namespace) -> None:
     checkpoints_dir.mkdir(parents=True, exist_ok=True)
     logs_dir.mkdir(parents=True, exist_ok=True)
 
-    if args.dataset == "re10k":
-        # DTU 분기는 view 선택에 쓴 rng를 셔플에도 이어서 쓰지만, re10k 분기는 view를 seed 기반
-        # rng로 뽑지 않으므로(§subset_index candidate 재사용) 셔플 전용 rng가 따로 필요하다.
+    if args.dataset in ("re10k", "dl3dv"):
+        # DTU 분기는 view 선택에 쓴 rng를 셔플에도 이어서 쓰지만, re10k/dl3dv 분기는 view를
+        # seed 기반 rng로 뽑지 않으므로(overlap summary의 candidate 재사용) 셔플 전용 rng가
+        # 따로 필요하다.
         rng = np.random.default_rng(args.seed)
 
     train_cams = [build_camera_tensors(v, device, args.pose_scale_factor) for v in train_views]
@@ -572,7 +598,7 @@ def _evaluate_and_checkpoint(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Vanilla 3DGS (gsplat) runner for a single DTU scan.")
-    parser.add_argument("--dataset", choices=["dtu", "re10k"], default="dtu")
+    parser.add_argument("--dataset", choices=["dtu", "re10k", "dl3dv"], default="dtu")
     parser.add_argument("--scan-dir", default=None, help="dataset=dtu일 때만 필요. e.g. /data/Re-feem/datasets/dtu/scan1")
     parser.add_argument("--scene", required=True, help="scene id used in logs, e.g. dtu_scan1")
     parser.add_argument(
@@ -581,6 +607,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="dataset=re10k일 때만 사용. generate_re10k_main_subset.py 출력.",
     )
     parser.add_argument("--re10k-scene-key", default=None, help="dataset=re10k일 때 필요. re10k_main_subset.json의 scene key.")
+    parser.add_argument(
+        "--dl3dv-overlap-summary",
+        default="experiments/outputs/dl3dv_overlap/all_scenes_summary.json",
+        help="dataset=dl3dv일 때만 사용. generate_dl3dv_view_overlap.py 출력.",
+    )
+    parser.add_argument("--dl3dv-scene-key", default=None, help="dataset=dl3dv일 때 필요. DL3DV scene 폴더명(hash).")
     parser.add_argument("--method", default="Vanilla3DGS")
     parser.add_argument("--experiment-id", default="regime-map-20260806")
     parser.add_argument("--view-count", type=int, default=8)

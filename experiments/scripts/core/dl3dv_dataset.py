@@ -26,6 +26,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
+from dtu_dataset import resize_and_crop  # 이름은 dtu_dataset이지만 dataset-agnostic 유틸(image+K만 받음)
+
 _BLENDER_TO_OPENCV = np.diag([1.0, -1.0, -1.0, 1.0])
 
 
@@ -46,10 +48,12 @@ def load_views(
     meta: dict,
     frame_indices: list[int],
     undo_applied_transform: bool = True,
+    target_shape: tuple[int, int] | None = None,
 ) -> list[dict[str, object]]:
     """`dtu_dataset.load_scan()`/`re10k_dataset.load_views()`와 같은 형태의 dict list.
 
-    frame_indices는 `meta["frames"]` 리스트 안의 위치(0-based)다.
+    frame_indices는 `meta["frames"]` 리스트 안의 위치(0-based)다. target_shape=(h_out,w_out)를
+    주면 `dtu_dataset.resize_and_crop()`으로 리사이즈한다(FF warm-start 비교용, RE10K와 동일 패턴).
     """
 
     store_w, store_h = meta["w"], meta["h"]
@@ -78,6 +82,10 @@ def load_views(
         R = w2c[:3, :3]
         t = w2c[:3, 3]
         center = -R.T @ t
+
+        if target_shape is not None:
+            image, K = resize_and_crop(image, K, target_shape)
+            height, width = image.shape[:2]
 
         views.append(
             {
