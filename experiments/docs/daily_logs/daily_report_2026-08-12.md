@@ -107,6 +107,23 @@ view 수가 늘수록 refinement 효과가 커지는 뚜렷한 패턴이 나왔�
 
 **DL3DV overlap 이식**: RE10K와 같은 COLMAP 기반 파이프라인을 DL3DV pilot 25 scene에 이식(`core/dl3dv_dataset.py`, `analysis/generate_dl3dv_view_overlap.py`). 카메라 변환은 DepthSplat 공식 변환 스크립트로 재현. 결과: 2-view는 25개 전부 overlap 0(세 번째 데이터셋에서도 재현), 그런데 **4-view도 14/25(56%)가 overlap 0**으로 RE10K보다 훨씬 나쁘게 나왔다. 원인을 파보니 RE10K는 MVSplat 공식 context/target index(근접 프레임 제약이 이미 반영됨)를 그대로 썼는데 DL3DV는 그런 공식 index가 없어서 전체 영상에서 순수 랜덤으로 뽑았기 때문 — DepthSplat 실제 알고리즘(`view_sampler_bounded_v2.py`)을 코드로 확인해보니 test 시점엔 영상 시작부터 고정 window 안에서 farthest-point 샘플링을 쓰지, 전체 영상 랜덤이 아니었다. 이 결과는 "DL3DV 자체 성질"이 아니라 "우리 선택 방식 탓"일 가능성이 커서, 공정한 비교로 쓰려면 재작업이 필요하다고 명시해뒀다.
 
+## 10. JᵀJ-overlap confound 재해석 + DepthSplat C1-b 연결 + DL3DV view 선택 수정 (밤 세션)
+
+**JᵀJ-overlap confound, A-1 완료 후 재해석**: 사용자가 가우스-뉴턴 학습을 끝내고 직접 분석에 참여. `corr(overlap, log(uncertainty))=+0.952`(raw, H1 기대와 반대 부호)를 baseline으로 선형 통제하니 +0.801까지만 줄어서 "다른 원인이 더 있나" 하고 `shared_points`(평균에 들어가는 점 개수) 가설을 세워 검증했으나 기각(partial corr +0.071, 무관). 알고 보니 baseline-uncertainty 관계가 선형이 아니라 거듭제곱(log-log corr -0.989)이라, 선형 통제가 애초에 잘못된 도구였음을 발견 — log(baseline)으로 다시 통제하니 +0.301로 크게 줄었다. **결론: 원래 가설(baseline 교란)이 맞았고, 첫 선형 통제의 함수형 오지정이 가짜 잔차를 만들었던 것.** 전체 유도·해석·논문 초안 문장은 `paper/paper_geometry_confound_analysis_2026-08-12.md`에, 재현 코드는 `geometry_uncertainty_figure.py::print_confound_analysis()`에 통합.
+
+**DepthSplat을 C1-b에 연결**: `runners/depthsplat_dl3dv_runner.py` 신규(MVSplat 러너와 같은 gaussians.pt/render_reference.pt 포맷). 로컬 체크포인트가 DL3DV 전용이라 DL3DV로 진행. 1 scene 검증: 렌더 등가성 gate 43~54dB(MVSplat의 35~42dB보다 정밀), warm-start baseline이 DepthSplat 자체 평가와 0.02dB 이내로 일치.
+
+**DepthSplat C1-b 25-scene 스케일업 — 오늘의 핵심 결과**:
+
+| 모델/데이터셋 | 2-view delta | 4-view delta | off 평균(2→4-view) |
+|---|---:|---:|---|
+| MVSplat/RE10K(4-view는 분포 밖) | -0.14dB | **+3.67dB** | 25.4→**20.2dB**(나빠짐) |
+| DepthSplat/DL3DV(둘 다 분포 안) | +0.10dB | +0.15dB | 10.9→**17.0dB**(좋아짐) |
+
+MVSplat은 view가 늘수록 refinement 효과가 폭발적으로 커지는데(-0.14→+3.67) DepthSplat(분포 안)은 거의 그대로다(+0.10→+0.15). off(FF 단독) 점수 자체도 MVSplat은 view 늘수록 나빠지고 DepthSplat은 좋아진다. **오전에 나온 "view 수 효과"가 사실은 "MVSplat이 분포 밖에서 무너지는 걸 refinement가 복구하는 효과"였다는 가설이 확인됐다.** 단, 모델도 데이터셋도 다르고 DL3DV view 선택은 v1(수정 전)이라 완전히 깨끗한 비교는 아니다.
+
+**DL3DV view 선택 수정**: DepthSplat 실제 test-time 알고리즘(`view_sampler_bounded_v2.py`: window=[0,50] 고정 + farthest-point sampling, 전체 영상 랜덤 아님)을 그대로 재현하도록 `generate_dl3dv_view_overlap.py`를 재작성. 25 scene 재실행 결과 4-view zero-overlap 비율이 **56%(14/25) → 4%(1/25)**로 급감, median overlap 0.000→0.615 — 오늘 오후에 세웠던 가설(우리 선택 방식 탓)이 맞았다. 결과는 `dl3dv_overlap_v2/`(기존 `dl3dv_overlap/`은 동시에 돌던 DepthSplat 스케일업이 읽고 있어서 보존).
+
 ---
 
 ## 종합 결론
@@ -114,16 +131,17 @@ view 수가 늘수록 refinement 효과가 커지는 뚜렷한 패턴이 나왔�
 1. §5.2/§5.4가 채워지면서 연구설계/프로토콜 카테고리가 사실상 완료됐다. 남은 미결은 §5.11/§5.12 동결뿐(C2 budget은 오늘 저녁 확정).
 2. densification on/off는 코드만이 아니라 실측 궤적으로 검증됐다 — C1-b 실험이 실제로 돌아갈 준비가 됐다.
 3. RE10K, DL3DV 모두에서 "2-view는 SfM이 완전히 죽는다"가 재현됐다 — DTU까지 포함해 세 데이터셋 전부에서 나온, sparse-view 자체의 구조적 성질이라는 증거. 논문 핵심 서사(H1)에 바로 쓸 수 있는 결과다.
-4. **V3(C1-b) 파이프라인이 DTU+RE10K에서 완성·검증되고, RE10K는 2/4/8/12-view 전체 20-scene 스케일까지 실측이 끝났다.** view 수가 늘수록 refinement 효과가 커지는 뚜렷한 패턴을 얻었지만, MVSplat의 분포 밖 사용(4/8/12-view)이라는 교란요인이 섞여 있어 "순수한 view-count 효과"라고 바로 주장할 수 없다는 것도 함께 확인했다 — 다음 단계(DepthSplat 연결)가 이 교란요인을 푸는 열쇠다.
-5. DL3DV로도 overlap 파이프라인을 이식하면서, "공식 index가 없는 데이터셋에서 view를 어떻게 뽑아야 공정한가"라는 방법론적 문제를 하나 더 발견했다 — RE10K에서는 운 좋게 공식 index가 있어서 안 겪었던 문제.
+4. **V3(C1-b) 파이프라인이 DTU+RE10K+DL3DV, MVSplat+DepthSplat 두 모델 모두에서 완성·검증됐다.** RE10K/MVSplat에서 나온 "view 수가 늘수록 refinement 효과가 커진다"는 패턴이, DepthSplat(분포 안 모델)으로 반복해보니 사라졌다 — MVSplat의 분포 밖 사용이 진짜 원인이었다는 게 오늘 밤 확인됐다. 교란요인 하나를 완전히 풀어낸 것.
+5. A-1(가우스-뉴턴) 완료 후 사용자와 직접 분석한 결과, geometry uncertainty의 overlap-baseline confound도 "가짜 잔차"였음이 밝혀지고 정리됐다 — 논문에 바로 쓸 수 있는 문장까지 작성됨.
+6. DL3DV view 선택 방법론 문제도 오늘 안에 발견하고 수정까지 마쳤다 — 발견-가설-검증-수정이 하루 안에 한 바퀴 돌았다.
 
 ---
 
 ## 다음 실행 목록 (8/13로 이월)
 
-1. **DepthSplat을 C1-b 파이프라인에 연결** — 오늘 나온 view-count 효과에서 MVSplat의 분포 밖 사용이라는 교란요인을 분리하기 위한 최우선 작업
-2. Vanilla3DGS/MVSplat "일반"(non-warm-start) 경로를 RE10K main subset 256×256 입력으로 실제 실행 — COLMAP/random init 연결 필요
-3. renderer_equivalence_tolerance 최종 동결 — 20-scene × 4 view_count 실측 반영
-4. DL3DV view 선택을 DepthSplat 공식 알고리즘(고정 window + farthest-point)으로 재작업
-5. DepthSplat 정식 승격, co-visibility selector 연결
+1. DepthSplat C1-b를 DL3DV v2(고친 view 선택)로 재실행 — 더 깨끗한 MVSplat-vs-DepthSplat 비교 확보
+2. Vanilla3DGS/MVSplat "일반"(non-warm-start) 경로를 RE10K main subset 256×256 입력으로 실제 실행 — COLMAP/random init 연결 필요, C1-a(진짜 Regime Map)로 가는 마지막 관문
+3. renderer_equivalence_tolerance 최종 동결 — 여러 scene 실측 반영
+4. DepthSplat 정식 승격, co-visibility selector 연결
+5. SparseGS 통합 (0%, 아직 미착수)
 6. RE10K citation/license 문구, train/ split 39 scene 문서 정합성(2026-08-12 오전에 이미 수정함, 완료)

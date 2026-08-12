@@ -75,7 +75,16 @@
 
     view 수가 늘수록 refinement 효과가 커지는 뚜렷한 단조 증가 패턴. **다만 중요한 교란요인이 있다**: §5.2에서 이미 확인했듯 MVSplat은 2-view 전용 학습이라 4/8/12-view는 분포 밖 사용이다. 실제로 off(=MVSplat 단독) 평균 PSNR이 2-view 25.4→4-view 20.2→8-view 19.0으로 **view가 늘수록 오히려 나빠진다**(분포 밖이라 혼란스러워하는 것으로 해석). 즉 "12-view에서 refinement가 +10.5dB나 개선"은 순수하게 "view가 많을수록 refinement가 좋다"가 아니라 상당 부분 **"MVSplat이 분포 밖에서 만든 나쁜 초기값을 gradient 기반 refinement가 복구·역전시킨 효과"**로 봐야 한다. 그래도 흥미로운 점: on_60s 절대값 자체도 view가 늘수록 계속 좋아진다(25.2→23.9→26.7→29.9dB) — refinement가 "나쁜 초기값 복구"만 하는 게 아니라 view 수가 늘면서 생기는 추가 정보(더 많은 photometric constraint)까지 실제로 활용한다는 뜻. 원본: `experiments/outputs/re10k_c1b_all_viewcounts_summary.json`
   - [x] **DepthSplat을 C1-b에 연결** (2026-08-12) — MVSplat OOD 교란요인을 분리하기 위한 작업. 로컬에 있는 DepthSplat 체크포인트가 DL3DV 전용(`depthsplat-gs-base-dl3dv-256x448-randview2-6`, RE10K+DL3DV 혼합 체크포인트는 아직 미다운로드)이라 RE10K 대신 DL3DV로 진행(오늘 이미 만든 DL3DV overlap 인프라 재사용). 신규: `runners/depthsplat_dl3dv_runner.py`(MVSplat용과 같은 gaussians.pt/render_reference.pt 포맷 저장), `core/dl3dv_dataset.py::load_views()`에 `target_shape` 리사이즈 지원 추가, `vanilla_3dgs_runner.py`에 `--dataset dl3dv` 분기 추가. DL3DV pilot 1 scene(2-view)으로 end-to-end 검증: 렌더 등가성 gate 43~54dB로 PASS(MVSplat의 35~42dB보다도 정밀), warm-start baseline PSNR 9.49dB가 DepthSplat 자체 평가(9.51dB)와 거의 일치. refinement 20s 후 8.94dB로 소폭 하락 — 이 1개 scene만으로는 아직 결론 못 냄
-  - [ ] **남은 일**: DepthSplat C1-b를 DL3DV pilot 25 scene × 2/4-view(분포 안 범위)로 스케일업해서 MVSplat 결과와 비교 — 이게 있어야 "view 수 효과 vs 분포 밖 효과" 교란요인이 실제로 분리되는지 알 수 있음(8/12-view는 DepthSplat도 분포 밖이라 참고용). renderer_equivalence_tolerance 최종 동결(20-scene 실측 반영), RE10K 일반 COLMAP/random-init 경로(warm-start 아닌 케이스)는 여전히 미구현
+  - [x] **DepthSplat C1-b 25-scene 스케일업 완료, 교란요인 가설 확인됨** (2026-08-12, `run_dl3dv_c1b_scaleup.py`). 2/4-view(DepthSplat 분포 안) 결과:
+
+    | 모델/데이터셋 | 2-view delta | 4-view delta | off 평균(2→4-view) |
+    |---|---:|---:|---|
+    | MVSplat/RE10K(4-view는 분포 밖) | -0.14dB | **+3.67dB** | 25.4→**20.2dB**(나빠짐) |
+    | DepthSplat/DL3DV(둘 다 분포 안) | +0.10dB | +0.15dB | 10.9→**17.0dB**(좋아짐) |
+
+    MVSplat은 2→4-view에서 refinement 효과가 폭발적으로 커지는데(-0.14→+3.67) DepthSplat(분포 안)은 거의 그대로다(+0.10→+0.15). 결정적으로 off(FF 단독) 점수 자체가 MVSplat은 view가 늘수록 나빠지고(분포 밖이라 혼란) DepthSplat은 좋아진다(정상). **결론: 아침에 나온 "view 수가 늘수록 refinement 효과가 커진다"는 현상은 view-count 자체의 효과가 아니라 MVSplat이 분포 밖에서 무너지는 걸 refinement가 복구하는 효과였다는 가설이 확인됨.** 원본: `experiments/outputs/dl3dv_c1b_scaleup_{2,4}view/c1b_scaleup_summary.json`
+    - **한계(정직하게 기록)**: 모델도 다르고(MVSplat vs DepthSplat) 데이터셋도 다름(RE10K vs DL3DV), 게다가 이 스케일업은 DL3DV view 선택 v1(방금 v2로 고친 것 이전 버전)로 돌아간 것 — 완벽한 단일 변수 통제 비교는 아님. v2로 재실행하면 더 깨끗한 비교가 될 것
+  - [ ] **남은 일**: DL3DV v2(고친 view 선택)로 DepthSplat C1-b 재실행해서 더 깨끗한 비교 확보. renderer_equivalence_tolerance 최종 동결(20-scene 실측 반영), RE10K 일반 COLMAP/random-init 경로(warm-start 아닌 케이스)는 여전히 미구현
 
 ## 검증 결과
 
@@ -122,7 +131,7 @@
 4. ~~C2 budget 결정~~ ✅
 5. ~~DL3DV overlap 이식~~ ✅ (view 선택 방식 한계 있음, 아래 6번)
 6. ~~DepthSplat을 C1-b 파이프라인에 연결~~ ✅ (2026-08-12, 1개 scene으로 end-to-end 검증. 아래 새 항목으로 이어짐)
-7. **DL3DV view 선택을 DepthSplat 거리 제약(고정 window + farthest-point 샘플링) 반영해서 재실행** — 지금 결과(4-view 56% overlap 0)는 우리 선택 방식 탓일 가능성 큼, 공정한 비교 아님
+7. ~~DL3DV view 선택을 DepthSplat 방식으로 재실행~~ ✅ (2026-08-12) — 가설 확인됨. 4-view zero-overlap 56%(14/25)→4%(1/25), median 0.000→0.615. 8/12-view도 개선. 2-view는 여전히 25개 전부 0(다른 데이터셋과 동일, 진짜 현상). 결과: `experiments/outputs/dl3dv_overlap_v2/`(기존 `dl3dv_overlap/`은 다른 작업이 읽고 있어 보존) — 앞으로 DL3DV는 v2 사용
 8. Vanilla3DGS/MVSplat "일반"(non-warm-start) 경로를 RE10K에 연결
 9. renderer_equivalence_tolerance 최종 동결(RE10K 20-scene 실측 반영)
 10. co-visibility selector 연결
