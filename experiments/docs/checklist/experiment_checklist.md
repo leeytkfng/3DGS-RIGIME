@@ -19,7 +19,7 @@
 - [x] §5.2 모델별 지원 view 수 표 완성 — 2026-08-12, MVSplat/DepthSplat 공식 config·README 기준으로 채움, `model_registry.py`의 `supports_views`도 동기화(MVSplat→`[2]`, DepthSplat→`[2,4]`). **아직 미커밋** (`git status`: overall.md, model_registry.py modified)
 - [x] §5.4 GPU-hour 예산 재계산 — 2026-08-12, manifest trajectory 수 × 실측 wall-clock 기반으로 재계산(약 186~250 GPU-hour). **아직 미커밋**
 - [ ] confidence 출력 열 — MVSplat/DepthSplat 둘 다 confidence/uncertainty 출력이 소스코드에 없음을 확인(grep 결과 0건). 표에는 "없음"으로 채워졌으나, 논문에서 이걸 어떻게 다룰지(대체 지표 필요한지) 결정 안 됨
-- [ ] C2 depth noise/scale bias의 **budget_seconds가 manifest에 아예 없음** — 2026-08-12 발견. 60s 가정 시 GPU-hour 18.1, 300s 가정 시 82.1로 4배 차이 남. 파일럿 전 필수 동결 항목
+- [x] C2 budget 결정 — 2026-08-12. main phase/C1-b와 동일하게 단일 300s trajectory + `budget_snapshots=[1,10,60,300]`로 확정(근거: overall.md §5.9). `experiment_config.yaml`/`run_experiment.py`에 반영, manifest 재생성으로 확인(c2 row에 `max_budget_seconds`/`budget_snapshots` 필드 생김). §5.4 GPU-hour 합계도 186~250h 범위에서 **250h로 확정**
 - [ ] §5.11 조기 종료 규칙 동결 (미결 항목으로 문서에 이미 표시돼 있음)
 - [ ] §5.12 통계 분석 계획 최종 동결
 

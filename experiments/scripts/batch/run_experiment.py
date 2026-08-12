@@ -145,6 +145,8 @@ def build_experiment_plan(config: dict) -> list[dict]:
                     "depth_perturbation": "iid_multiplicative",
                     "sigma": noise_sigma,
                     "claim_scope": c2_cfg.get("claim_scope", "sensitivity_analysis"),
+                    "max_budget_seconds": c2_cfg.get("max_budget_seconds"),
+                    "budget_snapshots": c2_cfg.get("budget_snapshots"),
                     "data_root": runtime_cfg.get("data_root", "/data"),
                 }
             )
@@ -164,6 +166,8 @@ def build_experiment_plan(config: dict) -> list[dict]:
                     "depth_perturbation": "global_scale_bias",
                     "scale": scale,
                     "claim_scope": c2_cfg.get("claim_scope", "sensitivity_analysis"),
+                    "max_budget_seconds": c2_cfg.get("max_budget_seconds"),
+                    "budget_snapshots": c2_cfg.get("budget_snapshots"),
                     "data_root": runtime_cfg.get("data_root", "/data"),
                 }
             )

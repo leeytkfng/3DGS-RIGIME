@@ -103,6 +103,10 @@ c2:
   depth_noise_levels: [0.0, 0.01, 0.03, 0.05, 0.10]
   global_scale_bias: [0.9, 0.95, 1.0, 1.05, 1.1]
   claim_scope: sensitivity_analysis
+  # 2026-08-12: main phase/C1-b와 동일한 단일 300s trajectory + budget_snapshots.
+  # 근거는 overall.md §5.9 참고 (budget_seconds가 원래 매니페스트에 빠져 있던 항목).
+  max_budget_seconds: 300
+  budget_snapshots: [1, 10, 60, 300]
   representative_conditions:
     - 2view_low_overlap
     - 4view_low_overlap

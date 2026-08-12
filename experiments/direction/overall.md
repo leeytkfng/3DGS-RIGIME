@@ -175,11 +175,11 @@ CUDA 최초 컴파일은 제외하되 모든 방법을 같은 조건으로 warm-
 | main, feed-forward(MVSplat+DepthSplat) | 960 | 20 scene × 3 seed × 4 view × 2 overlap × 2 method | MVSplat 실측 6.36~7.98s(DTU, 동일 256×256) 평균 ≈7s를 두 모델에 임시 적용(DepthSplat은 monodepth 백본이 있어 과소추정 가능성 있음, 미실측) | 1.9 GPU-hour |
 | C1-b, refinement=on | 960 | FF 초기값 고정 후 재최적화, main-optimization과 같은 trajectory 구조로 가정 | ≈308s(위와 동일 가정) | 82.1 GPU-hour |
 | C1-b, refinement=off | 960 | FF 출력을 그대로 렌더 등가성 gate만 통과시키는 평가 전용 | ≈7.5s(추정, 실측 없음) | 2.0 GPU-hour |
-| C2 (depth noise + scale bias) | 960 | 8 external scene × 3 seed × 4 조건 × (5 noise + 5 scale) | **budget_seconds가 manifest에 아예 없음(미결정)** — 60s 가정 시 18.1 / 300s 가정 시 82.1 GPU-hour | 18.1~82.1 GPU-hour |
+| C2 (depth noise + scale bias) | 960 | 8 external scene × 3 seed × 4 조건 × (5 noise + 5 scale) | §5.9에서 main phase와 동일한 300s trajectory로 확정(2026-08-12) | 82.1 GPU-hour |
 
-**합계: 약 186~250 GPU-hour** (초기화·평가 오버헤드는 위 per-trajectory 추정에 이미 포함, 실패 재실행 여유는 별도 가산 필요).
+**합계: 약 250 GPU-hour** (초기화·평가 오버헤드는 위 per-trajectory 추정에 이미 포함, 실패 재실행 여유는 별도 가산 필요). 2026-08-12 이전에는 C2 budget 미정으로 186~250h 범위였으나, §5.9에서 main phase와 동일한 300s trajectory로 확정하며 상한(250h)으로 고정했다.
 
-결론: 최초 추정(200~300 GPU-hour)이 걱정했던 것과 달리 실측 기반 재계산도 대체로 같은 범위에 들어온다. 8/9 audit의 "2.4배" 우려는 budget을 trajectory로 접어 세면 해소된다(사실 audit 자신도 이미 이렇게 셌었다 — 2,880 "실제 optimization 실행"이라는 숫자 자체가 이 접힌 카운트였다). 범위가 좁혀지지 않는 핵심 원인은 **C2의 budget이 protocol에 아예 정의돼 있지 않다는 것**(4배 차이를 만드는 유일한 변수) — 파일럿 전에 반드시 결정해야 할 새 항목으로 §5.11 조기 종료 규칙과 함께 동결 대상에 추가한다. 그 외 가정: (a) SparseGS는 미구현이라 Vanilla3DGS와 같은 시간 프로파일로 가정, (b) DepthSplat 단독 실측 wall-clock 없음(probe 스크립트가 elapsed를 로깅하지 않음 — 정식 러너 승격 시 같이 고칠 것), (c) H200 병렬 실행으로 처리량이 늘지 않는다는 것은 이미 실측 확인됨(연산 병목)이므로 시간 단축 요인으로 넣지 않았다. 평균, 표준편차 또는 95% CI, **장면별 win rate**를 함께 보고한다.
+결론: 최초 추정(200~300 GPU-hour)이 걱정했던 것과 달리 실측 기반 재계산도 같은 범위(250h)에 들어온다. 8/9 audit의 "2.4배" 우려는 budget을 trajectory로 접어 세면 해소된다(사실 audit 자신도 이미 이렇게 셌었다 — 2,880 "실제 optimization 실행"이라는 숫자 자체가 이 접힌 카운트였다). 그 외 가정: (a) SparseGS는 미구현이라 Vanilla3DGS와 같은 시간 프로파일로 가정, (b) DepthSplat 단독 실측 wall-clock 없음(probe 스크립트가 elapsed를 로깅하지 않음 — 정식 러너 승격 시 같이 고칠 것), (c) H200 병렬 실행으로 처리량이 늘지 않는다는 것은 이미 실측 확인됨(연산 병목)이므로 시간 단축 요인으로 넣지 않았다. 평균, 표준편차 또는 95% CI, **장면별 win rate**를 함께 보고한다.
 
 ### 5.5 Crossover 승패 판정 기준
 
@@ -225,6 +225,13 @@ Feed-forward Gaussian을 gsplat/standard 3DGS 표현으로 변환할 때 **중�
 **주장 수위 제한:** 본 개입은 현실의 모든 depth 오류를 재현하는 것이 아니라, **초기 depth uncertainty 증가가 refinement 동역학에 미치는 민감도를 통제된 조건에서 측정**하는 것이다. 실제 depth 오류는 물체 경계·textureless 영역에서 구조적으로 발생하므로, spatially correlated noise는 여유가 있을 때 추가한다. Vanilla 3DGS의 COLMAP 초기화는 dense depth를 직접 입력받지 않으므로 개입 트랙은 VGGT/DA3 계열 depth back-projection 초기화에서 수행한다.
 
 C2는 전체 실험 격자를 반복하지 않는다. 결과를 본 뒤 고르지 않도록 **파일럿 전에 대표 조건을 고정**한다: 최저 view–low overlap / 중간 view–low overlap / 중간 view–high overlap / 최고 view–high overlap. 12-view 미지원 시 최고 지원 view로 대체. DTU 5~8개 장면에서 깊게 분석하며, C1-b와 C2의 완성도를 selector보다 우선한다.
+
+**2026-08-12 budget 결정(§5.4 GPU-hour 재계산에서 발견된 미결 항목)**: C2 row에는 원래 `budget_seconds`가 없어서(매니페스트 생성 코드에 빠져 있었음) 별도 예산으로 새로 정의할지 고민이 있었으나, **main phase/C1-b와 동일하게 `budgets_seconds=[1,10,60,300]` 체크포인트를 가진 단일 300s trajectory로 통일**하기로 한다. 근거:
+
+1. 이미 존재하는 budget_snapshot 메커니즘을 그대로 재사용하므로 새 코드가 필요 없다.
+2. Sensitivity analysis의 목적 자체가 "depth noise 효과가 학습 진행에 따라 어떻게 변하는가"이므로, 한 시점만 보는 것보다 전체 궤적(1/10/60/300s)을 남기는 쪽이 정보량이 많다.
+3. 이 선택은 §5.4의 GPU-hour 추정에서 "C2 60s 가정 시 18.1h / 300s 가정 시 82.1h"로 4배 차이 나던 범위 중 **상한(300s, 82.1h)으로 확정**한다는 뜻이다 — 총 GPU-hour는 약 186h가 아니라 **약 250h**로 잡는다.
+4. C1-b warm-start에서 발견한 "opacity reset이 짧은 예산에서 비정상 초기값(우리 경우는 FF warm-start, C2는 perturbed-depth init)을 파괴할 수 있다"(§5.8 인접 발견)는 위험이 C2에도 그대로 적용될 수 있다 — C2 파일럿 때 같은 현상이 재현되는지 반드시 확인하고, 필요하면 C1-b와 동일하게 `reset_every`를 조정한다.
 
 ### 5.10 로깅 항목
 
