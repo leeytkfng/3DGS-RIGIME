@@ -64,7 +64,17 @@
   - **버그 발견·수정**: 스케일업 중 일부 scene에서 refinement 도중 PSNR이 26→6.7dB로 폭락하는 걸 발견. 원인은 gsplat `DefaultStrategy`의 opacity reset(`reset_every=3000`, "처음부터 학습" 가정)이 짧은 warm-start 예산(60s, iter~3000 근처) 안에서 걸리면 좋은 FF 초기값을 파괴하고 복구를 못 하는 것 — `--reset-every 1000000`(사실상 비활성화)으로 C1-b warm-start 경로에 한해 고치고 재확인(재현/해소 둘 다 실측 확인)
   - **결과(off vs on 60s, view_count=2, 17/20 scene 유효)**: 6개 개선(+0.11~+1.60dB), 11개 소폭 하락(-0.06~-1.84dB), 평균 delta **-0.14dB**(대체로 무승부에 가까움, scene마다 방향이 갈림). 3개 scene은 렌더 등가성 gate가 근소하게 미달(28.98~33.14dB, PSNR≥33dB 기준 대비)해서 refinement 자체를 스킵함 — DTU 1개 scene으로 잡았던 tolerance가 RE10K 20개 스케일에서는 경계선 케이스가 나온다는 뜻, 최종 tolerance 재검토 필요
   - 원본 데이터: `experiments/outputs/re10k_c1b_scaleup/c1b_scaleup_summary_full20.json`
-  - [ ] **남은 일**: 4/8/12-view 조건도 반복, DepthSplat도 같은 방식으로 연결, renderer_equivalence_tolerance 최종 동결(20-scene 실측 반영), RE10K 일반 COLMAP/random-init 경로(warm-start 아닌 케이스)는 여전히 미구현, scene 수가 적어(n=17) 통계적으로 유의한 결론은 아직 이름
+  - [x] **4/8/12-view까지 전부 완료** (2026-08-12 저녁). view_count별 결과(off vs on 60s, 20 scene):
+
+    | view_count | gate 통과 | 개선 | 하락 | 평균 delta |
+    |---:|---:|---:|---:|---:|
+    | 2 | 17/20 | 6 | 11 | -0.14dB |
+    | 4 | 20/20 | 18 | 2 | +3.67dB |
+    | 8 | 20/20 | 20 | 0 | +7.71dB |
+    | 12 | 20/20 | 20 | 0 | +10.47dB |
+
+    view 수가 늘수록 refinement 효과가 커지는 뚜렷한 단조 증가 패턴. **다만 중요한 교란요인이 있다**: §5.2에서 이미 확인했듯 MVSplat은 2-view 전용 학습이라 4/8/12-view는 분포 밖 사용이다. 실제로 off(=MVSplat 단독) 평균 PSNR이 2-view 25.4→4-view 20.2→8-view 19.0으로 **view가 늘수록 오히려 나빠진다**(분포 밖이라 혼란스러워하는 것으로 해석). 즉 "12-view에서 refinement가 +10.5dB나 개선"은 순수하게 "view가 많을수록 refinement가 좋다"가 아니라 상당 부분 **"MVSplat이 분포 밖에서 만든 나쁜 초기값을 gradient 기반 refinement가 복구·역전시킨 효과"**로 봐야 한다. 그래도 흥미로운 점: on_60s 절대값 자체도 view가 늘수록 계속 좋아진다(25.2→23.9→26.7→29.9dB) — refinement가 "나쁜 초기값 복구"만 하는 게 아니라 view 수가 늘면서 생기는 추가 정보(더 많은 photometric constraint)까지 실제로 활용한다는 뜻. 원본: `experiments/outputs/re10k_c1b_all_viewcounts_summary.json`
+  - [ ] **남은 일**: 이 교란요인을 분리하려면 분포 안(in-distribution)인 DepthSplat(2~6-view 학습)으로 같은 실험을 반복해야 함 — MVSplat 단독 결과로는 "view 수 자체의 효과"를 순수하게 주장할 수 없음. 그 외: renderer_equivalence_tolerance 최종 동결(20-scene 실측 반영), RE10K 일반 COLMAP/random-init 경로(warm-start 아닌 케이스)는 여전히 미구현
 
 ## 검증 결과
 
@@ -106,11 +116,11 @@
 
 1. ~~densification on/off CLI~~ ✅
 2. ~~RE10K main subset index + overlap bucket~~ ✅
-3. ~~V3(C1-b) 구현 + DTU/RE10K 20-scene 스케일업~~ ✅ (4/8/12-view는 백그라운드 진행 중)
+3. ~~V3(C1-b) 구현 + DTU/RE10K 20-scene 스케일업 (2/4/8/12-view 전부)~~ ✅
 4. ~~C2 budget 결정~~ ✅
-5. **V3 4/8/12-view 결과 정리** — 백그라운드 실행 완료되는 대로
-6. **DL3DV view 선택을 DepthSplat 거리 제약(20~50 프레임 이내) 반영해서 재실행** — 지금 결과(4-view 56% overlap 0)는 우리 선택 방식 탓일 가능성 큼, 공정한 비교 아님
-7. Vanilla3DGS/MVSplat "일반"(non-warm-start) 경로를 RE10K에 연결
-8. DepthSplat을 C1-b 파이프라인에 연결(지금은 MVSplat만)
+5. ~~DL3DV overlap 이식~~ ✅ (view 선택 방식 한계 있음, 아래 6번)
+6. **DepthSplat을 C1-b 파이프라인에 연결** — 지금 4/8/12-view 결과가 "view 수 자체 효과"인지 "MVSplat이 분포 밖이라 생기는 효과"인지 못 갈랐다. DepthSplat(2~6-view 학습, 분포 안)으로 같은 실험을 반복해야 이 교란요인을 분리할 수 있음 — **다음 우선순위 1순위로 격상**
+7. **DL3DV view 선택을 DepthSplat 거리 제약(고정 window + farthest-point 샘플링) 반영해서 재실행** — 지금 결과(4-view 56% overlap 0)는 우리 선택 방식 탓일 가능성 큼, 공정한 비교 아님
+8. Vanilla3DGS/MVSplat "일반"(non-warm-start) 경로를 RE10K에 연결
 9. renderer_equivalence_tolerance 최종 동결(RE10K 20-scene 실측 반영)
-10. DepthSplat 정식 승격, co-visibility selector 연결
+10. co-visibility selector 연결
