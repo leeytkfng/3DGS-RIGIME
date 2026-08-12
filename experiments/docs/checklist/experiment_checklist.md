@@ -32,7 +32,9 @@
 - [x] RE10K/DL3DV `SOURCE.md` 작성 — 2026-08-12: RE10K SOURCE.md의 "train split 없음" 오기 정정. 실제로 `train/`에 39 scene 존재(8/10 `re10k_subset.zip` 다운로드에 원래 딸려 온 것, `critical_path_2026-08-10.md`에 이미 기록돼 있었음). 데이터 자체는 문제없고 의도적 미사용 상태 — 문서만 안 맞았던 것
 - [x] RE10K main subset(20~30 scene) index 생성 — 2026-08-12, `generate_re10k_main_subset.py` 작성·실행. 로컬 114 scene ∩ MVSplat 공식 evaluation index(`assets/evaluation_index_re10k.json`, non-null 6,474건) ∩ frame수≥50 ∩ context/target 안 겹침 조건으로 96개 후보 중 seed=0으로 20개 결정론적 선정. 2-view는 공식 context/target 그대로, 4/8/12-view는 target(3-view, view_count 불문 고정)을 제외한 pool에서 seeded 생성. 출력: `experiments/outputs/re10k_main_subset/re10k_main_subset.json`. 검증: 20 scene × 4 view_count 전부 context/target 겹침 없음, index 범위 안(스크립트로 재확인). **부수 발견**: 공식 index 자체에 context/target이 겹치는 scene이 2개 있었음(`aadc1e2dc74fd644`, `cdf439b17a6a98d4`) — leakage 방지를 위해 main subset에서 제외
 - [x] RE10K 2/4/8/12-view candidate에 대한 overlap 계산 — 2026-08-12. `colmap_init.py`를 DTU 전용에서 데이터셋 무관 공용 코어(`triangulate_sfm_points_from_cameras`)로 리팩터(DTU 경로는 얇은 wrapper로 남겨 기존 동작 그대로 유지 — scan1 4-view 313 SfM point로 재검증). RE10K 전용 로더 `core/re10k_dataset.py`(`.torch` chunk에서 필요한 frame만 디스크로 풀고 정규화된 카메라를 픽셀 K로 변환) + `analysis/generate_re10k_view_overlap.py` 신규 작성. main subset 20 scene × 4 view_count = 80 combo 전부 COLMAP 실행 완료(`experiments/outputs/re10k_main_subset/overlap/all_scenes_summary.json`). **핵심 발견**: 2-view는 20 scene 전부 mean_overlap=0.000(SfM 매칭 0건) — DTU에서 봤던 "2-view SfM 붕괴"가 RE10K에서도 100% 재현됨(MVSplat 공식 2-view context가 SfM 매칭 목적이 아니라 wide-baseline NVS 목적으로 뽑혀서 그런 것으로 추정). 4/8/12-view는 정상 범위(median 0.80/0.55/0.52)
-- [x] RE10K/DL3DV용 overlap bucket (low/high threshold) 산출 — RE10K는 위 실측으로 완료(§5.3 stratify_thresholds_within_view_count 원칙대로 view_count별 median split): 4-view 0.804, 8-view 0.552, 12-view 0.524. 2-view는 분리 불가(전부 0). 결과: `experiments/outputs/re10k_main_subset/overlap/bucket_thresholds.json`. **DL3DV는 아직 미착수**
+- [x] RE10K/DL3DV용 overlap bucket (low/high threshold) 산출 — RE10K는 §5.3 stratify_thresholds_within_view_count 원칙대로 view_count별 median split: 4-view 0.804, 8-view 0.552, 12-view 0.524. 2-view는 분리 불가(전부 0). 결과: `experiments/outputs/re10k_main_subset/overlap/bucket_thresholds.json`.
+  - **DL3DV 이식 완료** (2026-08-12, `core/dl3dv_dataset.py` + `analysis/generate_dl3dv_view_overlap.py` 신규): 카메라 규약은 DepthSplat 공식 변환 스크립트(`convert_dl3dv_train.py`)로 재현(blender c2w → opencv w2c). pilot 25 scene × 4 view_count = 100 combo 실행. 결과: 2-view는 25개 전부 overlap 0(RE10K/DTU와 동일 패턴, 세 번째 데이터셋 재현). **4-view도 14/25(56%)가 overlap 0** — RE10K(4-view 전부 정상)보다 훨씬 나쁨. 8-view부터 전부 정상(median 0.288), 12-view median 0.220.
+  - **중요한 한계**: RE10K는 MVSplat 공식 context/target index(자기들 학습 시 쓰는 근접-프레임 제약이 이미 반영됨)를 그대로 썼지만, DL3DV는 그런 공식 index가 없어서 전체 250~400 프레임 중 순수 랜덤으로 뽑았다 — DepthSplat 자체 config(`boundedv2_360.yaml`)는 context view끼리 20~50 프레임 이내로 제한하는데 이 제약을 안 지켰다. 그래서 "4-view도 56%가 overlap 0"이라는 수치는 DL3DV 자체의 성질이라기보다 **우리 view 선택 방식이 DepthSplat 분포보다 더 넓게 퍼진 탓일 가능성이 큼** — 공정한 비교를 하려면 거리 제약을 반영해 재선정해야 함(다음 항목으로 기록)
 - [ ] RE10K citation/license 문구 논문용 정리
 
 ## 모델 / 러너
@@ -72,9 +74,9 @@
 - [x] MVSplat DTU zero-shot (4.8~11.8dB, OOD로 해석)
 - [x] DepthSplat DL3DV in-domain (2-view, 20.0dB)
 - [x] DTU scan1 2/4/8/12-view 통제 스모크 (2026-08-11, 위 항목과 동일 근거)
-- [ ] RE10K에서의 동일한 2/4/8/12-view 통제 스모크 — 로그 없음(확인함)
-- [ ] DL3DV에서의 동일한 통제 스모크 — 로그 없음(확인함)
-- [ ] RE10K/DL3DV용 overlap bucket (low/high threshold) 산출
+- [x] RE10K에서의 동일한 2/4/8/12-view 통제 스모크 — 2026-08-12, C1-b warm-start 경로로 2-view는 20 scene 전부, 4-view도 진행 중(8/12-view 대기). MVSplat "일반"(non-warm-start) 경로는 아직 없음(별도 항목)
+- [ ] DL3DV에서의 동일한 통제 스모크 — overlap 계산까지만 완료(아래), Vanilla3DGS/MVSplat 실행은 아직 없음
+- [x] RE10K/DL3DV용 overlap bucket (low/high threshold) 산출 — 위 "모델/러너" 섹션 참고(중복 추적)
 
 ## 분석 / 이론
 
@@ -99,10 +101,15 @@
 
 논문에 쓸 결과 생산 이전, 파일럿 직전 단계라는 평가는 유효함.
 
-## 다음 우선순위 (2026-08-12 기준 합의된 순서)
+## 다음 우선순위 (2026-08-12 저녁 기준, 1~4 완료로 갱신)
 
-1. densification on/off CLI 추가 — 제일 싸게 끝남
-2. RE10K main subset index + 2/4/8/12-view candidate + overlap bucket — DTU 패턴 이식, V1/V3 둘 다의 선행조건
-3. V3(C1-b) 구현 — FF→3DGS 변환기, 렌더 등가성 gate, warm-start, refinement loop
-4. C2 budget 결정 (§5.4 GPU-hour 확정의 유일한 미결 변수)
-5. DepthSplat 정식 승격, co-visibility selector 연결, SOURCE.md/표 정리
+1. ~~densification on/off CLI~~ ✅
+2. ~~RE10K main subset index + overlap bucket~~ ✅
+3. ~~V3(C1-b) 구현 + DTU/RE10K 20-scene 스케일업~~ ✅ (4/8/12-view는 백그라운드 진행 중)
+4. ~~C2 budget 결정~~ ✅
+5. **V3 4/8/12-view 결과 정리** — 백그라운드 실행 완료되는 대로
+6. **DL3DV view 선택을 DepthSplat 거리 제약(20~50 프레임 이내) 반영해서 재실행** — 지금 결과(4-view 56% overlap 0)는 우리 선택 방식 탓일 가능성 큼, 공정한 비교 아님
+7. Vanilla3DGS/MVSplat "일반"(non-warm-start) 경로를 RE10K에 연결
+8. DepthSplat을 C1-b 파이프라인에 연결(지금은 MVSplat만)
+9. renderer_equivalence_tolerance 최종 동결(RE10K 20-scene 실측 반영)
+10. DepthSplat 정식 승격, co-visibility selector 연결
