@@ -20,8 +20,8 @@
 - [x] §5.4 GPU-hour 예산 재계산 — 2026-08-12, manifest trajectory 수 × 실측 wall-clock 기반으로 재계산, 이후 250 GPU-hour로 확정(아래 C2 budget 결정 항목 참고).
 - [ ] confidence 출력 열 — MVSplat/DepthSplat 둘 다 confidence/uncertainty 출력이 소스코드에 없음을 확인(grep 결과 0건). 표에는 "없음"으로 채워졌으나, 논문에서 이걸 어떻게 다룰지(대체 지표 필요한지) 결정 안 됨
 - [x] C2 budget 결정 — 2026-08-12. main phase/C1-b와 동일하게 단일 300s trajectory + `budget_snapshots=[1,10,60,300]`로 확정(근거: overall.md §5.9). `experiment_config.yaml`/`run_experiment.py`에 반영, manifest 재생성으로 확인(c2 row에 `max_budget_seconds`/`budget_snapshots` 필드 생김). §5.4 GPU-hour 합계도 186~250h 범위에서 **250h로 확정**
-- [ ] §5.11 조기 종료 규칙 동결 (미결 항목으로 문서에 이미 표시돼 있음)
-- [ ] §5.12 통계 분석 계획 최종 동결
+- [x] §5.11 조기 종료 규칙 동결 — 2026-08-13. 메인은 budget-end checkpoint 유지, 보조 실험(8·12-view만, 3~5 scene, Vanilla3DGS+FSGS, 촘촘한 snapshot으로 validation-view 조기종료 시뮬레이션)을 부록용으로 확정
+- [x] §5.12 통계 분석 계획 최종 동결 — 2026-08-13. scene cluster bootstrap(기존 구현 재확인) + Holm 보정 family를 방법쌍당 32비교로 정의 + **τ를 5-scene/seed×3 파일럿 실측으로 처음 확정**(2/4-view: 0.5dB, 8/12-view: 1.4dB — view_count별 seed 노이즈가 10배 이상 차이 나서 단일 τ 부적절). 이 과정에서 "8-view 역전" 서술이 pooled 평균의 착시였음을 발견·정정(아래 11번 참고)
 
 ## 데이터
 
@@ -119,7 +119,7 @@
 
 | 구간 | 대략 진행률 |
 |---|---:|
-| 연구 설계 / 프로토콜 | ~90% (핵심 12항목 중 미결 2개: 조기종료 규칙, 통계계획 동결. C2 budget은 2026-08-12 확정, seed/scene grid는 2026-08-13 확정) |
+| 연구 설계 / 프로토콜 | ~95% (핵심 12항목 전부 확정. 2026-08-13: seed/scene grid, §5.11 조기종료, §5.12 통계계획·τ 전부 동결) |
 | 데이터 확보 | ~80% |
 | 모델 / 러너 | ~60% (V3/C1-b가 DTU+RE10K 20-scene까지 실측 완료됐지만 4/8/12-view·DepthSplat·RE10K 일반 경로는 남음) |
 | 검증 결과 | ~60% (DTU는 두텁게 검증, RE10K는 C1-b 20-scene까지 붙음, DL3DV는 아직 얇음) |
@@ -140,10 +140,11 @@
 9. ~~C1-a 첫 파일럿 실행~~ ✅ (2026-08-12 밤, `run_re10k_c1a_pilot.py`) — RE10K 5 scene × 2/4/8/12-view, budget[1,10,60]s, Vanilla3DGS(일반 COLMAP init) vs MVSplat 정면 비교. **역전 패턴 확인됨**: 2/4-view는 예산과 무관하게 MVSplat 압승(21.7/16.3dB vs 7~11dB). 8-view부터 10초만 줘도 Vanilla3DGS가 역전(16.8 vs 16.5dB). 12-view/60s에서는 Vanilla3DGS가 크게 앞섬(20.6 vs 17.1dB). §2 연구 질문("역전 경계가 무엇으로 결정되는가")에 대한 첫 실측 증거 — view 수와 시간 예산이 함께 늘 때 optimization이 이긴다. **주의**: seed 1회·scene 5개뿐이라 파일럿 단계, 통계적 결론 아님(4-view Vanilla3DGS가 2-view보다 낮게 나온 것도 표본이 적어서일 가능성). 원본: `experiments/outputs/re10k_c1a_pilot/c1a_pilot_summary.json`
 10. ~~renderer_equivalence_tolerance 최종 동결~~ ✅ (2026-08-13, PSNR≥33dB 유지 확정)
 11. ~~C1-a 파일럿에 seed 3회 추가해 역전 패턴 안정성 확인~~ ✅ (2026-08-13) — RE10K 5 scene × 2/4/8/12-view × seed{0,1,2}, budget[1,10,60]s, 240 rows. 2/4-view는 seed 표준편차 0.03~0.11dB로 안정적으로 MVSplat 압승, 8-view 이상 Vanilla3DGS 역전 방향이 seed 3개 전부 일관. 다만 seed 3·scene 5는 아직 정식 CI를 낼 규모는 아님 → 12번으로 이어짐
+   **정정(2026-08-13, §5.12 τ 동결 과정에서 발견)**: 9번·11번의 "8-view부터 10초만 줘도 역전(16.8 vs 16.5dB)"은 pooled 평균(delta=+0.30dB)일 뿐, τ=1.4dB(8/12-view 기준, seed 변동성 실측값) 적용 시 **Tie**다. scene별로 보면 5개 중 3개는 Vanilla3DGS +1.1~+5.3dB 우세, 2개는 MVSplat +1.0~+5.8dB 우세로 방향 자체가 갈린다 — pooled "역전"은 scene 간 큰 분산이 우연히 상쇄된 결과. 12-view/60s 역전(delta +3.5dB > τ)은 τ 적용 후에도 유지 — 이 경계만 robust. 정확한 서술: "12-view·budget≥60s 근방에서 확실한 역전, 8-view는 30-scene 본 실험 전까지 Tie로 보류". 상세: `overall.md` §5.12
 12. ~~seed 3→2 / scene 20→30 전환 결정 + 검증~~ ✅ (2026-08-13) — `scene_cluster_bootstrap_ci`는 scene을 리샘플 단위로 쓰므로 CI 폭이 seed가 아니라 scene 수(1/√N)에 좌우됨. `20×3 = 30×2 = 60`이라 trajectory 수·GPU-hour(250h)는 불변, CI 폭만 약 18% 좁아짐 — `run_experiment.py`로 manifest 재생성해 main phase row 수 7,680 불변 실측 확인. `experiment_config.yaml`(seeds/scenes_primary) 및 `overall.md` §5.4/§9 반영 완료. DTU는 8 scene 유지(외부 검증 전용, 확대 안 함)
 13. ~~FSGS sparse-init 방법론 편차 문서화~~ ✅ (2026-08-13) — `overall.md` §4.2에 편차 사유(공정성·재현성)와 논문 methods/limitations 서술 의무를 명시. FSGS가 Vanilla3DGS를 못 이기는 결과도 유효한 보고 대상(SplatFormer 유사 사례, 인용은 논문 작성 시 원문 확인 필요)으로 프레이밍. dense-MVS 3~5 scene 보조 검증은 낮은 우선순위 백로그로 기록(COLMAP CLI dense MVS 미보유가 선행 조건)
 14. ~~fsgs_runner.py 작성 + model_registry.py 등록~~ ✅ (2026-08-13, 세부는 §모델/러너 섹션 참고). DTU 8-view(seed0/1)·2-view(random-sphere fallback) 실측 검증 완료
 15. ~~fsgs_runner.py를 RE10K/DL3DV로 확장~~ ✅ (2026-08-13) — `prepare_views_for_fsgs()`(dataset-agnostic) 신규, RE10K(near/far=1.0/100.0)·DL3DV(near/far=0.5/200.0) 8-view smoke test 통과, DTU 회귀 테스트도 통과. DTU/RE10K/DL3DV 세 데이터셋 모두 지원
 16. ~~co-visibility selector 연결~~ ✅ (2026-08-13) — `core/view_selector.py` 신규: 같은 farthest-point-sampling 알고리즘을 좁은 window(high overlap 목표)/전체 범위(low overlap 목표) 두 pool에 적용해 같은 scene에서 low/high 후보를 둘 다 만든다(`run_experiment.py`의 manifest가 이미 scene×view_count×overlap_level cartesian product를 전제하고 있어 이 방식이 필요했음). **기존 candidate 파일은 보존**(이번 세션 실측 결과가 참조 중) — 검증 결과는 별도 파일(`re10k_overlap_candidates.json`, `dl3dv_overlap_lowhigh/`)로. 실측 검증: RE10K 3 scene 12/12 조건에서 high≥low 확인, DL3DV 3 scene 11/12(365d7c... scene 12-view만 방향 반대 — 루프형 궤적 등 scene별 예외 가능성, 전체 적용 시 재확인 필요). 30-scene 본 실험 착수 시 전체 scene으로 확대 적용 필요(지금은 파일럿 검증 규모)
 17. C1-a를 main subset **30 scene × seed 2회**로 스케일업(진짜 본 실험, 2026-08-13 grid 결정 반영) — Vanilla3DGS/MVSplat/FSGS 세 방법론 모두 포함해 착수 가능
-18. §5.11(조기 종료 규칙)·§5.12(통계 분석 계획) 동결 — 아직 미결 항목으로 남아있음, 본 실험 착수 전 필요
+18. ~~§5.11(조기 종료 규칙)·§5.12(통계 분석 계획) 동결~~ ✅ (2026-08-13) — **이걸로 "본실험 착수 전 필수 4개" 전부 완료.** 30-scene × seed 2회 본 실험(17번) 착수 가능

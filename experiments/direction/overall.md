@@ -280,7 +280,7 @@ Gaussian count / peak VRAM / checkpoint path
 - **Gaussian density:** Gaussian 수는 증가하나 품질이 정체·하락하는 구간을 densification 실패 증거로 분석
 - **Selection audit:** 메인 체크포인트가 고정 예산 시점 규칙으로 선택되었는지 자동 검증하고 oracle 결과와 분리 저장
 
-### 5.11 조기 종료 규칙 — 파일럿 전 결정 필요 (미결 항목)
+### 5.11 조기 종료 규칙
 
 Sparse 조건에서 optimization이 **언제 멈추는가**가 승패를 직접 좌우하지만, 현재 설계에는 정당한 정지 규칙이 없다. 예산 종료 컷은 공정하나 "더 일찍 멈췄어야 한다"는 반론에 약하고, oracle peak는 test leakage라 메인이 될 수 없다(ReSplat도 이 문제로 iteration 상한을 두었다).
 
@@ -290,7 +290,14 @@ Sparse 조건에서 optimization이 **언제 멈추는가**가 승패를 직접 
 | ② Training-view loss 기반 조기 종료 | held-out 불필요하나 train loss는 계속 하강하므로 과적합을 못 잡음 |
 | ③ Held-out validation view 기반 | 과적합 탐지 가능. 단 2·4-view에서 한 장을 빼면 입력의 25~50%가 소실되어 조건 자체가 바뀜 |
 
-**권고:** ①을 메인으로 유지하되, view 수가 많은 조건(8·12-view)에 한해 ③을 **보조 실험**으로 1회 수행하여 "조기 종료가 있었다면 경계가 얼마나 이동했을까"를 보고한다. 메인의 일관성을 지키면서 정지 규칙 비판에 답할 수 있다. 최종 결정과 규칙은 파일럿 착수 전 동결한다.
+**권고:** ①을 메인으로 유지하되, view 수가 많은 조건(8·12-view)에 한해 ③을 **보조 실험**으로 1회 수행하여 "조기 종료가 있었다면 경계가 얼마나 이동했을까"를 보고한다. 메인의 일관성을 지키면서 정지 규칙 비판에 답할 수 있다.
+
+**2026-08-13 최종 동결**
+
+- **메인(변경 없음)**: ① budget-end checkpoint 그대로 유지. `checkpoint_rule: budget_end_checkpoint`(config), oracle peak는 부가 분석으로만 분리(§5.7).
+- **보조 실험 범위**: view_count ∈ {8, 12}만 해당(2·4-view는 §5.11 표의 이유로 제외). RE10K main subset 중 3~5 scene, seed=0 1회, **Vanilla3DGS + FSGS만**(MVSplat은 단발 forward pass라 "조기 종료" 개념이 성립하지 않음). 추가 GPU 비용은 미미(3~5 scene × 2 view_count × 1 seed × 2 method ≈ 12~20 trajectory, main phase와 같은 per-trajectory 비용 기준 약 1~2 GPU-hour).
+- **메커니즘**: 기존 N개 context view 중 1개를 추가로 빼서 "validation view"로 둔다(학습에도 안 쓰고, 메인 비교에 쓰는 고정 test set과도 다름 — 이 validation view의 PSNR로 test 결과를 절대 보고하지 않는다, 순수 진단용). 이 보조 run에 한해 budget_snapshots를 촘촘하게(`[1,5,10,20,30,60,90,120,180,240,300]`s) 잡아 validation PSNR 곡선을 뽑는다.
+- **보고 지표**: budget-end(t=B) validation PSNR 대비 95%에 처음 도달하는 시점 `t_95`를 "조기 종료했다면 멈췄을 시점"으로 정의하고, `t_95`에서의 **test** PSNR과 budget-end test PSNR의 차이를 보고한다. 이 결과는 본문 regime map에 반영하지 않고 부록(§10 Failure Analysis)에 별도 배치한다.
 
 
 ### 5.12 통계 분석 계획 — 독립 단위와 추론
@@ -301,6 +308,16 @@ Sparse 조건에서 optimization이 **언제 멈추는가**가 승패를 직접 
 - **보조(여유 시):** scene을 random effect로 둔 mixed-effects model로 `method × view 수 × overlap × budget` 상호작용 검정. 부록에 배치
 - **보고:** 평균 + scene 단위 cluster bootstrap CI + 장면별 win rate를 함께 제시. seed는 반복 측정으로 처리하고 표본 수로 계상하지 않는다
 - **다중 비교:** 조건 격자에서 다수의 비교가 발생하므로, 주 결론에 사용하는 검정에는 다중 비교 보정(Holm 등)을 적용하고 그 범위를 명시
+
+**2026-08-13 최종 동결**
+
+- **scene 단위 cluster bootstrap(주 방법, 확정)**: `protocol_utils.py::scene_cluster_bootstrap_ci` 그대로 — 2000회 리샘플, 95% percentile CI, scene을 복원추출 단위로 사용. 이미 구현·검증됨(§Ⅶ 수식 문서 참고), 추가 결정 불필요.
+- **다중 비교 family 정의**: "주 결론"을 C1-a regime map의 승패 판정(§5.5)으로 한정하고, family는 **방법 쌍(pair) 하나당 전체 (view_count × overlap_level × budget) 격자**로 정의한다 — 4×2×4=32개 비교가 한 family. 예: Vanilla3DGS-vs-MVSplat 32개, FSGS-vs-MVSplat 32개, FSGS-vs-Vanilla3DGS 32개를 **각각 별도 family로 Holm 보정**한다(서로 다른 방법 쌍은 서로 다른 질문에 답하므로 풀링하지 않는다).
+- **Mixed-effects(보조)**: "여유 시" 조건부 유지, 강제하지 않음 — 미룬다고 주 결론이 무효화되지 않는다.
+- **τ(승패 판정 임계값) — 오늘 5-scene/seed×3 파일럿(§체크리스트 11번)으로 처음 실측**: `compute_tau(seed_variability, practical_min_delta=0.5)`에 넣을 `seed_variability`를 파일럿 데이터에서 계산한 결과, **seed 노이즈가 view_count에 따라 한 자릿수 이상 차이 난다** — 2·4-view는 scene당 seed 표준편차 평균 0.04~0.17dB(작음), 8·12-view는 0.13~1.41dB(budget≥10s에서 특히 큼, 한 scene은 3.52dB까지). 이 비대칭을 무시하고 단일 τ를 쓰면 8·12-view에서 과소평가(가짜 승패)가 나거나 2·4-view에서 과도하게 보수적이 된다 — **view_count 2단계 구간별 τ로 확정**:
+  - `view_count ∈ {2, 4}`: `τ = max(0.17, 0.5) = 0.5dB` (실용적 최소 차이가 지배)
+  - `view_count ∈ {8, 12}`: `τ = max(1.41, 0.5) ≈ 1.4dB` (seed 변동성이 지배, 3.52dB 단일 outlier는 seed=3 표본이 너무 작아 나온 불안정한 추정으로 보고 평균값 채택 — 30-scene/seed×2 본 실험에서 재확인 필요)
+- **이 결정이 뒤집는 것**: §체크리스트에 "8-view부터 10초만 줘도 Vanilla3DGS가 역전(16.8 vs 16.5dB)"라고 서술했던 부분을 재검토하면, pooled delta는 +0.30dB이지만 τ=1.4dB 기준으로는 **Tie**다. 게다가 scene별로 뜯어보면 5개 중 3개는 Vanilla3DGS가 +1.1~+5.3dB 우세, 2개는 MVSplat이 +1.0~+5.8dB 우세로 **방향 자체가 scene마다 갈린다** — pooled 평균의 "역전"은 scene 간 큰 분산이 우연히 상쇄된 결과였다. 12-view/60s의 역전(20.6 vs 17.1dB, delta +3.5dB > τ)은 τ 적용 후에도 Vanilla3DGS 우세로 유지된다 — 그 경계는 robust. **정정**: "8-view에서 역전 시작"이 아니라 "12-view·budget≥60s 근방에서 확실한 역전, 8-view는 30-scene 본 실험 전까지 Tie로 보류"가 정확한 서술이다.
 
 ---
 
