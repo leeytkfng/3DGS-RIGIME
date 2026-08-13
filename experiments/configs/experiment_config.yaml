@@ -94,7 +94,11 @@ analysis:
 
 c1b:
   enabled: true
-  renderer_equivalence_tolerance: 0.0001
+  # 2026-08-13 최종 동결: 390개 view-PSNR 샘플(MVSplat/RE10K 240 + DepthSplat/DL3DV 150)
+  # 실측 근거는 overall.md §5.8. 원래 MSE 0.0001은 파일럿 전 추정치였고 너무 타이트했다
+  # (정상 cross-renderer noise도 자주 걸러냄) — PSNR 기준으로 교체.
+  renderer_equivalence_tolerance_psnr_db: 33.0
+  renderer_equivalence_tolerance: 0.0001  # legacy MSE 값, check_renderer_equivalence.py --tolerance로 여전히 지원되지만 기본은 PSNR 기준 사용
   initial_value_source: feedforward_gaussian
   refinement_budget_seconds: [10, 60, 300]
 

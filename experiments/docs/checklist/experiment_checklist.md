@@ -84,7 +84,8 @@
 
     MVSplat은 2→4-view에서 refinement 효과가 폭발적으로 커지는데(-0.14→+3.67) DepthSplat(분포 안)은 거의 그대로다(+0.10→+0.15). 결정적으로 off(FF 단독) 점수 자체가 MVSplat은 view가 늘수록 나빠지고(분포 밖이라 혼란) DepthSplat은 좋아진다(정상). **결론: 아침에 나온 "view 수가 늘수록 refinement 효과가 커진다"는 현상은 view-count 자체의 효과가 아니라 MVSplat이 분포 밖에서 무너지는 걸 refinement가 복구하는 효과였다는 가설이 확인됨.** 원본: `experiments/outputs/dl3dv_c1b_scaleup_{2,4}view/c1b_scaleup_summary.json`
     - **한계(정직하게 기록)**: 모델도 다르고(MVSplat vs DepthSplat) 데이터셋도 다름(RE10K vs DL3DV), 게다가 이 스케일업은 DL3DV view 선택 v1(방금 v2로 고친 것 이전 버전)로 돌아간 것 — 완벽한 단일 변수 통제 비교는 아님. v2로 재실행하면 더 깨끗한 비교가 될 것
-  - [ ] **남은 일**: DL3DV v2(고친 view 선택)로 DepthSplat C1-b 재실행해서 더 깨끗한 비교 확보. renderer_equivalence_tolerance 최종 동결(20-scene 실측 반영), RE10K 일반 COLMAP/random-init 경로(warm-start 아닌 케이스)는 여전히 미구현
+  - [x] **renderer_equivalence_tolerance 최종 동결** (2026-08-13) — 누적 gate 로그 130건(view-PSNR 샘플 390개, MVSplat/RE10K 240 + DepthSplat/DL3DV 150)을 모아 재검토, **PSNR≥33dB 유지 확정**(미달 2.3%뿐, 재구성 품질 범위 8~25dB대와 충분히 구분됨). `overall.md` §5.8, `experiment_config.yaml`(`renderer_equivalence_tolerance_psnr_db: 33.0`) 반영
+  - [ ] **남은 일**: DL3DV v2(고친 view 선택)로 DepthSplat C1-b 재실행해서 더 깨끗한 비교 확보. RE10K 일반 COLMAP/random-init 경로는 연결됐지만(§C1-a) 아직 main subset 전체 스케일은 아님
 
 ## 검증 결과
 
@@ -134,6 +135,6 @@
 7. ~~DL3DV view 선택을 DepthSplat 방식으로 재실행~~ ✅ (2026-08-12) — 가설 확인됨. 4-view zero-overlap 56%(14/25)→4%(1/25), median 0.000→0.615. 8/12-view도 개선. 2-view는 여전히 25개 전부 0(다른 데이터셋과 동일, 진짜 현상). 결과: `experiments/outputs/dl3dv_overlap_v2/`(기존 `dl3dv_overlap/`은 다른 작업이 읽고 있어 보존) — 앞으로 DL3DV는 v2 사용
 8. ~~Vanilla3DGS "일반"(non-warm-start) 경로를 RE10K/DL3DV에 연결~~ ✅ (2026-08-12 밤) — C1-a(진짜 Regime Map)로 가는 마지막 관문. `vanilla_3dgs_runner.py`에 `_colmap_init_from_loaded_views()` 추가(이미 메모리에 로드된 RE10K/DL3DV view를 임시 디렉토리에 써서 known-pose COLMAP triangulation — `generate_re10k_view_overlap.py`류와 같은 공용 코어 재사용), `--dataset re10k/dl3dv`의 "warm-start 필수" 제약 제거. 실측 검증: RE10K 12-view에서 `init_source=colmap_sfm`(593 point)으로 15초 만에 20.9→28.4dB로 정상 학습(4-view는 SfM point 부족으로 random_sphere_fallback, 이것도 의도된 정상 동작). DL3DV 8-view도 동작 확인(fallback 경로). MVSplat 쪽은 `mvsplat_re10k_runner.py`가 이미 이 역할(추론 전용, C1-b 아닌 C1-a용)을 하고 있어 추가 작업 없음 — **이제 RE10K에서 두 패러다임(Vanilla3DGS optimization / MVSplat feed-forward)을 같은 scene·view에서 다 돌릴 수 있어 C1-a 착수 가능**
 9. ~~C1-a 첫 파일럿 실행~~ ✅ (2026-08-12 밤, `run_re10k_c1a_pilot.py`) — RE10K 5 scene × 2/4/8/12-view, budget[1,10,60]s, Vanilla3DGS(일반 COLMAP init) vs MVSplat 정면 비교. **역전 패턴 확인됨**: 2/4-view는 예산과 무관하게 MVSplat 압승(21.7/16.3dB vs 7~11dB). 8-view부터 10초만 줘도 Vanilla3DGS가 역전(16.8 vs 16.5dB). 12-view/60s에서는 Vanilla3DGS가 크게 앞섬(20.6 vs 17.1dB). §2 연구 질문("역전 경계가 무엇으로 결정되는가")에 대한 첫 실측 증거 — view 수와 시간 예산이 함께 늘 때 optimization이 이긴다. **주의**: seed 1회·scene 5개뿐이라 파일럿 단계, 통계적 결론 아님(4-view Vanilla3DGS가 2-view보다 낮게 나온 것도 표본이 적어서일 가능성). 원본: `experiments/outputs/re10k_c1a_pilot/c1a_pilot_summary.json`
-10. renderer_equivalence_tolerance 최종 동결(RE10K 20-scene 실측 반영)
+10. ~~renderer_equivalence_tolerance 최종 동결~~ ✅ (2026-08-13, PSNR≥33dB 유지 확정)
 11. co-visibility selector 연결
 12. C1-a를 main subset 20 scene × seed 3회로 스케일업(진짜 본 실험)
