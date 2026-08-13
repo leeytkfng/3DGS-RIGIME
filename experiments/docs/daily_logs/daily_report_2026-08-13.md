@@ -56,3 +56,17 @@
 
 지금까지 코드/여러 문서에 흩어져 있던 수식(overlap, Gauss-Newton 공분산, 승패판정 τ, budget checkpoint 규칙, scene cluster bootstrap 신뢰구간, Holm 보정, C2 depth 모델, 3DGS 렌더링 핵심 수식)을 목적/사용처/해석과 함께 한 문서로 정리했다: `paper/paper_equations_reference.md`. 신뢰구간(§6)에 특히 상세히 — 왜 scene을 독립 단위로 봐야 하는지, run 개수로 세면 왜 과신하게 되는지까지 풀어썼다.
 
+## 7. seed 3→2 / scene 20→30 전환 — 같은 예산에서 통계적 힘 키우기
+
+**실험 목적**: §5의 결과가 다음 단계(main subset 20~30 scene 스케일업)로 갈 때 seed와 scene 중 어느 쪽을 늘리는 게 맞는지 결정. §6에서 정리한 신뢰구간(scene cluster bootstrap) 공식을 실제 grid 설계에 처음 적용하는 단계.
+
+**데이터/근거**: (1) `overall.md` §9의 기존 리스크 완화표에 "GPU 시간 초과 시 축소 순서: seed 3→2가 1순위"가 이미 적혀 있었음을 재확인. (2) `scene_cluster_bootstrap_ci`(`protocol_utils.py`)는 scene을 리샘플 단위로 쓰므로 CI 폭이 seed가 아니라 scene 수(1/√scene)에 좌우된다는 원칙. (3) 실제 파일럿 로그(`/tmp/c1a_pilot_seeds_full.log`)에서 60초-budget trajectory 실측 소요시간(오버헤드 4.35s)을 뽑아 §5.4의 이론 추정(8.15s)과 대조.
+
+**쉽게**: seed를 늘리는 건 "같은 문제를 다른 순서로 여러 번 푸는 것"이라 우연성만 줄여줄 뿐, scene을 늘리는 것처럼 "아예 다른 문제를 더 풀어보는 것"만큼 결론을 넓혀주지 못한다. 그런데 재밌게도 `20 scene × 3 seed`와 `30 scene × 2 seed`는 총 계산량(GPU-hour)이 완전히 똑같다(20×3=30×2=60) — 그러니까 **돈을 더 안 써도** scene을 10개 늘리고 seed를 1개 줄이기만 하면 신뢰구간이 더 좁아진다(공짜 개선).
+
+**전문 용어**: trajectory 수 ∝ scene×seed×view×overlap×method이므로 scene×seed곱이 불변이면 총 GPU-hour(≈250h)도 불변. `run_experiment.py`로 manifest를 재생성해 main phase row 수가 7,680으로 변하지 않음을 실측 확인. CI 폭 축소율은 √(20/30)≈0.816 → 약 18.4%(20→40이면 29.3%). `experiment_config.yaml`(`seeds: [0,1]`, `scenes_primary: 30`)과 `overall.md` §5.4/§9에 반영. DTU는 GT geometry 외부 검증 세트일 뿐 통계 주 추론 단위가 아니므로(§4.2) scene 확대 대상에서 제외(8 scene 유지).
+
+**FSGS 초기화 편차도 같이 정리**: FSGS 원 프로토콜은 dense-MVS 초기화를 쓰지만 우리는 COLMAP dense 모듈이 없어 Vanilla3DGS와 같은 sparse init을 공유시켰다(§3 참고). 이를 논문 methods/limitations 양쪽에 명시적으로 적어야 한다는 점, FSGS가 Vanilla3DGS를 못 이기더라도 그 자체로 유효한 결과(SplatFormer의 유사 사례)라는 점, dense-MVS 소규모(3~5 scene) 비교는 낮은 우선순위 백로그로 `overall.md` §4.2에 문서화했다.
+
+**논문 연결**: §5.12(통계 분석 계획)를 실제 예산 배분에 처음 적용한 사례이자, 실험 설계 단계에서 "리스크 대응"이 아니라 "선제적 최적화"로 같은 원칙을 사용한 것 — §9 리스크 완화표도 그에 맞게 갱신(`~~seed 3→2~~`로 취소선 처리, 사유 각주 추가). 다음 우선순위는 `fsgs_runner.py`(protocol_utils 스키마) 작성과 `model_registry.py` FSGS 등록 — 현재 manifest 생성 시 `Unknown method in config: FSGS` 경고가 뜨는 상태라, 이게 끝나야 30-scene 본 실험에 FSGS를 포함할 수 있다.
+

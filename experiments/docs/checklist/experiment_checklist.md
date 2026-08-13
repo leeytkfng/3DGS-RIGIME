@@ -118,7 +118,7 @@
 
 | 구간 | 대략 진행률 |
 |---|---:|
-| 연구 설계 / 프로토콜 | ~85% (핵심 12항목 중 미결 3개: C2 budget, 조기종료 규칙, 통계계획 동결) |
+| 연구 설계 / 프로토콜 | ~90% (핵심 12항목 중 미결 2개: 조기종료 규칙, 통계계획 동결. C2 budget은 2026-08-12 확정, seed/scene grid는 2026-08-13 확정) |
 | 데이터 확보 | ~80% |
 | 모델 / 러너 | ~60% (V3/C1-b가 DTU+RE10K 20-scene까지 실측 완료됐지만 4/8/12-view·DepthSplat·RE10K 일반 경로는 남음) |
 | 검증 결과 | ~60% (DTU는 두텁게 검증, RE10K는 C1-b 20-scene까지 붙음, DL3DV는 아직 얇음) |
@@ -138,5 +138,10 @@
 8. ~~Vanilla3DGS "일반"(non-warm-start) 경로를 RE10K/DL3DV에 연결~~ ✅ (2026-08-12 밤) — C1-a(진짜 Regime Map)로 가는 마지막 관문. `vanilla_3dgs_runner.py`에 `_colmap_init_from_loaded_views()` 추가(이미 메모리에 로드된 RE10K/DL3DV view를 임시 디렉토리에 써서 known-pose COLMAP triangulation — `generate_re10k_view_overlap.py`류와 같은 공용 코어 재사용), `--dataset re10k/dl3dv`의 "warm-start 필수" 제약 제거. 실측 검증: RE10K 12-view에서 `init_source=colmap_sfm`(593 point)으로 15초 만에 20.9→28.4dB로 정상 학습(4-view는 SfM point 부족으로 random_sphere_fallback, 이것도 의도된 정상 동작). DL3DV 8-view도 동작 확인(fallback 경로). MVSplat 쪽은 `mvsplat_re10k_runner.py`가 이미 이 역할(추론 전용, C1-b 아닌 C1-a용)을 하고 있어 추가 작업 없음 — **이제 RE10K에서 두 패러다임(Vanilla3DGS optimization / MVSplat feed-forward)을 같은 scene·view에서 다 돌릴 수 있어 C1-a 착수 가능**
 9. ~~C1-a 첫 파일럿 실행~~ ✅ (2026-08-12 밤, `run_re10k_c1a_pilot.py`) — RE10K 5 scene × 2/4/8/12-view, budget[1,10,60]s, Vanilla3DGS(일반 COLMAP init) vs MVSplat 정면 비교. **역전 패턴 확인됨**: 2/4-view는 예산과 무관하게 MVSplat 압승(21.7/16.3dB vs 7~11dB). 8-view부터 10초만 줘도 Vanilla3DGS가 역전(16.8 vs 16.5dB). 12-view/60s에서는 Vanilla3DGS가 크게 앞섬(20.6 vs 17.1dB). §2 연구 질문("역전 경계가 무엇으로 결정되는가")에 대한 첫 실측 증거 — view 수와 시간 예산이 함께 늘 때 optimization이 이긴다. **주의**: seed 1회·scene 5개뿐이라 파일럿 단계, 통계적 결론 아님(4-view Vanilla3DGS가 2-view보다 낮게 나온 것도 표본이 적어서일 가능성). 원본: `experiments/outputs/re10k_c1a_pilot/c1a_pilot_summary.json`
 10. ~~renderer_equivalence_tolerance 최종 동결~~ ✅ (2026-08-13, PSNR≥33dB 유지 확정)
-11. co-visibility selector 연결
-12. C1-a를 main subset 20 scene × seed 3회로 스케일업(진짜 본 실험)
+11. ~~C1-a 파일럿에 seed 3회 추가해 역전 패턴 안정성 확인~~ ✅ (2026-08-13) — RE10K 5 scene × 2/4/8/12-view × seed{0,1,2}, budget[1,10,60]s, 240 rows. 2/4-view는 seed 표준편차 0.03~0.11dB로 안정적으로 MVSplat 압승, 8-view 이상 Vanilla3DGS 역전 방향이 seed 3개 전부 일관. 다만 seed 3·scene 5는 아직 정식 CI를 낼 규모는 아님 → 12번으로 이어짐
+12. ~~seed 3→2 / scene 20→30 전환 결정 + 검증~~ ✅ (2026-08-13) — `scene_cluster_bootstrap_ci`는 scene을 리샘플 단위로 쓰므로 CI 폭이 seed가 아니라 scene 수(1/√N)에 좌우됨. `20×3 = 30×2 = 60`이라 trajectory 수·GPU-hour(250h)는 불변, CI 폭만 약 18% 좁아짐 — `run_experiment.py`로 manifest 재생성해 main phase row 수 7,680 불변 실측 확인. `experiment_config.yaml`(seeds/scenes_primary) 및 `overall.md` §5.4/§9 반영 완료. DTU는 8 scene 유지(외부 검증 전용, 확대 안 함)
+13. ~~FSGS sparse-init 방법론 편차 문서화~~ ✅ (2026-08-13) — `overall.md` §4.2에 편차 사유(공정성·재현성)와 논문 methods/limitations 서술 의무를 명시. FSGS가 Vanilla3DGS를 못 이기는 결과도 유효한 보고 대상(SplatFormer 유사 사례, 인용은 논문 작성 시 원문 확인 필요)으로 프레이밍. dense-MVS 3~5 scene 보조 검증은 낮은 우선순위 백로그로 기록(COLMAP CLI dense MVS 미보유가 선행 조건)
+14. **[다음] fsgs_runner.py 작성 + model_registry.py 등록** — 현재 `run_experiment.py` manifest 생성 시 `Unknown method in config: FSGS` 경고 발생(`model_registry.py`가 아직 SparseGS만 앎). protocol_utils 스키마를 따르는 정식 러너 작성, `model_registry.py`에 FSGS 등록, RE10K/DL3DV로 확장(현재는 DTU 1회 검증만 있음) — 30-scene 본 실험에 FSGS를 포함하려면 선행 필수
+15. co-visibility selector 연결
+16. C1-a를 main subset **30 scene × seed 2회**로 스케일업(진짜 본 실험, 2026-08-13 grid 결정 반영) — 14번(FSGS 러너) 완료 후 Vanilla3DGS/MVSplat뿐 아니라 FSGS까지 포함해 착수
+17. §5.11(조기 종료 규칙)·§5.12(통계 분석 계획) 동결 — 아직 미결 항목으로 남아있음, 본 실험 착수 전 필요

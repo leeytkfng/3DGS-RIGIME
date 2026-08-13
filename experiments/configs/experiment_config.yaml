@@ -19,10 +19,15 @@ protocol:
   dataset_external: DTU
   dataset_primary_path: /data/Re-feem/datasets/re10k
   dataset_external_path: /data/Re-feem/datasets/dtu
-  scenes_primary: 20
+  scenes_primary: 30
   scenes_external: 8
   dtu_official_split: [1, 8, 21, 30, 31, 34, 38, 40, 41, 45, 55, 63, 82, 103, 110, 114]
-  seeds: [0, 1, 2]
+  seeds: [0, 1]
+  # 2026-08-13: 20 scene x 3 seed -> 30 scene x 2 seed로 전환. scene x seed = 60으로 동일해
+  # trajectory 수/GPU-hour는 변하지 않지만(20x3=30x2), scene-cluster bootstrap CI는 sqrt(20/30)
+  # 배율(약 18% 폭 감소)만큼 좁아진다. seed는 반복측정이라 CI에 거의 기여하지 않고
+  # scene만 독립 단위이므로(overall.md §5.12) 같은 예산에서 통계적 힘만 커지는 변경.
+  # 근거: overall.md §9 축소 순서(seed 3->2가 1순위) + 실측 pilot wall-clock 검증.
   view_counts: [2, 4, 8, 12]
   overlap_levels: [low, high]
   budgets_seconds: [1, 10, 60, 300]
@@ -36,7 +41,7 @@ methods:
     - MVSplat
   optimization:
     - Vanilla3DGS
-    - SparseGS
+    - FSGS  # 2026-08-13: SparseGS 대신 FSGS 채택 확정 (수동 체크포인트 불필요 + --n_views CLI가 연구 축과 일치)
   control:
     refinement_on: true
     refinement_off: true

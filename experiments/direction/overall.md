@@ -119,9 +119,22 @@ Domain은 완전교차 축에서 제외하고 외부 검증으로 사용한다. 
 | 구분 | 구성 |
 |---|---|
 | Feed-forward (2종) | DepthSplat + MVSplat. 공개 체크포인트 zero-shot 추론. ReSplat은 코드 공개·재현 상태 확인 후 대체 후보 |
-| Optimization (2종) | Vanilla 3DGS + sparse-view 특화 1종(SparseGS 또는 FSGS 중 코드 상태가 안정적인 1개). 강한 기준선을 포함해 편향 비판 차단 |
+| Optimization (2종) | Vanilla 3DGS + sparse-view 특화 1종(**FSGS로 확정, 2026-08-12** — SparseGS는 BoostingMonocularDepth 체크포인트 수동 다운로드 필요, FSGS는 MiDaS DPT-Hybrid 자동 처리 + `--n_views` CLI가 연구 축과 정확히 일치). 강한 기준선을 포함해 편향 비판 차단 |
 | C1-b 트랙 | Feed-forward 출력(모델별 각각)을 고정하고 standard 3DGS refinement off/on 비교 |
 | 초기화 ablation | COLMAP vs VGGT/DA3. 별도 패러다임이 아니라 optimization 내부 부가 실험 |
+
+**FSGS 초기화 방법론 — 명시적 프로토콜 편차 (2026-08-13 결정)**
+
+FSGS 원 논문/공식 구현은 `colmap patch_match_stereo`로 생성한 **dense MVS point cloud**를 초기화로 요구한다. 우리 시스템에는 COLMAP CLI의 dense MVS 모듈이 없어(pycolmap 파이썬 바인딩만 보유), Vanilla3DGS와 동일한 **sparse COLMAP triangulation** 결과를 그 자리에 대신 넣는다(`prep_dtu_for_fsgs.py`). 이는 두 가지 이유로 의도적 선택이다:
+
+1. **공정성**: 본 연구의 optimization 비교군(Vanilla3DGS, FSGS)에 서로 다른 초기화 품질을 주면 "sparse-view 특화 기법 vs 일반 기법"이 아니라 "dense init vs sparse init" 비교로 오염된다. 두 방법 모두 동일한 sparse init을 받아야 알고리즘 자체의 차이만 격리된다.
+2. **재현성**: dense MVS는 우리 인프라에 존재하지 않는 외부 의존성이라, 있어도 이 연구 범위 밖의 추가 변수를 들여오는 셈이다.
+
+**논문에 반드시 기술할 것 (methods + limitations 양쪽)**: (a) methods 절에는 "FSGS는 원 논문의 dense-MVS 초기화 대신 본 연구의 공통 sparse-COLMAP 초기화를 사용했다"를 명시적으로 적는다(각주가 아니라 본문 문장으로). (b) limitations 절에는 "이로 인해 FSGS의 보고 성능이 원 논문보다 낮게 나올 수 있으며, 이는 알고리즘 결함이 아니라 초기화 조건 차이 때문임"을 명시한다.
+
+**FSGS가 Vanilla3DGS를 이기지 못하는 결과는 그 자체로 유효한 보고 대상이다.** SplatFormer 논문도 자신들의 세팅에서 유사한 부정적 결과를 보고했다고 알려져 있다(사용자 제공 정보 — 정확한 인용은 논문 작성 시 원문 확인 필요). "실패"가 아니라 "sparse-view 특화 기법의 이득이 초기화 조건에 의존적임을 보여주는 발견"으로 서술한다.
+
+**백로그(낮은 우선순위)**: FSGS에 실제 dense-MVS 초기화를 적용한 결과를 3~5개 scene에 한해 별도로 돌려, sparse-init 대비 얼마나 격차가 나는지 정량화하는 보조 실험. "초기화를 일부러 불리하게 줬다"는 비판에 대한 방어 자료 역할. COLMAP CLI(dense MVS/CUDA 지원) 설치가 선행 조건이며 현재 미보유 — 본 실험 우선순위 이후 착수.
 
 ---
 
@@ -164,20 +177,30 @@ CUDA 최초 컴파일은 제외하되 모든 방법을 같은 조건으로 warm-
 | 단계 | 규모 |
 |---|---|
 | 파일럿 | 장면 5개, 조건 전 조합 1회전, 변동성 측정 |
-| 본 실험 | 장면 20~30개, 입력 view sampling seed 3회 |
-| 외부 검증(DTU) | 장면 8~15개 |
+| 본 실험 | 장면 30개, 입력 view sampling seed 2회 (2026-08-13, 아래 결정 참고) |
+| 외부 검증(DTU) | 장면 8개 (scene 수 확대 없음, 지오메트리 검증 전용으로 유지) |
 
 **2026-08-12 재계산** — 최초 추정("약 1,200 run, 200~300 GPU-hour")은 감이었고, 8/9 audit에서 "budget을 별도 run으로 잘못 세면 실제로는 2.4배"라는 우려가 나왔다(`paper_scaffold_audit_log.md` §7). 이번엔 실제 manifest(`experiment_manifest.json`, 12,480 row)를 budget-checkpoint를 하나의 trajectory로 접어서(= budget은 재학습이 아니라 한 trajectory 안의 체크포인트) 실행 단위 수를 다시 세고, DTU smoke(2026-08-11)의 실측 wall-clock을 대입했다.
 
 | 구간 | Trajectory 수 | 근거 | per-trajectory 추정 | 소계 |
 |---|---:|---|---:|---:|
-| main, optimization(Vanilla3DGS+SparseGS) | 960 | 20 scene × 3 seed × 4 view × 2 overlap × 2 method | COLMAP 초기화 오버헤드(실측 평균 8.15s, DTU 10s-budget smoke 4건: 17.2~19.2s − 10s) + max budget 300s ≈ **308s** | 82.1 GPU-hour |
-| main, feed-forward(MVSplat+DepthSplat) | 960 | 20 scene × 3 seed × 4 view × 2 overlap × 2 method | MVSplat 실측 6.36~7.98s(DTU, 동일 256×256) 평균 ≈7s를 두 모델에 임시 적용(DepthSplat은 monodepth 백본이 있어 과소추정 가능성 있음, 미실측) | 1.9 GPU-hour |
+| main, optimization(Vanilla3DGS+FSGS) | 960 | 30 scene × 2 seed × 4 view × 2 overlap × 2 method | COLMAP 초기화 오버헤드(실측 평균 8.15s, DTU 10s-budget smoke 4건: 17.2~19.2s − 10s) + max budget 300s ≈ **308s** | 82.1 GPU-hour |
+| main, feed-forward(MVSplat+DepthSplat) | 960 | 30 scene × 2 seed × 4 view × 2 overlap × 2 method | MVSplat 실측 6.36~7.98s(DTU, 동일 256×256) 평균 ≈7s를 두 모델에 임시 적용(DepthSplat은 monodepth 백본이 있어 과소추정 가능성 있음, 미실측) | 1.9 GPU-hour |
 | C1-b, refinement=on | 960 | FF 초기값 고정 후 재최적화, main-optimization과 같은 trajectory 구조로 가정 | ≈308s(위와 동일 가정) | 82.1 GPU-hour |
 | C1-b, refinement=off | 960 | FF 출력을 그대로 렌더 등가성 gate만 통과시키는 평가 전용 | ≈7.5s(추정, 실측 없음) | 2.0 GPU-hour |
-| C2 (depth noise + scale bias) | 960 | 8 external scene × 3 seed × 4 조건 × (5 noise + 5 scale) | §5.9에서 main phase와 동일한 300s trajectory로 확정(2026-08-12) | 82.1 GPU-hour |
+| C2 (depth noise + scale bias) | 960 | 8 external scene × 2 seed × 4 조건 × (5 noise + 5 scale) | §5.9에서 main phase와 동일한 300s trajectory로 확정(2026-08-12) | 82.1 GPU-hour |
 
 **합계: 약 250 GPU-hour** (초기화·평가 오버헤드는 위 per-trajectory 추정에 이미 포함, 실패 재실행 여유는 별도 가산 필요). 2026-08-12 이전에는 C2 budget 미정으로 186~250h 범위였으나, §5.9에서 main phase와 동일한 300s trajectory로 확정하며 상한(250h)으로 고정했다.
+
+**2026-08-13 seed 3 → 2 / scene 20 → 30 전환 결정 — 같은 예산에서 통계적 힘만 늘리기.** §5.12의 원칙("실질적 독립 단위는 run이 아니라 scene")을 실제 grid 배분에 처음 적용했다. 핵심 근거:
+
+- **GPU-hour 불변**: trajectory 수는 `scene × seed × view × overlap × method`에 비례하는데, `20×3 = 30×2 = 60`이므로 scene/seed 배분만 바꾸면 총 trajectory 수·GPU-hour는 **정확히 그대로**다(위 표의 960/82.1h 등 모든 숫자가 20×3과 30×2에서 동일 — 실제로 `run_experiment.py`로 manifest를 재생성해 main phase 총 row 수가 7,680으로 변하지 않음을 확인했다).
+- **CI는 seed가 아니라 scene 수로 좁아진다**: `scene_cluster_bootstrap_ci`(`protocol_utils.py`)는 scene을 리샘플 단위로 쓰므로 CI 폭은 대략 `1/sqrt(scene 수)`에 비례한다. seed는 같은 scene 내부의 반복 측정이라 scene 간 분산(=CI 폭의 지배적 성분)을 줄이지 못한다. `sqrt(20)/sqrt(30) ≈ 0.816` → scene 20→30은 CI 폭을 약 **18.4%** 좁힌다(20→40이면 29.3%). seed 3→2는 반복측정 수가 하나 줄 뿐이라 CI에 미치는 영향은 미미하다.
+- **§9 리스크 완화 순서와의 정합성**: §9 "GPU 시간 초과" 항목의 축소 순서가 "seed 3→2"를 1순위로 이미 명시하고 있었다(우연이 아니라, seed를 줄이는 비용이 scene을 줄이는 비용보다 통계적으로 훨씬 싸다는 같은 논리) — 이번 결정은 그 원칙을 리스크 발생 시 대응이 아니라 **설계 단계에서 선제적으로** 적용한 것이다.
+- **실측 파일럿 wall-clock으로 재확인**: `re10k_c1a_pilot`(seed 3회 스케일업) 로그(`/tmp/c1a_pilot_seeds_full.log`)에서 60s-budget trajectory 1건의 실측 총 소요시간이 약 64.4s(2 fresh seed 합산 128.7s÷2)로, 오버헤드 약 4.35s — 위 표에서 가정한 8.15s보다 오히려 낮아 308s/trajectory 추정이 보수적으로도 유효함을 재확인했다(300s budget 외삽 시 약 304s, 표의 308s와 사실상 일치).
+- **DTU는 늘리지 않는다**: DTU는 GT geometry가 있는 외부 검증 세트일 뿐 통계적 주 추론 단위가 아니므로(§4.2), scene 확대는 RE10K/DL3DV(주 데이터셋)에만 적용한다. 8 scene 규모 유지.
+
+반영: `experiment_config.yaml`의 `seeds: [0, 1, 2]` → `[0, 1]`, `scenes_primary: 20` → `30`으로 변경(2026-08-13).
 
 결론: 최초 추정(200~300 GPU-hour)이 걱정했던 것과 달리 실측 기반 재계산도 같은 범위(250h)에 들어온다. 8/9 audit의 "2.4배" 우려는 budget을 trajectory로 접어 세면 해소된다(사실 audit 자신도 이미 이렇게 셌었다 — 2,880 "실제 optimization 실행"이라는 숫자 자체가 이 접힌 카운트였다). 그 외 가정: (a) SparseGS는 미구현이라 Vanilla3DGS와 같은 시간 프로파일로 가정, (b) DepthSplat 단독 실측 wall-clock 없음(probe 스크립트가 elapsed를 로깅하지 않음 — 정식 러너 승격 시 같이 고칠 것), (c) H200 병렬 실행으로 처리량이 늘지 않는다는 것은 이미 실측 확인됨(연산 병목)이므로 시간 단축 요인으로 넣지 않았다. 평균, 표준편차 또는 95% CI, **장면별 win rate**를 함께 보고한다.
 
@@ -338,7 +361,7 @@ Sparse 조건에서 optimization이 **언제 멈추는가**가 승패를 직접 
 | **결과가 밋밋함**(예: 한 모델이 전 구간 우세) | 승패 자체보다 원인 분석(C2)과 Pareto·Guideline이 기여가 되도록 설계. "view 수보다 overlap이 승패를 더 크게 결정한다", "일정 geometry 품질 이상에서는 refinement 효과가 소멸한다" 같은 관찰을 적극 탐색 |
 | Crossover가 선명하지 않음 | 역전이 특정 조건에만 발생한다는 결과와 품질–시간 Pareto 지도 자체를 knowledge 기여로 정리 |
 | 코드베이스 통합 난항 | 좌표계·전처리·평가 이미지 동일성 체크리스트, 공용 로그 스키마, 실패 모델 즉시 교체·제외 |
-| GPU 시간 초과 | 축소 순서: seed 3→2, 외부 검증 장면 축소, 초기화 ablation 축소, view 단계 축소. C3를 가장 먼저 포기 |
+| GPU 시간 초과 | 축소 순서: ~~seed 3→2~~(2026-08-13, scene 20→30과 맞바꿔 리스크 발생 전 선제 적용 — §5.4 참고, GPU-hour 불변), 외부 검증 장면 축소, 초기화 ablation 축소, view 단계 축소. C3를 가장 먼저 포기 |
 | C2 실험 폭발 | 전체 격자가 아니라 사전 동결한 대표 조건과 DTU 5~8개 장면에 집중 |
 
 ---
