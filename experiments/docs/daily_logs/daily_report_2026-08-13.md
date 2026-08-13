@@ -84,3 +84,15 @@
 
 **논문 연결**: 이 view-selection 버그는 우리가 §4.2에서 이미 문서화한 "sparse-init 편차"와는 별개로, 고치지 않았다면 FSGS만 다른 (사실상 무작위) view 조건에서 비교되는 훨씬 더 심각한 confound였다 — 발견하고 고친 게 이번 세션의 가장 중요한 성과 중 하나. 다음 단계는 RE10K/DL3DV로 확장(현재 DTU만 지원)한 뒤 §7에서 정한 30-scene 본 실험에 FSGS를 포함시키는 것.
 
+## 9. Per-Gaussian gradient accumulation 조사 — "관측 부족" Gaussian 비율이 view 수에 강하게 좌우됨
+
+**실험 목적**: gsplat `DefaultStrategy`의 densification 판단식(`grad2d[g]/count[g] > tau`)에서 `count[g]`(그 Gaussian이 최근 100-step window 동안 관측된 횟수)가 view 수에 따라 어떻게 분포하는지 실측 — "sparse-view에서 optimization이 손해 보는 이유"를 코드로 추적 가능한 메커니즘으로 설명할 수 있는지 확인.
+
+**데이터/특징**: RE10K main subset 3개 scene × view_count{2,4,8,12}, 2000 step, seed=0. 초기화는 다른 러너와 동일 규칙(COLMAP sparse triangulation, 실패 시 random-sphere fallback). v1(densification 끄고 리셋 없이 누적)은 survivorship bias 때문에 null 결과가 나와 폐기, v2(densification 켜고 매 100-step window의 실제 판단 시점을 스냅샷)로 재설계했다.
+
+**쉽게**: 처음엔 "관측이 적은 Gaussian은 평균 gradient가 노이즈로 부풀어서 densification 판정을 잘못 받을 것"이라 예상했는데, 실제로는 그런 오탐이 전혀 없었다(0%에 가까움) — 관측이 적으면 분자도 같이 작아지니까. 대신 훨씬 더 큰 걸 발견했다: **view가 적을수록 "어떤 학습 구간에서도 거의 안 보이는" Gaussian의 비율 자체가 폭발적으로 늘어난다** — 2-view에서는 절반(51.5%)이 이런 "죽은 예산"이고, 12-view에서는 0.7%뿐이다. 초기화 방식을 완전히 고정한 채(한 scene은 4개 view 조건 전부 같은 fallback 초기화를 씀) 봐도 55%→32%→8%→1%로 똑같이 줄어든다.
+
+**전문 용어**: `gsplat/strategy/default.py::_update_state()`/`_grow_gs()`를 직접 호출하는 계측 스크립트(`gaussian_gradient_accumulation_probe.py`) 작성. `count≤2`인 Gaussian의 τ(=0.0002) 초과 비율은 전 조건에서 0.00~0.003% — 원 가설(노이즈로 인한 오탐) 기각. 대신 `count≤2` 비율 자체가 pooled 평균 51.5%(2-view)→30.8%(4-view)→3.2%(8-view)→0.7%(12-view)로 단조 감소 — 초기화 방식 교란요인을 제거한 단일 scene(1214f2a11a9fc1ed, 4개 조건 전부 random-sphere fallback)에서도 55.3%→32.3%→8.3%→1.3%로 재현.
+
+**논문 연결**: "sparse-view에서 optimization이 불리하다"는 지금까지의 서술을 "Gaussian 예산의 절반 이상이 gradient 신호를 거의 못 받는 채로 방치된다"는 구체적 메커니즘으로 대체할 수 있다. 전문은 `paper/paper_gaussian_observation_starvation_2026-08-13.md`. Pilot 규모(scene 3개)라 scene 확대 재현, overlap 축 추가, floater 지표와의 상관 확인이 남은 일.
+
