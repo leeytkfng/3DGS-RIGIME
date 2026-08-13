@@ -22,3 +22,11 @@
 
 **논문 연결**: §5.8("허용 오차는 파일럿 전에 수치로 동결한다")의 마지막 미결 항목을 닫았다. 어제 이미 이 값(33dB)으로 C1-b 스케일업을 다 돌려놨기 때문에 소급 변경 없이 그대로 확정. `overall.md`/`experiment_config.yaml`에 반영.
 
+## 3. SparseGS vs FSGS 결정 + FSGS 환경 구축
+
+**쉽게**: 지금까지 우리 실험엔 "AI가 한 번에 만드는 모델"(MVSplat/DepthSplat)과 "일반 3D 최적화"(Vanilla 3DGS)만 있었는데, sparse-view 상황에 특화된 최적화 기법(3번째 방법론)이 아직 없었다. 후보 두 개(SparseGS, FSGS) 중 하나를 골라서 설치했다.
+
+**전문 용어**: GitHub 메타데이터 비교(별/이슈/의존성) 후 **FSGS 선택** — SparseGS는 추가로 BoostingMonocularDepth 체크포인트를 수동 다운로드해야 하는 반면 FSGS는 MiDaS DPT-Hybrid를 `torch.hub`로 자동 처리하고, `--n_views` CLI가 우리 연구의 핵심 축(view 수)과 정확히 일치한다. 저장소를 `/data/Re-feem/code/fsgs`에 clone하고 `fsgs` conda env를 새로 만들었다. 공식 환경(CUDA 11.6/torch 1.12.1)은 H200(Hopper, compute capability 9.0)에는 너무 오래돼서 MVSplat 때와 같은 방식으로 torch 2.1.2+cu121로 교체했다. 빌드 중 `setuptools`가 최신(83.0.0)이라 `pkg_resources`가 빠져있어 커스텀 CUDA 확장(simple-knn, diff-gaussian-rasterization-confidence) 빌드가 실패하는 걸 발견 — `setuptools<70`으로 낮춰서 해결했고, `TORCH_CUDA_ARCH_LIST=9.0`을 명시해 둘 다 빌드 성공, import 검증과 `train.py --help` 완주까지 확인했다.
+
+**논문 연결**: 지금까지 실험은 "일반 3DGS vs FF 모델" 비교였는데, "sparse-view 특화 3DGS vs FF 모델" 비교가 빠지면 "특화 기법을 안 써서 optimization이 불리했던 것 아니냐"는 반박이 가능하다. FSGS가 붙어야 C1-a Regime Map의 "optimization" 쪽 대표성이 완성된다. 아직 실제 학습은 안 돌려봤고 환경만 준비된 상태 — 다음은 데이터 포맷 맞추기와 protocol_utils 스키마 러너 작성.
+
