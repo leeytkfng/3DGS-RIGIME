@@ -526,7 +526,12 @@ def run(args: argparse.Namespace) -> None:
     # "log 있으면 skip" 로직이 두 번째 조건 실행을 막아버린다.
     densification_suffix = "" if args.densification == "on" else "_densoff"
     log_path = logs_dir / f"{args.scene}_{args.method}_{args.view_count}view_seed{args.seed}{densification_suffix}.json"
-    log_path.write_text(json.dumps(trajectory, indent=2), encoding="utf-8")
+    # 원자적 쓰기(temp + rename) — 배치 driver가 log_path.exists()로 "이미 끝남"을 판단해
+    # 재실행을 건너뛰므로, write 도중 죽으면 잘린 JSON이 "완료"로 오인돼 다음 재개 시
+    # json.loads()가 깨진 파일에서 죽는다. write_summary()(run_re10k_c1a_main.py)와 같은 패턴.
+    tmp_path = log_path.with_suffix(".json.tmp")
+    tmp_path.write_text(json.dumps(trajectory, indent=2), encoding="utf-8")
+    tmp_path.replace(log_path)
     print(f"[done] trajectory written to {log_path}")
 
     if trajectory:

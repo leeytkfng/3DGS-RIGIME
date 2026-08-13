@@ -376,7 +376,11 @@ def run(args: argparse.Namespace) -> None:
             break
 
     log_path = logs_dir / f"{args.scene}_{args.method}_{args.view_count}view_seed{args.seed}.json"
-    log_path.write_text(json.dumps(trajectory, indent=2), encoding="utf-8")
+    # 원자적 쓰기 — vanilla_3dgs_runner.py와 동일 이유(배치 driver의 resume 판단이
+    # log_path.exists()에 의존하므로 write 도중 kill되면 잘린 파일이 "완료"로 오인됨).
+    tmp_path = log_path.with_suffix(".json.tmp")
+    tmp_path.write_text(json.dumps(trajectory, indent=2), encoding="utf-8")
+    tmp_path.replace(log_path)
     print(f"[done] trajectory written to {log_path}")
 
     if trajectory:
