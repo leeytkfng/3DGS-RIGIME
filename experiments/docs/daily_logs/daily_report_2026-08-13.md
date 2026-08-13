@@ -42,3 +42,17 @@
 
 **논문 연결**: 이걸로 세 번째 방법론(sparse-view 특화 optimization)이 우리 데이터에서 실제로 돌아간다는 게 확인됐다. 아직 protocol_utils 스키마를 따르는 정식 러너는 아니고, RE10K/DL3DV 확장도 안 했다 — 다음 단계.
 
+## 5. C1-a seed 3회 결과 — 역전 패턴이 seed에 안정적
+
+**실험 목적**: 어제 seed 1회로 나온 "8-view 이상에서 Vanilla3DGS가 MVSplat을 역전"이라는 패턴이 우연이 아닌지 확인(§1의 후속).
+
+**실험 데이터**: RE10K 5 scene × 2/4/8/12-view × seed{0,1,2}, budget[1,10,60]s. MVSplat은 seed 무관(1회만), Vanilla3DGS만 3회 반복 — 240 rows.
+
+**결과**: 2/4-view는 seed 간 표준편차 0.03~0.11dB로 거의 흔들림 없이 MVSplat이 압승. 8-view 이상에서 Vanilla3DGS가 역전하는 방향은 seed 3개 전부 일관됨(12-view/10s만 표준편차 1.13dB로 변동이 좀 있지만, 셋 다 MVSplat보다는 높거나 비슷).
+
+**해석**: 파일럿 규모(5 scene)치고 역전 경계(4-view와 8-view 사이)가 꽤 안정적으로 재현됐다. 다만 seed 개수(3)와 scene 개수(5) 둘 다 아직 정식 신뢰구간(scene cluster bootstrap, `protocol_utils.py::scene_cluster_bootstrap_ci`)을 계산하기엔 작다 — 20 scene으로 확장해야 §5.12 정식 통계를 낼 수 있다.
+
+## 6. 논문 수식 전체 정리 문서 작성
+
+지금까지 코드/여러 문서에 흩어져 있던 수식(overlap, Gauss-Newton 공분산, 승패판정 τ, budget checkpoint 규칙, scene cluster bootstrap 신뢰구간, Holm 보정, C2 depth 모델, 3DGS 렌더링 핵심 수식)을 목적/사용처/해석과 함께 한 문서로 정리했다: `paper/paper_equations_reference.md`. 신뢰구간(§6)에 특히 상세히 — 왜 scene을 독립 단위로 봐야 하는지, run 개수로 세면 왜 과신하게 되는지까지 풀어썼다.
+
