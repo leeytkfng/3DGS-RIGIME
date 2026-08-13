@@ -18,7 +18,7 @@
 - [x] main benchmark 해상도 = checkpoint 상속 원칙 확정
 - [x] §5.2 모델별 지원 view 수 표 완성 — 2026-08-12, MVSplat/DepthSplat 공식 config·README 기준으로 채움, `model_registry.py`의 `supports_views`도 동기화(MVSplat→`[2]`, DepthSplat→`[2,4]`).
 - [x] §5.4 GPU-hour 예산 재계산 — 2026-08-12, manifest trajectory 수 × 실측 wall-clock 기반으로 재계산, 이후 250 GPU-hour로 확정(아래 C2 budget 결정 항목 참고).
-- [ ] confidence 출력 열 — MVSplat/DepthSplat 둘 다 confidence/uncertainty 출력이 소스코드에 없음을 확인(grep 결과 0건). 표에는 "없음"으로 채워졌으나, 논문에서 이걸 어떻게 다룰지(대체 지표 필요한지) 결정 안 됨
+- [x] confidence 출력 열 — 2026-08-13 결정. FSGS도 확인해보니 `confidence` 필드가 있지만 기본 설정에서 전부 1.0 고정(`use_confidence=False`)이라 셋 다 실질적으로 없음. feed-forward는 대체 지표 없음을 Limitations에 명시, optimization은 오늘 발견한 per-Gaussian gradient observation count를 대체 신호로 서술(단 optimization 계열에만 있는 비대칭이라고 명시). 상세: `overall.md` §5.2
 - [x] C2 budget 결정 — 2026-08-12. main phase/C1-b와 동일하게 단일 300s trajectory + `budget_snapshots=[1,10,60,300]`로 확정(근거: overall.md §5.9). `experiment_config.yaml`/`run_experiment.py`에 반영, manifest 재생성으로 확인(c2 row에 `max_budget_seconds`/`budget_snapshots` 필드 생김). §5.4 GPU-hour 합계도 186~250h 범위에서 **250h로 확정**
 - [x] §5.11 조기 종료 규칙 동결 — 2026-08-13. 메인은 budget-end checkpoint 유지, 보조 실험(8·12-view만, 3~5 scene, Vanilla3DGS+FSGS, 촘촘한 snapshot으로 validation-view 조기종료 시뮬레이션)을 부록용으로 확정
 - [x] §5.12 통계 분석 계획 최종 동결 — 2026-08-13. scene cluster bootstrap(기존 구현 재확인) + Holm 보정 family를 방법쌍당 32비교로 정의 + **τ를 5-scene/seed×3 파일럿 실측으로 처음 확정**(2/4-view: 0.5dB, 8/12-view: 1.4dB — view_count별 seed 노이즈가 10배 이상 차이 나서 단일 τ 부적절). 이 과정에서 "8-view 역전" 서술이 pooled 평균의 착시였음을 발견·정정(아래 11번 참고)
@@ -36,7 +36,7 @@
   - **DL3DV 이식 완료** (2026-08-12, `core/dl3dv_dataset.py` + `analysis/generate_dl3dv_view_overlap.py` 신규): 카메라 규약은 DepthSplat 공식 변환 스크립트(`convert_dl3dv_train.py`)로 재현(blender c2w → opencv w2c). pilot 25 scene × 4 view_count = 100 combo 실행. 결과: 2-view는 25개 전부 overlap 0(RE10K/DTU와 동일 패턴, 세 번째 데이터셋 재현). **4-view도 14/25(56%)가 overlap 0** — RE10K(4-view 전부 정상)보다 훨씬 나쁨. 8-view부터 전부 정상(median 0.288), 12-view median 0.220.
   - **중요한 한계**: RE10K는 MVSplat 공식 context/target index(자기들 학습 시 쓰는 근접-프레임 제약이 이미 반영됨)를 그대로 썼지만, DL3DV는 그런 공식 index 파일이 없어서(`generate_dl3dv_index.py`는 scene_key→chunk 매핑만 만들 뿐, view 선택 index는 아님 — 확인함) 전체 250~400 프레임 중 순수 랜덤으로 뽑았다. 그래서 "4-view도 56%가 overlap 0"이라는 수치는 DL3DV 자체의 성질이라기보다 **우리 view 선택 방식이 DepthSplat 분포보다 더 넓게 퍼진 탓일 가능성이 큼**.
   - **DepthSplat 실제 test-time 샘플링 알고리즘 확인함**(`view_sampler_bounded_v2.py::sample()`, 2026-08-12 코드 리딩): test 시점엔 `context_gap = max_distance_between_context_views`로 고정(무작위 아님), `index_context_left = 0`으로 고정(즉 매 scene의 **첫 프레임부터 시작**), window `[0, context_gap]` 안에서 `extra_views_sampling_strategy="farthest_point"`(config 값)로 `num_context_views`개를 뽑는다. 우리 config 기준 4-view는 `context_gap=50`(=`max_distance_between_context_views`). 8/12-view용 gap 값은 별도 config가 없어 확인 못 함. 공정한 재실행을 하려면 이 알고리즘(고정 window + farthest-point-sample, 전체 영상 랜덤 아님)을 그대로 구현해야 함 — 다음 항목으로 기록, 아직 미착수
-- [ ] RE10K citation/license 문구 논문용 정리
+- [x] RE10K citation/license 문구 논문용 정리 — 2026-08-13. RE10K(Zhou et al. 2018, CC BY 4.0), DL3DV-10K(Ling et al. 2024, CC BY-NC 4.0) 인용/라이선스/BibTeX와 논문용 문단 초안 작성. `experiments/docs/reference/dataset_citations.md`
 
 ## 모델 / 러너
 
@@ -111,7 +111,7 @@
 - [x] 위 부호 이상 현상 재해석 완료 (2026-08-12, A-1 완료 후 사용자와 직접 분석). raw corr +0.952 → baseline 선형 통제해도 +0.801(불충분) → shared_points 가설 세워서 검증했으나 기각(+0.071, 무관) → baseline이 log-log 관계(power-law)임을 확인하고 log(baseline)로 통제하니 +0.301로 크게 감소. 결론: 원래 가설(baseline 교란)이 맞았고, 처음 선형 통제가 함수형을 잘못 잡아서 가짜 잔차가 남았던 것. 전체 유도·해석·논문 초안 문장: `paper/paper_geometry_confound_analysis_2026-08-12.md`, 재현 코드는 `geometry_uncertainty_figure.py::print_confound_analysis()`에 통합
 - [ ] RE10K/DL3DV(경로형 카메라)에서도 같은 baseline-overlap 관계가 성립하는지 확인 — DTU(orbital rig)와 다를 수 있음
 - [x] co-visibility 기반 view selector 구현 (모델/러너 섹션과 중복 추적, 2026-08-13 완료)
-- [ ] overlap bucket threshold를 본 실험용으로 동결
+- [x] overlap bucket threshold를 본 실험용으로 동결 — **2026-08-13, 접근 자체가 바뀌어서 상위호환으로 해소됨.** 원래는 "후보 1개를 만들고 사후 측정한 overlap 값으로 scene을 low/high로 분류할 threshold"를 정하는 게 목적이었는데, 이제 `core/view_selector.py`가 같은 scene에서 low/high 후보를 **직접 선택**해서 만든다(§모델/러너 "co-visibility selector" 항목 참고) — threshold로 사후 분류할 필요 자체가 없어짐. 남은 일은 이 selector를 30-scene 전체로 확장하는 것뿐(아직 3-scene pilot 검증만 됨)
 
 ---
 

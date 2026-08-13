@@ -163,6 +163,8 @@ CUDA 최초 컴파일은 제외하되 모든 방법을 같은 조건으로 warm-
 
 **결론:** main 실험 축의 view_counts=[2,4,8,12] 중, MVSplat은 사실상 2-view만 학습 분포 내이고 4/8/12는 저자 기준으로도 공식 범위 밖이다. DepthSplat은 우리 체크포인트 기준 2~6-view가 학습 분포이므로 8/12-view는 분포 밖, 4-view까지는 분포 내로 볼 수 있다(단 실측은 아직 2-view뿐). `model_registry.py`의 `supports_views`가 지금까지 네 모델 모두 `[2, 4, 8, 12]`로 동일한 placeholder였던 것을 이 표 기준으로 갱신했다(아래 참고). 학습 분포를 벗어난 view 수의 결과는 정상 성능 비교가 아니라 분포 밖 사용 결과이므로, 4/8/12-view MVSplat과 8/12-view DepthSplat 결과는 regime map 본문에서 "OOD 사용"으로 별도 표기하고 §5.2 경계 밖 취급한다.
 
+**Confidence/uncertainty 출력 — 2026-08-13 결정.** 애초 계획은 각 모델이 자체적으로 내는 confidence/uncertainty 출력을 지표 중 하나로 비교하는 것이었으나, 소스코드를 직접 확인한 결과 **세 방법 모두 기본 설정에서 실질적인 confidence 출력이 없다**: MVSplat/DepthSplat은 관련 출력 자체가 코드에 없음(grep 0건), FSGS는 `GaussianModel.confidence`/`pipe.use_confidence` 필드가 있지만 초기화 시 전부 1.0으로 고정되고(`torch.ones_like(opacities)`) 우리 `fsgs_runner.py`를 포함해 기본 설정에서 `use_confidence=False`라 실제로는 상수 placeholder일 뿐 학습된 신호가 아니다. **대체 지표**: feed-forward 쪽은 확인된 신호가 없어 대체할 것이 없다는 사실 자체를 Limitations에 명시하고, optimization 쪽은 오늘 실측한 per-Gaussian gradient observation count(`gaussian_gradient_accumulation_probe.py`, `paper_gaussian_observation_starvation_2026-08-13.md`)를 "명시적 confidence는 아니지만 방법 내부에서 뽑을 수 있는 신뢰도에 가까운 대체 신호"로 논문에 서술한다 — 단, 이는 optimization 계열에만 존재하는 비대칭이라는 점을 함께 명시한다.
+
 ### 5.3 Overlap 계산식 — 수식·집계·선택 편향 차단
 
 - **Pairwise 주 지표:** `O_ij = 2|P_i ∩ P_j| / (|P_i| + |P_j|)`, `P_i`는 view `i`가 관측한 SfM point 집합
