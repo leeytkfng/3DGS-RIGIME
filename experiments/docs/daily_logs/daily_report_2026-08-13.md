@@ -182,3 +182,20 @@
 
 **논문 연결**: 그림 2개가 이미 실제 데이터로 채워져서 §5(실패 분석)이 이제 표+그림 다 갖춘 상태가 됐다. 남은 그림(Regime Map heatmap, Pareto, 정성적 비교)은 C1-a 완료 후 같은 스크립트 패턴으로 만들면 된다.
 
+---
+
+## 오늘 마무리 (2026-08-13 종료 시점)
+
+**오늘 하루의 흐름**: seed×3 파일럿 검증(§1) → seed/scene grid 재설계(§7, 20×3→30×2, GPU-hour 불변 확인) → FSGS RE10K/DL3DV 확장 + 진짜 버그 발견·수정(§9~10, view-selection이 seed 무시하던 문제) → co-visibility selector 구현 및 전체 규모 검증(§11, §14) → §5.11/§5.12 동결 + τ 실측(§12, "8-view 역전"이 착시였음을 발견·정정) → **C1-a 30-scene 본 실험 착수**(§13) → 병행 작업(citation 정리, confidence 결정, 원자적 쓰기로 crash-safe 재개 보장) → **논문 초안 작성**(§15) → 사용자 편집분 검증 + 그림 2개 실제 생성 + 학습 계획 문서화(§16).
+
+**진행 중인 것**: C1-a 본 실험, 19/120 combo 완료(약 15.8%), 13:30 UTC 기준 페이스 유지 중 — 재개 가능(원자적 쓰기 적용됨), 대시보드로 모니터링 가능.
+
+**내일 이어갈 것**:
+1. C1-a 본 실험 진행 상황 확인, 대시보드 갱신
+2. (병행 가능) DL3DV 밀린 것들 — DepthSplat C1-b v2 재실행, Vanilla3DGS/MVSplat DL3DV 통제 스모크
+3. (병행 가능) overlap_level 축을 C1-a에 추가할 준비(selector는 이미 전체 검증 끝남)
+4. SplatFormer 인용(`\chk{}` 표시분) 원문 확인
+5. 사용자 학습: `study_plan.md` Step 1(densification 메커니즘)부터
+
+모든 작업 커밋 완료, working tree clean.
+
