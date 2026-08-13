@@ -170,3 +170,15 @@
 
 **논문 연결**: 이제 C1-a 결과가 나오면 §4(Regime Map)만 채우면 되는 상태. 나머지(C1-b/C2/Guideline)도 실험이 끝나는 대로 같은 파일에 이어서 채우면 된다.
 
+## 16. 논문 초안 사용자 편집분 검증 + 그림 추가 + 학습 계획 문서화
+
+**실험 목적**: 사용자가 직접 `main.tex`를 대폭 개선(프로토콜 절 확장, 학습 view 분포 이탈 절 신설, 인용 8개 추가)했는데, 이 인용들의 정확성을 검증하고, 논문에 필요한 그림 자리(및 이미 만들 수 있는 그림은 실제로)를 채우고, 사용자의 개인 학습 계획을 상세히 기록해달라는 요청.
+
+**쉽게**: 사용자가 추가한 논문 인용 8개를 하나하나 실제 논문과 대조했다. 7개는 저자·학회까지 정확했지만(Diff3R는 이름 철자 오타 하나 발견해서 고침), 1개(SplatFormer)는 인용된 구체적인 주장이 그 논문 자체에서 확인이 안 돼서 `\chk{}`로 표시해뒀다 — 확인 전까지는 그 문장을 빼는 게 안전하다. 그림은 이미 갖고 있는 실측 데이터(오늘 만든 observation starvation, geometry confound 분석)로 진짜 그림 2개를 만들어 논문에 박아 넣었고(수치가 문서에 적힌 것과 정확히 일치: 0.952, -0.989), 아직 결과가 없는 것들(Regime Map, Pareto, 정성적 비교)은 만드는 방법까지 적어서 자리만 비워뒀다. 파이프라인 다이어그램은 "이 논문은 새 모델을 안 만드니 굳이 필요 없고, 대신 실험 설계 개요 그림 하나만 있으면 된다"고 추천했다.
+
+**전문 용어**: 인용 검증은 웹서치로 arXiv abstract/저자 목록을 직접 대조(Diff3R arXiv:2604.01030, ForeSplat arXiv:2605.22020 11인 전체 저자, SplatFormer ICLR 2025, Omni-Scene CVPR 2025, gsplat arXiv:2409.06765 — 전부 저자명까지 정확히 일치). `experiments/scripts/analysis/make_paper_figures.py` 신규 — `gaussian_grad_probe/summary_v2.json`과 `geometry_figures/pairwise_geometry.csv`에서 직접 그림 생성, 한글 폰트 미보유로 라벨은 영문 처리. 문서 구조(중괄호 균형, cite-bibitem 매칭, includegraphics 경로 존재, label 중복/미정의 참조)를 매번 스크립트로 재검증.
+
+**결과**: `experiments/docs/paper/study_plan.md` 신규 — 완료(야코비안/공분산, Vanilla 3DGS) 대비 다음 5단계(densification 메커니즘→3DGS 원논문→FSGS→MVSplat→DepthSplat)를 읽을 자료/대조 코드/이해 목표/확인 질문까지 구체적으로 기록. 1단계(densification)를 최우선으로 추천한 이유는 오늘 발견한 observation starvation과 정확히 겹치기 때문.
+
+**논문 연결**: 그림 2개가 이미 실제 데이터로 채워져서 §5(실패 분석)이 이제 표+그림 다 갖춘 상태가 됐다. 남은 그림(Regime Map heatmap, Pareto, 정성적 비교)은 C1-a 완료 후 같은 스크립트 패턴으로 만들면 된다.
+
