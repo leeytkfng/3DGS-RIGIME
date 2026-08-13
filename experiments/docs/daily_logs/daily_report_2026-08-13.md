@@ -108,3 +108,15 @@
 
 **논문 연결**: 체크리스트의 "본실험 착수 전 필수 4개" 중 하나가 끝났다 — 이제 co-visibility selector, §5.11/§5.12 동결만 남으면 30-scene 본 실험에 세 방법론(Vanilla3DGS/MVSplat/FSGS) 전부를 포함해 착수할 수 있다.
 
+## 11. co-visibility selector 구현 — overlap_levels(고/저) 축을 실제로 통제
+
+**실험 목적**: `run_experiment.py`의 manifest 생성 코드를 읽어보니 `product(scenes, seeds, view_counts, overlap_levels, budgets, methods)`로 되어 있어, **같은 scene·view_count에서 overlap=low 행과 overlap=high 행이 둘 다 나와야 한다**고 이미 전제하고 있었다. 그런데 지금까지 RE10K/DL3DV의 view 후보는 scene·view_count당 1개만 만들고 overlap은 사후 측정만 했다 — "선택" 로직 자체가 없었다(체크리스트가 오래전부터 지적하던 공백).
+
+**데이터/특징**: 기존 candidate 파일(`re10k_main_subset.json`, `dl3dv_overlap_v2/`)은 이번 세션에 이미 여러 실측 결과(C1-a seed×3 파일럿, FSGS 검증 등)가 참조하고 있어 건드리지 않고 그대로 뒀다. 대신 새 selector와 검증 결과는 완전히 별도 파일로 남겼다(DL3DV v1→v2 전환 때 썼던 것과 같은 보존 원칙).
+
+**쉽게**: "가까이 모여있는 view들을 뽑으면 overlap이 높고, 멀리 퍼진 view들을 뽑으면 overlap이 낮다"는 직관을 그대로 알고리즘으로 만들었다. 같은 방법(farthest-point sampling — 이미 뽑은 점들에서 가장 먼 점을 계속 추가하는 방식)을 좁은 구간에만 적용하면 "high overlap 후보", 전체 구간에 적용하면 "low overlap 후보"가 된다. 그리고 실제로 만들어본 후보들의 overlap을 측정해서 진짜 그렇게 나오는지 확인했다.
+
+**전문 용어**: `core/view_selector.py` 신규(`farthest_point_sample`은 DL3DV v2 스크립트에 있던 DepthSplat 재현 로직을 공용 모듈로 승격). RE10K 3 scene × view_count{2,4,8,12}로 실측: **12/12 조건에서 high≥low 확인**(4-view 기준 mean_overlap 0.82 vs 0.75, 8-view 0.62~0.75 vs 0.40~0.58 등). DL3DV 3 scene도 실측: **11/12 조건 확인**, 단 1개(`365d7c...` scene, 12-view)는 방향이 반대로 나왔다(high=0.227, low=0.400) — DL3DV가 RE10K보다 궤적이 다양해서(루프형 등) 좁은 window라고 항상 overlap이 높다는 보장이 없는 경우가 있는 것으로 추정, 정직하게 기록. 결과: `re10k_overlap_candidates.json`, `dl3dv_overlap_lowhigh/`.
+
+**논문 연결**: §4.1의 "View overlap: 고/저" 축이 이제 실제로 구현 가능한 상태가 됐다. 지금은 파일럿 규모(scene 3개) 검증이고, 30-scene 본 실험 착수 시 전체 scene으로 확대 적용해야 한다 — DL3DV의 1건 실패 사례도 전체 적용 시 재확인 필요. 이걸로 "본실험 착수 전 필수 4개" 중 남은 건 §5.11/§5.12 동결뿐이다.
+

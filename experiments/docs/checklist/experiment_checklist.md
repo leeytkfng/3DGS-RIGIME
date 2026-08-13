@@ -54,7 +54,7 @@
 - [x] RE10K `.torch` chunk를 정식 runner 입력으로 연결 — 2026-08-12, `core/re10k_dataset.py::load_views()`가 vanilla_3dgs_runner.py/mvsplat_re10k_runner.py 양쪽에서 실사용 중
 - [x] Vanilla3DGS/MVSplat을 RE10K 256x256에서 실제로 실행 — 2026-08-12 밤 완료. C1-b(warm-start) 20-scene × 4 view_count, C1-a 파일럿(일반 COLMAP init) 5-scene × 4 view_count, 둘 다 실측 로그 있음(아래 V3/C1-a 항목 참고)
 - [x] densification on/off CLI 추가 — 2026-08-12, `vanilla_3dgs_runner.py`에 `--densification {on,off}` 추가(off는 `refine_stop_iter=0` 강제), `run_experiment_batch.py`에도 pass-through 배선. DTU scan1 4-view 90s 실측으로 검증: on은 gaussians 313→516→799→2120(30/60/90s), off는 끝까지 313 고정. 로그 파일명에 `_densoff` suffix를 붙여 on/off 결과가 서로 덮어쓰지 않게 함.
-- [ ] co-visibility 기반 view selector 구현 — overlap 계산 도구(`generate_overlap.py`)는 있지만 "선택" 로직 자체가 없음(grep 0건)
+- [x] co-visibility 기반 view selector 구현 — 2026-08-13, `core/view_selector.py` (아래 "다음 우선순위" 16번 참고)
 - [x] **V3/C1-b 파이프라인(메커니즘) 완성 + DTU로 end-to-end 검증** (2026-08-12):
   - [x] FF(MVSplat/DepthSplat) Gaussian → gsplat 포맷 변환기(`core/ff_gaussian_convert.py`) — covariance 고유분해→scale/quat, opacity inverse-sigmoid, harmonics 재배열. 합성 데이터 round-trip으로 검증(covariance 재구성 오차 최대 2.6e-6)
   - [x] 렌더 등가성 gate 검사 함수(`analysis/check_renderer_equivalence.py`) — DTU scan1 2-view 실제 MVSplat 출력(13만 Gaussian)으로 held-out 7-view 재렌더링 비교, PSNR 35.6~42.0dB로 PASS. `overall.md` §5.8에 실측 근거로 tolerance 재정의(MSE 0.0001→PSNR≥33dB 제안, 파일럿 전 확정 필요)
@@ -110,7 +110,7 @@
 - [x] overlap-uncertainty 부호 이상 현상 발견 및 원인 분석(baseline confound)
 - [x] 위 부호 이상 현상 재해석 완료 (2026-08-12, A-1 완료 후 사용자와 직접 분석). raw corr +0.952 → baseline 선형 통제해도 +0.801(불충분) → shared_points 가설 세워서 검증했으나 기각(+0.071, 무관) → baseline이 log-log 관계(power-law)임을 확인하고 log(baseline)로 통제하니 +0.301로 크게 감소. 결론: 원래 가설(baseline 교란)이 맞았고, 처음 선형 통제가 함수형을 잘못 잡아서 가짜 잔차가 남았던 것. 전체 유도·해석·논문 초안 문장: `paper/paper_geometry_confound_analysis_2026-08-12.md`, 재현 코드는 `geometry_uncertainty_figure.py::print_confound_analysis()`에 통합
 - [ ] RE10K/DL3DV(경로형 카메라)에서도 같은 baseline-overlap 관계가 성립하는지 확인 — DTU(orbital rig)와 다를 수 있음
-- [ ] co-visibility 기반 view selector 구현 (모델/러너 섹션과 중복 추적)
+- [x] co-visibility 기반 view selector 구현 (모델/러너 섹션과 중복 추적, 2026-08-13 완료)
 - [ ] overlap bucket threshold를 본 실험용으로 동결
 
 ---
@@ -144,6 +144,6 @@
 13. ~~FSGS sparse-init 방법론 편차 문서화~~ ✅ (2026-08-13) — `overall.md` §4.2에 편차 사유(공정성·재현성)와 논문 methods/limitations 서술 의무를 명시. FSGS가 Vanilla3DGS를 못 이기는 결과도 유효한 보고 대상(SplatFormer 유사 사례, 인용은 논문 작성 시 원문 확인 필요)으로 프레이밍. dense-MVS 3~5 scene 보조 검증은 낮은 우선순위 백로그로 기록(COLMAP CLI dense MVS 미보유가 선행 조건)
 14. ~~fsgs_runner.py 작성 + model_registry.py 등록~~ ✅ (2026-08-13, 세부는 §모델/러너 섹션 참고). DTU 8-view(seed0/1)·2-view(random-sphere fallback) 실측 검증 완료
 15. ~~fsgs_runner.py를 RE10K/DL3DV로 확장~~ ✅ (2026-08-13) — `prepare_views_for_fsgs()`(dataset-agnostic) 신규, RE10K(near/far=1.0/100.0)·DL3DV(near/far=0.5/200.0) 8-view smoke test 통과, DTU 회귀 테스트도 통과. DTU/RE10K/DL3DV 세 데이터셋 모두 지원
-16. **[다음]** co-visibility selector 연결
+16. ~~co-visibility selector 연결~~ ✅ (2026-08-13) — `core/view_selector.py` 신규: 같은 farthest-point-sampling 알고리즘을 좁은 window(high overlap 목표)/전체 범위(low overlap 목표) 두 pool에 적용해 같은 scene에서 low/high 후보를 둘 다 만든다(`run_experiment.py`의 manifest가 이미 scene×view_count×overlap_level cartesian product를 전제하고 있어 이 방식이 필요했음). **기존 candidate 파일은 보존**(이번 세션 실측 결과가 참조 중) — 검증 결과는 별도 파일(`re10k_overlap_candidates.json`, `dl3dv_overlap_lowhigh/`)로. 실측 검증: RE10K 3 scene 12/12 조건에서 high≥low 확인, DL3DV 3 scene 11/12(365d7c... scene 12-view만 방향 반대 — 루프형 궤적 등 scene별 예외 가능성, 전체 적용 시 재확인 필요). 30-scene 본 실험 착수 시 전체 scene으로 확대 적용 필요(지금은 파일럿 검증 규모)
 17. C1-a를 main subset **30 scene × seed 2회**로 스케일업(진짜 본 실험, 2026-08-13 grid 결정 반영) — Vanilla3DGS/MVSplat/FSGS 세 방법론 모두 포함해 착수 가능
 18. §5.11(조기 종료 규칙)·§5.12(통계 분석 계획) 동결 — 아직 미결 항목으로 남아있음, 본 실험 착수 전 필요
