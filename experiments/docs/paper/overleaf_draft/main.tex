@@ -1,0 +1,337 @@
+% !TEX program = xelatex
+% Overleaf: 컴파일러를 XeLaTeX 또는 LuaLaTeX로 설정할 것 (Menu > Compiler).
+% kotex이 한글을 처리하므로 pdfLaTeX로는 컴파일되지 않는다.
+\documentclass[11pt]{article}
+
+\usepackage{kotex}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+
+\title{Sparse-view 3D Gaussian Splatting에서\\Feed-forward와 장면별 최적화의 우위 조건 분석}
+\author{\todo{저자명/소속}}
+\date{\today\ (초안 — 실험 진행 중)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+사진 몇 장으로 3D 장면을 재구성하는 방법은 크게 두 갈래로 나뉜다. 하나는 미리 학습한 모델에 사진을 넣으면 즉시 3D Gaussian을 출력하는 feed-forward 방식이고, 다른 하나는 새 장면마다 그 장면 전용으로 반복 최적화하는 per-scene optimization 방식이다. 본 연구는 새로운 알고리즘을 제안하는 대신, \textbf{입력 view 수, view 간 겹침 정도(co-visibility overlap), 사용 가능한 계산 시간 예산}을 통제 축으로 삼아 대표 시스템들(feed-forward: MVSplat, DepthSplat; per-scene optimization: Vanilla 3D Gaussian Splatting, FSGS)의 실용적 우위 지도(regime map)를 그린다. 동일한 feed-forward 초기값에서 표준 3DGS refinement를 켜고 끄는 통제 실험으로 최적화의 순효과를 분리하고, 카메라 기하학 기반 불확실도 분석과 통제된 depth noise 개입으로 우위가 갈리는 원인을 설명하며, 마지막으로 조건별 선택 가이드라인을 제시한다. \todo{실험 완료 후 핵심 수치 1--2개를 요약에 추가}
+\end{abstract}
+
+\todo{본 문서는 실험이 진행 중인 상태의 초안이다. 표/수치가 비어 있는 절은 명시적으로 표시했다. 산문(서론, 관련 연구, 프로토콜, 일부 분석)은 지금까지 확정된 내용을 그대로 담았다.}
+
+% =====================================================================
+\section{서론 (Introduction)}
+% =====================================================================
+
+Sparse-view(입력 사진이 매우 적은) 조건에서 3D 장면을 재구성하는 문제는 두 가지 서로 다른 계열의 접근으로 발전해 왔다. 첫 번째는 3D Gaussian Splatting~\cite{kerbl20233d}으로 대표되는 \emph{per-scene optimization} 계열로, 각 장면마다 처음부터 반복적인 경사하강법으로 Gaussian 파라미터를 학습한다. 사진이 충분하고 시간이 허락되면 매우 높은 품질의 재구성을 얻을 수 있지만, sparse-view 조건에서는 초기화가 빈약하고 관측이 부족해 densification이 불안정해지는 것으로 알려져 있다. 두 번째는 pixelSplat~\cite{charatan2024pixelsplat}, MVSplat~\cite{chen2024mvsplat}, DepthSplat~\cite{xu2025depthsplat} 등으로 대표되는 \emph{feed-forward} 계열로, 사전 학습된 신경망이 입력 사진에서 단일 forward pass로 3D Gaussian을 직접 예측한다. 추론이 매우 빠르고 sparse-view에 강인하지만, 학습 시 본 입력 분포(view 수, 데이터셋)를 벗어나면 성능이 급격히 저하되는 한계가 있다.
+
+두 계열을 sparse-view 특화 기법(FSGS~\cite{zhu2024fsgs}, SparseGS 등)으로 보강한 연구도 있지만, \textbf{"어떤 조건에서 어느 패러다임을 선택해야 하는가"}에 답하는 체계적인 비교는 아직 부족하다. 기존 논문들은 대개 (1) 자신의 방법이 유리한 소수의 벤치마크에서만 비교하고, (2) 계산 시간을 독립 축으로 다루지 않으며, (3) view 수와 view 간 겹침(overlap)을 혼동한 채 "sparse-view 성능"을 단일 스칼라로 보고한다.
+
+본 논문은 새로운 방법을 제안하는 대신, 다음 연구 질문에 답하는 \textbf{실증 연구(empirical study) + 통제 분석(controlled analysis) + 실패 분석(failure analysis)}을 수행한다:
+
+\begin{quote}
+\emph{"Sparse-view 3D 재구성에서 입력 view 수, view overlap, 계산 시간 예산에 따라 feed-forward와 per-scene optimization의 품질--효율 우위는 어떻게 변화하며, 그 역전 경계는 무엇이 결정하는가?"}
+\end{quote}
+
+핵심 메시지는 \textbf{"보편적으로 우월한 패러다임은 없으며, 실용적 선택은 조건의 함수"}라는 것이다. 논문의 서사는 다음 사슬을 따른다: (i) Regime Map으로 \emph{어디서} 우위가 갈리는지 지도를 그리고, (ii) 기하 불확실성 프록시와 최적화 동역학으로 \emph{왜} 갈리는지에 대한 증거를 제시하고, (iii) 동일 초기값 refinement on/off 통제 실험과 depth noise 개입으로 그 인과관계를 \emph{검증}하며, (iv) 마지막으로 조건별 \emph{선택 가이드라인}을 제시한다.
+
+\paragraph{기여.} 본 논문의 기여는 다음과 같다.
+\begin{itemize}
+  \item \textbf{품질--시간 Regime Map}: view 수 $\times$ overlap $\times$ 계산 예산 격자에서 대표 시스템들의 실용적 승패 영역과 품질--시간 Pareto frontier를 제시한다 (\S\ref{sec:results}).
+  \item \textbf{동일 초기값 Refinement On/Off 통제 실험}: feed-forward 출력을 고정한 뒤 표준 3DGS refinement의 순효과만을 분리해 측정한다 (\S\ref{sec:results}).
+  \item \textbf{기하 불확실성--렌더링 실패 연결 분석}: 카메라 기하학에 기반한 불확실도 프록시, densification gradient의 관측 부족(observation starvation) 메커니즘, 통제된 depth noise 개입을 통해 초기 geometry 오차가 렌더링 실패로 이어지는 경로를 분석한다 (\S\ref{sec:failure}).
+  \item \textbf{실용 가이드라인}: 위 분석에서 파생되는 조건별 선택 규칙을 제시한다 (\S\ref{sec:guideline}).
+\end{itemize}
+
+% =====================================================================
+\section{관련 연구 (Related Work)}
+% =====================================================================
+
+\paragraph{Per-scene optimization.} 3D Gaussian Splatting~\cite{kerbl20233d}은 명시적 3D Gaussian 집합을 미분 가능한 rasterization으로 최적화해 실시간 렌더링 품질의 novel view synthesis를 달성했다. 원 논문은 densification(grow/split), opacity reset, pruning으로 구성된 adaptive density control을 통해 sparse한 초기 point cloud(COLMAP structure-from-motion)에서 시작해 조밀한 표현으로 성장시킨다. 이 densification 메커니즘은 view가 조밀할 때는 잘 동작하지만, sparse-view 조건에서는 관측 부족으로 불안정해지는 것으로 알려져 있으며, 본 논문 \S\ref{sec:failure}에서 이 메커니즘을 직접 코드 수준에서 추적해 정량화한다. FSGS~\cite{zhu2024fsgs}는 이 문제를 겨냥해 proximity-guided Gaussian unpooling과 사전학습된 monocular depth 모델(MiDaS) 기반 pseudo-view depth 정규화를 추가한 sparse-view 특화 변형이다.
+
+\paragraph{Feed-forward reconstruction.} pixelSplat~\cite{charatan2024pixelsplat}은 이미지 쌍에서 epipolar attention으로 3D Gaussian을 직접 회귀하는 첫 scalable feed-forward 방법을 제시했다. MVSplat~\cite{chen2024mvsplat}은 plane-sweep 기반 cost volume으로 depth를 추정해 Gaussian 중심을 더 정확히 위치시켰다. DepthSplat~\cite{xu2025depthsplat}은 사전학습된 monocular depth feature를 cost volume에 융합해 더 넓은 view 수 범위에서도 강인한 depth 추정을 달성했다. 이 계열의 방법들은 학습 시 사용한 view 수 분포(예: MVSplat의 RE10K 체크포인트는 고정 2-view)를 벗어나면 성능이 저하되는 것으로 알려져 있으나, 이 저하가 \emph{정량적으로 얼마나} 되는지, 그리고 \emph{어느 지점에서} per-scene optimization이 이를 역전하는지는 기존 문헌에서 체계적으로 다뤄지지 않았다.
+
+\paragraph{Sparse-view 벤치마크와의 차이.} 기존 sparse-view 벤치마크는 대개 고정된 view 수(3--12장 내외)에서 단일 시간 예산(대개 완전 수렴)으로 방법들을 비교한다. 본 연구는 view 수, overlap, \emph{계산 시간 예산}을 모두 독립 통제 축으로 다뤄, "시간을 더 주면 optimization이 feed-forward를 언제 따라잡는가"라는 질문에 직접 답한다는 점에서 다르다. 또한 overlap을 view 수와 분리된 별도 축으로 명시적으로 통제한다(\S\ref{sec:overlap}) — 같은 view 수라도 카메라 배치에 따라 co-visibility가 크게 달라질 수 있기 때문이다.
+
+% =====================================================================
+\section{실험 프로토콜 (Experimental Protocol)}
+% =====================================================================
+
+\subsection{공정성 원칙}
+
+\paragraph{Pose-given track 통일.} 모든 방법에 동일한 카메라 pose를 제공한다. 한쪽에 정답 pose, 다른 쪽에 COLMAP 추정 pose를 주면 패러다임 비교가 아니라 pose 정확도 비교가 된다. Pose-free 세팅은 본 연구 범위 밖이다.
+
+\paragraph{입력 해상도 상속.} Feed-forward 체크포인트가 학습한 입력 해상도를 그대로 따른다 (RE10K: $256\times256$; DL3DV/DepthSplat track: $256\times448$). Per-scene optimization도 같은 이미지로 학습·평가해야 공정한 비교가 된다.
+
+\paragraph{주장 수위와 교란요인.} 서로 다른 시스템 간 성능 차이는 학습 데이터, 모델 크기, 학습 view 수, depth prior, 구현 최적화의 영향을 함께 받는다. 본 논문의 주 결과(Regime Map)는 "대표 시스템들의 실용적 우위 영역"으로 서술 수위를 제한하고, refinement 효과에 관한 인과적 진술은 모델 요인을 고정한 \S\ref{sec:c1b}의 통제된 범위 안에서만 제기한다.
+
+\subsection{비교 대상}
+
+\begin{table}[h]
+\centering
+\caption{비교 대상 방법론}
+\label{tab:methods}
+\begin{tabular}{@{}lllp{6.5cm}@{}}
+\toprule
+방법 & 계열 & 학습 view 분포 & 비고 \\
+\midrule
+MVSplat~\cite{chen2024mvsplat} & Feed-forward & RE10K: 고정 2-view & 4/8/12-view는 학습 분포 밖(OOD) \\
+DepthSplat~\cite{xu2025depthsplat} & Feed-forward & DL3DV 체크포인트: 2--6-view & 8/12-view는 학습 분포 밖 \\
+Vanilla 3DGS~\cite{kerbl20233d} & Optimization & 해당 없음 & COLMAP sparse triangulation 초기화 \\
+FSGS~\cite{zhu2024fsgs} & Optimization (sparse 특화) & 해당 없음 & 원 논문은 dense-MVS 초기화를 쓰나, 본 연구는 공정성을 위해 Vanilla 3DGS와 동일한 sparse COLMAP 초기화로 대체함(명시적 프로토콜 편차, 아래 참고) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+각 데이터셋에는 그 데이터셋으로 학습된 in-domain feed-forward 모델을 짝짓는다: RE10K에는 MVSplat, DL3DV에는 DepthSplat. 두 optimization 방법(Vanilla 3DGS, FSGS)은 두 데이터셋 모두에서 동일하게 평가된다.
+
+\paragraph{FSGS 초기화에 대한 명시적 편차.} FSGS 원 논문은 \texttt{colmap patch\_match\_stereo}로 생성한 dense multi-view stereo point cloud를 초기화로 사용한다. 본 연구 환경에는 COLMAP CLI의 dense MVS 모듈이 없어(pycolmap 파이썬 바인딩만 보유), Vanilla 3DGS와 동일한 sparse COLMAP triangulation을 대신 사용한다. 이는 (i) 두 optimization 방법에 서로 다른 초기화 품질을 주면 "sparse-view 특화 기법 대 일반 기법" 비교가 아니라 "dense init 대 sparse init" 비교로 오염되고, (ii) dense MVS는 본 연구 인프라에 없는 외부 의존성이기 때문에 의도적으로 선택했다. 이로 인해 FSGS의 보고 성능이 원 논문보다 낮게 나올 수 있으며, 이는 알고리즘 결함이 아니라 초기화 조건 차이임을 명시한다. FSGS가 Vanilla 3DGS를 능가하지 못하는 결과가 나오더라도 이는 유효한 보고 대상이다 — SplatFormer 계열 연구에서도 유사한 결과가 보고된 바 있다. \todo{SplatFormer 원문 확인 후 정식 인용 추가}
+
+\subsection{데이터셋}
+
+주 데이터셋은 RealEstate10K~\cite{zhou2018stereo} (CC BY 4.0), 보조 데이터셋은 DL3DV-10K~\cite{ling2024dl3dv} (CC BY-NC 4.0, 비상업적 연구 목적)이다. RealEstate10K는 MVSplat 공식 평가 프로토콜과 동일한 test split에서 30개 scene을 사용하며(20개는 공식 evaluation index와의 교집합에서 결정론적으로 선정, 나머지 10개는 재현성 보존을 위해 별도 seed로 추가 확장), DL3DV-10K는 \texttt{DL3DV-ALL-480P}에서 무작위 추출한 25-scene pilot subset을 사용하고 공식 평가 split(\texttt{DL3DV-Benchmark})과 겹치지 않음을 확인했다.
+
+\subsection{통제 축}
+
+\begin{itemize}
+  \item \textbf{View 수}: $\{2, 4, 8, 12\}$
+  \item \textbf{View overlap}: 고/저 2단계 — co-visibility 수치 구간으로 정의 (\S\ref{sec:overlap})
+  \item \textbf{계산 예산}: $\{1, 10, 60, 300\}$초 — end-to-end 시간 기준이 메인 비교, post-initialization 시간은 동역학 분석으로 병기
+\end{itemize}
+
+Domain(데이터셋)은 완전교차 축에서 제외하고 외부 검증(DTU)으로 사용한다.
+
+\subsection{Co-visibility Overlap 정의}
+\label{sec:overlap}
+
+두 view $i,j$의 co-visibility overlap을
+\begin{equation}
+O_{ij} = \frac{2\,|P_i \cap P_j|}{|P_i| + |P_j|}
+\label{eq:overlap}
+\end{equation}
+로 정의한다. 여기서 $P_i$는 view $i$가 관측한 SfM 3D 점 집합이다. SfM 매칭이 실패하거나 공통 점이 임계 미만인 pair는 \textbf{제외하지 않고 $O_{ij}=0$으로 포함}한다 — 매칭 실패 자체가 낮은 overlap의 강한 증거이며, 이런 pair를 제외하면 low-texture/low-overlap 장면에서 overlap이 체계적으로 과대평가되어 regime map의 축이 왜곡되기 때문이다. 집계 시 유효 pair의 중앙값이 아니라 전체 pair(0 포함)의 평균과 하위 25\% 분위수를 함께 산출한다. 고/저 overlap 구간은 전체 분포가 아니라 \textbf{view 수 수준 내에서 층화}해 정의한다.
+
+\paragraph{Co-visibility selector.} 같은 장면에서 고/저 overlap 두 조건을 모두 확보하기 위해, farthest-point sampling을 두 가지 다른 후보 pool에 적용하는 selector를 사용한다: 좁은 index window 안에서 sampling하면 서로 가까운 view들(고 overlap 목표)이, 전체 범위에서 sampling하면 넓게 퍼진 view들(저 overlap 목표)이 선택된다. RE10K 30-scene 전체에서 118/120(98.3\%), DL3DV 25-scene 전체에서 94/100(94\%) 조건에서 의도한 방향(고 $\ge$ 저)이 실측으로 확인되었다.
+
+\subsection{승패 판정 규칙}
+
+$\Delta = \mathrm{PSNR}_{FF} - \mathrm{PSNR}_{OPT}$에 대해
+\begin{equation}
+\text{label} =
+\begin{cases}
+\text{feedforward\_win} & \Delta > \tau \\
+\text{optimization\_win} & \Delta < -\tau \\
+\text{tie} & |\Delta| \le \tau
+\end{cases}
+\label{eq:wtl}
+\end{equation}
+로 판정한다. 임계값 $\tau$는 \emph{seed 변동성}과 \emph{실용적으로 의미 있는 최소 차이}(0.5dB) 중 큰 값으로 정의한다: $\tau = \max(\text{seed 변동성},\ 0.5\text{dB})$. 5-scene $\times$ seed 3회 파일럿에서 seed 변동성을 실측한 결과, view 수에 따라 한 자릿수 이상 차이가 났다 (2/4-view: scene당 평균 0.04--0.17dB; 8/12-view: 0.13--1.41dB) — 따라서 단일 $\tau$ 대신 구간별 $\tau$를 사용한다: $\tau_{2,4\text{-view}} = 0.5$dB, $\tau_{8,12\text{-view}} = 1.4$dB.
+
+\subsection{계산 예산 시점 결과 선택 규칙}
+
+메인 비교는 예산 종료 시점 결과를 사용한다. 방법 $m$과 예산 $B$에 대해 $t_B = \max\{t : t \le B\}$, $Q_m(B) = Q_m(t_B)$로 정의한다. \textbf{Test PSNR이 가장 높은 체크포인트를 사후 선택하지 않는다} — 이는 test leakage이며, 특히 과적합이 주제인 본 연구에서 과적합 현상 자체가 측정에서 지워지는 문제가 있다. Feed-forward의 추론 시간이 $B$를 초과하면 해당 예산 칸은 결과 없음으로 둔다. Test PSNR 기준 최고점은 별도의 oracle peak 분석으로만 보고한다.
+
+\subsection{통계 분석 계획}
+
+\paragraph{독립 단위.} 같은 장면의 seed 반복(2회)은 상관된 표본이므로, 실질적 독립 단위는 run이 아니라 \emph{scene}이다. Scene별로 seed 결과를 먼저 평균 낸 뒤, scene을 단위로 복원추출하는 \textbf{scene cluster bootstrap}으로 95\% 신뢰구간을 산출한다(2000회 리샘플).
+\begin{equation}
+\hat\mu_{\text{scene}} = \frac{1}{S}\sum_{s=1}^{S}\bar y_s, \qquad
+\text{CI}_{95\%} = \left[\,\mathrm{percentile}_{2.5}\{\hat\mu^{(b)}\}_{b=1}^{2000},\ \mathrm{percentile}_{97.5}\{\hat\mu^{(b)}\}_{b=1}^{2000}\,\right]
+\label{eq:bootstrap}
+\end{equation}
+
+\paragraph{다중 비교 보정.} view 수 $\times$ overlap $\times$ 예산 격자에서 다수의 승패 검정이 발생하므로, Holm--Bonferroni 보정을 적용한다:
+\begin{equation}
+p_{(i)}^{\text{adj}} = \max_{j \le i} \left\{ (n-j+1) \cdot p_{(j)} \right\}, \quad p_{(1)} \le \cdots \le p_{(n)}
+\label{eq:holm}
+\end{equation}
+보정 대상 family는 \textbf{방법 쌍(pair)당} 전체 $4 \times 2 \times 4 = 32$개 비교로 정의하며, 서로 다른 방법 쌍(예: Vanilla3DGS-vs-MVSplat, FSGS-vs-MVSplat)은 서로 다른 family로 독립 보정한다.
+
+\subsection{조기 종료 규칙}
+
+메인 결과는 예산 종료 시점 체크포인트를 사용하지만(위), "더 일찍 멈췄어야 한다"는 반론에 대응하기 위해 view 수 $\in \{8, 12\}$ 조건에 한해 \textbf{보조 실험}을 부록으로 수행한다: 기존 context view 중 1개를 학습에서 제외해 별도의 held-out validation view로 두고(메인 비교에 쓰는 고정 test set과는 다름), 촘촘한 budget snapshot으로 validation PSNR이 최종값의 95\%에 처음 도달하는 시점 $t_{95}$을 "조기 종료했다면 멈췄을 시점"으로 정의해, $t_{95}$에서의 test PSNR과 예산 종료 시점 test PSNR의 차이를 보고한다.
+
+\subsection{렌더 등가성 검증 (C1-b 사전 조건)}
+\label{sec:equivalence}
+
+Feed-forward Gaussian을 표준 3DGS 표현(gsplat)으로 변환할 때, 중심 좌표계·scene scale·scale 파라미터화·quaternion convention·opacity의 pre/post-sigmoid 상태·색상(spherical harmonics) 표현을 명시적으로 매핑한다. 변환 전 원래 렌더러와 변환 후 렌더러가 동일 입력 view에서 사실상 같은 영상을 출력하는지 확인하며, \textbf{렌더 등가성이 확보되지 않으면 C1-b를 진행하지 않는다} — 변환 자체의 오차가 refinement 효과로 오인될 수 있기 때문이다.
+
+MVSplat/RE10K 240샘플과 DepthSplat/DL3DV 150샘플, 총 390개의 view별 PSNR을 측정한 결과(전체 median 45.21dB, min 26.76dB), \textbf{PSNR $\ge$ 33dB}를 등가성 기준으로 확정했다. 이 기준으로 390개 중 미달은 9개(2.3\%)뿐이며 대부분 33dB 바로 아래에 몰려 있어 정상적인 cross-renderer 수치 오차(서로 다른 CUDA rasterizer 간 경계 픽셀의 blending 순서/정밀도 차이) 범위로 판단했다.
+
+% =====================================================================
+\section{결과: Regime Map}
+\label{sec:results}
+% =====================================================================
+
+\todo{이 절 전체는 C1-a 본 실험(RE10K 30-scene $\times$ view $\times$ overlap $\times$ budget $\times$ \{MVSplat, Vanilla3DGS $\times$2seed, FSGS $\times$2seed\}) 완료 후 채운다. 현재 진행 중(view\_count $\times$ budget 축, overlap\_level 축은 추가 실행 예정).}
+
+\subsection{품질--시간 Regime Map}
+
+\begin{table}[h]
+\centering
+\caption{View 수 $\times$ 계산 예산별 승패 판정 (RE10K, MVSplat vs. Vanilla3DGS/FSGS, $\tau$ 적용). \todo{본 실험 완료 후 채움}}
+\label{tab:regime}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+View 수 & 1s & 10s & 60s & 300s & \\
+\midrule
+2  & \todo{} & \todo{} & \todo{} & \todo{} & \\
+4  & \todo{} & \todo{} & \todo{} & \todo{} & \\
+8  & \todo{} & \todo{} & \todo{} & \todo{} & \\
+12 & \todo{} & \todo{} & \todo{} & \todo{} & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{품질--시간 Pareto Frontier}
+
+\todo{View 수별 quality-vs-budget 곡선. Figure 자리.}
+
+\subsection{장면별 Win Rate와 신뢰구간}
+
+\todo{Scene cluster bootstrap CI(식~\ref{eq:bootstrap}) 적용 결과.}
+
+\subsection{C1-b: 동일 초기값 Refinement On/Off}
+\label{sec:c1b}
+
+\todo{Feed-forward 출력을 고정한 뒤 refinement off(0s)/on(10/60/300s) 비교. 렌더 등가성 gate(\S\ref{sec:equivalence}) 통과 조건에서만 진행. 30-scene 최종 설정으로 재실행 필요(기존 20-scene 스케일업은 구 candidate 기준).}
+
+% =====================================================================
+\section{실패 분석 (Failure Analysis)}
+\label{sec:failure}
+% =====================================================================
+
+본 절은 Regime Map에서 관찰되는 우위 역전이 \emph{왜} 일어나는지에 대한 메커니즘 수준의 증거를 제시한다.
+
+\subsection{Baseline--Overlap--기하 불확실도 관계}
+\label{sec:confound}
+
+두 view로 3D 점을 삼각측량하는 문제는 재투영 오차를 최소화하는 비선형최소제곱이다. 이 오차를 관측 노이즈 $\varepsilon \sim \mathcal{N}(0, \sigma^2 I)$로 재해석하면, MLE의 점근 공분산(Cram\'er--Rao bound)이 된다:
+\begin{equation}
+\mathrm{Cov}(\hat\beta) \approx \sigma^2 (J^\top J)^{-1}
+\label{eq:covariance}
+\end{equation}
+여기서 $J = \partial r/\partial \beta$는 재투영 오차의 야코비안이다. 이 표준 결과를 실제 COLMAP 삼각측량 결과에 직접 적용해 overlap 지표를 진단적으로 검증했다.
+
+DTU scan1의 42-view dense reconstruction에서 모든 view pair(861쌍)에 대해 baseline(카메라 중심 간 거리), overlap($O_{ij}$, 식~\ref{eq:overlap}), 식~\ref{eq:covariance} 기반 depth 불확실도를 계산한 결과, 원시 상관관계는 $\mathrm{corr}(O_{ij}, \log\hat\sigma_{\text{depth}}) = +0.952$로 나타나 "overlap이 높을수록 불확실도가 낮다"는 예상과 정반대의 부호를 보였다. Baseline을 \emph{선형으로} 통제한 partial correlation은 $+0.801$로 소폭만 감소해 순수 baseline 교란 가설을 기각할 뻔했으나, 원인을 추적한 결과 baseline과 불확실도의 관계가 거듭제곱(power-law) 형태이지 선형이 아니었다 ($\mathrm{corr}(\log(\text{baseline}), \log\hat\sigma) = -0.989$, 선형 버전은 $-0.951$). \textbf{$\log(\text{baseline})$으로 다시 통제하자 partial correlation이 $+0.301$로 감소했다} — 즉 원래 가설(baseline 교란)이 맞았고, 통계 도구를 잘못 적용해(선형 대신 log 통제가 필요했음) 가짜 잔차가 남았던 것이었다. 이 분석은 overlap을 주 지표로 유지하되, "왜 low-overlap 조건이 어려운가"에 대한 설명은 overlap 자체가 아니라 그 배후의 baseline/parallax 기하학에 귀속되어야 함을 시사한다. \todo{RE10K/DL3DV(경로형 카메라)에서도 같은 관계가 성립하는지 확인 필요 — DTU(orbital rig)와 다를 수 있음}
+
+\subsection{Densification Gradient의 관측 부족 (Observation Starvation)}
+\label{sec:starvation}
+
+gsplat의 기본 densification 전략은 매 100-iteration window마다 각 Gaussian의 2D 위치 gradient norm 평균을 고정 임계값 $\tau_{\text{pos}} = 2\times10^{-4}$와 비교해 성장 여부를 결정한다. 이 판단은 $\mathrm{grad2d}[g] / \mathrm{count}[g]$로 계산되며, $\mathrm{count}[g]$는 그 Gaussian이 해당 window 동안 관측된 횟수(effective observation)다. 원래 가설은 "관측이 적은 Gaussian일수록 평균 추정이 노이즈에 취약해 densification을 잘못 유발한다"는 것이었으나, 실측 결과 $\mathrm{count}[g] \le 2$인 Gaussian이 임계값을 초과하는 비율은 모든 조건에서 사실상 0\%(0.00--0.003\%)로, 이 가설은 기각되었다 — 관측이 적으면 분자(누적 gradient)도 함께 작아지기 때문이다.
+
+대신 \textbf{관측 부족 Gaussian의 비율 자체가 view 수에 강하게 좌우된다}는 것을 발견했다. RE10K 3-scene, 2000-iteration 계측에서, $\mathrm{count}[g] \le 2$인 Gaussian의 비율(pooled 평균)은 2-view에서 51.5\%, 4-view에서 30.8\%, 8-view에서 3.2\%, 12-view에서 0.7\%로 단조 감소했다. 초기화 방식(COLMAP triangulation 성공 여부에 따른 sparse init 대 random-sphere fallback)이라는 교란요인을 제거하기 위해, 4개 view 수 조건 모두 동일하게 random-sphere fallback을 사용한 단일 scene을 따로 확인한 결과에서도 55.3\% $\to$ 32.3\% $\to$ 8.3\% $\to$ 1.3\%로 같은 패턴이 재현되어, 이 효과가 초기화 방식이 아니라 view 수 자체에 기인함을 확인했다.
+
+이는 sparse-view에서 optimization이 불리한 이유를 "데이터가 적다"는 추상적 설명을 넘어, \textbf{"Gaussian 예산의 상당 부분이 어떤 학습 구간에서도 유의미한 gradient 신호를 받지 못한 채 방치된다"}는 코드 수준에서 추적 가능한 구체적 메커니즘으로 제시한다. 특히 2-view에서 이런 관측 부족 Gaussian의 대부분은 triangulation 실패로 인한 random-sphere fallback(무작위 초기 배치)에서 비롯되며, 소수의 카메라 절두체(frustum) 안에 우연히 들어오지 않는 점들이 구조적으로 학습 신호를 받지 못한다. \todo{scene 수를 pilot(3개)에서 main subset 규모로 확대해 재현 확인, overlap 축과의 상호작용 확인, floater 비율과의 상관관계 확인}
+
+\subsection{H1--H3 가설 검증}
+
+\begin{table}[h]
+\centering
+\caption{사전 등록 가설과 검증 상태}
+\label{tab:hypotheses}
+\begin{tabular}{@{}p{1.5cm}p{9cm}p{2.5cm}@{}}
+\toprule
+가설 & 내용 & 상태 \\
+\midrule
+H1 & 초기 geometry 오차($\sigma$)가 커질수록 densification 이후 Gaussian 수는 증가하지만 held-out 품질은 감소하며, 이 관계는 low-overlap 조건에서 강화된다 & \todo{C2 실행 후} \\
+H2 & Optimization의 품질 정점 도달 시점은 view 수가 줄수록 앞당겨지고, 정점 이후 하강 기울기가 가팔라진다 & \todo{C1-a 동역학 로그 분석 필요} \\
+H3 & 초기 geometry 품질이 일정 수준을 넘으면 refinement의 한계 이득이 소멸한다 & \todo{C1-b 실행 후} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+세 가설 중 어느 것이 기각되더라도 그 자체가 보고 대상이다 — 실제로 \S\ref{sec:starvation}에서 원래 가설(관측 부족 $\to$ 노이즈로 인한 오탐)이 기각되고 다른 메커니즘(관측 부족 자체의 비율)이 발견된 사례가 이미 있었다.
+
+\subsection{C2: Depth 불확실도 개입}
+
+\todo{미착수. 통제된 depth noise 주입: (a) 개별 노이즈 $d' = d(1+\varepsilon)$, $\varepsilon\sim\mathcal N(0,\sigma^2)$, $\sigma\in\{0,0.01,0.03,0.05,0.10\}$; (b) 전역 스케일 편향 $d'=s\cdot d$, $s\in\{0.9,0.95,1.0,1.05,1.1\}$. DTU 외부 검증 8 scene, 300초 trajectory 재사용.}
+
+% =====================================================================
+\section{실용 가이드라인 (Practical Guideline)}
+\label{sec:guideline}
+% =====================================================================
+
+\todo{\S\ref{sec:results}--\S\ref{sec:failure} 결과가 나온 뒤 채운다. 형식 예시:}
+
+\begin{table}[h]
+\centering
+\caption{조건별 권장 방법론 (형식 예시, 실제 값은 결과로 채움)}
+\begin{tabular}{@{}ll@{}}
+\toprule
+조건 & 권장 \\
+\midrule
+view $\le 4$ AND overlap 낮음 & Feed-forward \\
+view $\ge 8$ AND overlap 높음 & Per-scene optimization \\
+예산 $<$ 10초 & Feed-forward \\
+예산 $>$ 300초 AND geometry 신뢰도 높음 & Per-scene optimization \\
+그 외 & Tie 영역 — Pareto frontier 참조 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =====================================================================
+\section{결론 및 한계 (Conclusion and Limitations)}
+% =====================================================================
+
+\todo{전체 결과 요약 — 실험 완료 후 작성}
+
+\paragraph{한계.}
+\begin{itemize}
+  \item \textbf{Confidence/uncertainty 출력의 비대칭}: 세 방법(MVSplat, DepthSplat, FSGS) 모두 기본 설정에서 실질적인 confidence 출력을 제공하지 않는다 — feed-forward 계열은 관련 코드 자체가 없고, FSGS의 \texttt{confidence} 필드는 기본 설정에서 상수 1.0으로 고정된 placeholder다. Feed-forward 쪽은 대체 지표가 없어 이를 한계로 명시하며, optimization 쪽은 \S\ref{sec:starvation}의 관측 count를 confidence에 가까운 대체 신호로 사용하되 이는 optimization 계열에만 존재하는 비대칭임을 밝힌다.
+  \item \textbf{FSGS 초기화 편차}: 위에서 서술한 대로 원 논문의 dense-MVS 초기화 대신 sparse COLMAP 초기화를 사용했다. \todo{dense-MVS 초기화를 3--5 scene에 한해 별도로 실행해 sparse-init 대비 격차를 정량화하는 보조 검증(낮은 우선순위, COLMAP dense MVS 모듈 미보유가 선행 조건)}
+  \item \textbf{DL3DV pilot 규모}: DL3DV 실험은 공식 10,581-scene 전체가 아니라 25-scene pilot subset을 사용한다(공식 평가 split과 중복 없음은 확인).
+  \item \textbf{단일 GPU 서버 예산 제약}: 전체 실험(C1-a 전체 축 + C1-b + C2)은 약 250 GPU-hour로 추정되며, 단일 H200 서버에서 순차 실행된다 — 해당 workload가 압도적으로 연산 병목(compute-bound)임을 실측으로 확인해(단일 job만으로도 GPU 사용률 92--99\%) 병렬화로 시간을 단축할 수 없었다.
+  \item \textbf{RE10K mirror 출처}: RE10K 114-scene 중 일부(73개)는 원저작자가 아닌 커뮤니티 mirror(Hugging Face)에서 확보했다. 원 데이터셋과 동일한 chunk 포맷임을 확인했고 공식 체크포인트로 품질을 검증했으나, mirror 자체의 신뢰성은 원저작자 보증이 아니다.
+\end{itemize}
+
+% =====================================================================
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+
+\bibitem{kerbl20233d}
+Bernhard Kerbl, Georgios Kopanas, Thomas Leimk\"uhler, and George Drettakis.
+\newblock 3D Gaussian Splatting for Real-Time Radiance Field Rendering.
+\newblock \emph{ACM Transactions on Graphics (Proc. SIGGRAPH)}, 42(4), 2023.
+
+\bibitem{charatan2024pixelsplat}
+David Charatan, Sizhe Lester Li, Andrea Tagliasacchi, and Vincent Sitzmann.
+\newblock pixelSplat: 3D Gaussian Splats from Image Pairs for Scalable Generalizable 3D Reconstruction.
+\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 19457--19467, 2024.
+
+\bibitem{chen2024mvsplat}
+Yuedong Chen, Haofei Xu, Chuanxia Zheng, Bohan Zhuang, Marc Pollefeys, Andreas Geiger, Tat-Jen Cham, and Jianfei Cai.
+\newblock MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images.
+\newblock In \emph{Computer Vision -- ECCV 2024}, 2024.
+
+\bibitem{xu2025depthsplat}
+Haofei Xu, Songyou Peng, Fangjinhua Wang, Hermann Blum, Daniel Barath, Andreas Geiger, and Marc Pollefeys.
+\newblock DepthSplat: Connecting Gaussian Splatting and Depth.
+\newblock In \emph{Conference on Computer Vision and Pattern Recognition (CVPR)}, 2025.
+
+\bibitem{zhu2024fsgs}
+Zehao Zhu, Zhiwen Fan, Yifan Jiang, and Zhangyang Wang.
+\newblock FSGS: Real-Time Few-Shot View Synthesis using Gaussian Splatting.
+\newblock In \emph{Computer Vision -- ECCV 2024}, 2024.
+
+\bibitem{zhou2018stereo}
+Tinghui Zhou, Richard Tucker, John Flynn, Graham Fyffe, and Noah Snavely.
+\newblock Stereo Magnification: Learning View Synthesis using Multiplane Images.
+\newblock \emph{ACM Transactions on Graphics (Proc. SIGGRAPH)}, 2018.
+
+\bibitem{ling2024dl3dv}
+Lu Ling, Yichen Sheng, Zhi Tu, Wentian Zhao, Cheng Xin, Kun Wan, Lantao Yu, Qianyu Guo, Zixun Yu, Yawen Lu, et al.
+\newblock DL3DV-10K: A Large-Scale Scene Dataset for Deep Learning-based 3D Vision.
+\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 22160--22169, 2024.
+
+\end{thebibliography}
+
+\end{document}

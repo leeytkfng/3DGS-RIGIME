@@ -160,3 +160,13 @@
 
 **논문 연결**: co-visibility selector가 이제 전체 규모에서 검증된 도구가 됐다 — C1-a 본 실험(현재 view_count 축만)에 overlap_level 축을 추가할 다음 단계의 선행 작업이 끝났다.
 
+## 15. 논문 초안(Overleaf용 LaTeX) 작성
+
+**실험 목적**: C1-a 본 실험이 도는 동안, 지금까지 확정된 내용만으로 실제 논문 골격을 채워서 "실험 끝나면 표만 채우면 되는" 상태로 만든다.
+
+**데이터/특징**: `experiments/docs/paper/overleaf_draft/main.tex` 신규 — `overall.md`(연구 질문·서사·기여·프로토콜·H1~H3), `paper_equations_reference.md`(수식 8개 전부), `paper_geometry_confound_analysis`(baseline-overlap-uncertainty), `paper_gaussian_observation_starvation`(오늘 발견한 메커니즘), `dataset_citations.md`(RE10K/DL3DV 인용)를 총동원. 3DGS/pixelSplat/MVSplat/DepthSplat/FSGS 논문 서지사항도 웹서치로 확인 후 추가(총 인용 7개).
+
+**결과**: 서론·관련연구·프로토콜(공정성 원칙, overlap 정의, τ, 통계계획, 렌더 등가성)·실패분석 중 이미 끝난 두 개(geometry confound, observation starvation)는 실제 수치까지 채워 넣었다. Regime Map 표, Pareto frontier, C1-b/C2 결과, H1~H3 검증, Guideline은 `\todo{}`로 명시적으로 비워뒀다(빈 칸이 아니라 "여기 채워야 함"이 PDF에도 빨간 글씨로 보이게). 인용 7개의 cite-bibitem 키 매칭, 중괄호 balance, 퍼센트 기호 escape까지 스크립트로 검증(로컬에 LaTeX 없어 실제 컴파일은 Overleaf에서 확인 필요 — XeLaTeX/LuaLaTeX로 컴파일러 설정 필수, kotex 때문에 pdfLaTeX 안 됨).
+
+**논문 연결**: 이제 C1-a 결과가 나오면 §4(Regime Map)만 채우면 되는 상태. 나머지(C1-b/C2/Guideline)도 실험이 끝나는 대로 같은 파일에 이어서 채우면 된다.
+
