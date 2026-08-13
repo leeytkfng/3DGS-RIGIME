@@ -48,6 +48,7 @@ def main() -> int:
     parser.add_argument("--subset-index", default=str(REPO_ROOT / "experiments/outputs/re10k_main_subset/re10k_main_subset.json"))
     parser.add_argument("--scenes", nargs="+", default=None, help="지정 안 하면 subset의 첫 5개(§5.4 파일럿 규모)")
     parser.add_argument("--view-counts", type=int, nargs="+", default=[2, 4, 8, 12])
+    parser.add_argument("--seeds", type=int, nargs="+", default=[0], help="Vanilla3DGS만 seed별로 반복(MVSplat은 deterministic이라 seed 무관, 1회만 실행)")
     parser.add_argument("--output-dir", default=str(REPO_ROOT / "experiments/outputs/re10k_c1a_pilot"))
     args = parser.parse_args()
 
@@ -88,35 +89,36 @@ def main() -> int:
                         "wall_clock": mv_row["wall_clock"],
                     })
 
-            # --- Vanilla3DGS (optimization, COLMAP/random init) ---
+            # --- Vanilla3DGS (optimization, COLMAP/random init), seed별 반복 ---
             vanilla_output = output_dir / "vanilla_runs" / scene_key
-            log_path = vanilla_output / "logs" / f"re10k_{scene_key}_c1a_Vanilla3DGS_{view_count}view_seed0.json"
-            if not log_path.exists():
-                run_step(
-                    [
-                        PS3_PY, str(REPO_ROOT / "experiments/scripts/runners/vanilla_3dgs_runner.py"),
-                        "--dataset", "re10k", "--re10k-scene-key", scene_key,
-                        "--re10k-subset-index", args.subset_index,
-                        "--scene", f"re10k_{scene_key}_c1a", "--view-count", str(view_count), "--seed", "0",
-                        "--image-shape", "256", "256",
-                        "--max-budget-seconds", str(max(BUDGETS)),
-                        "--budget-snapshots", *[str(b) for b in BUDGETS],
-                        "--output-dir", str(vanilla_output),
-                    ],
-                    "vanilla_3dgs_runner(re10k general)",
-                )
-            if log_path.exists():
-                trajectory = json.loads(log_path.read_text())
-                by_budget = {r["wall_clock"]: r for r in trajectory}
-                for budget in BUDGETS:
-                    r = by_budget.get(budget)
-                    rows.append({
-                        "scene": scene_key, "view_count": view_count, "budget": budget,
-                        "method": "Vanilla3DGS",
-                        "status": "ok" if r else "no_result",
-                        "test_psnr": r["test_psnr"] if r else None,
-                        "init_source": r["init_source"] if r else None,
-                    })
+            for seed in args.seeds:
+                log_path = vanilla_output / "logs" / f"re10k_{scene_key}_c1a_Vanilla3DGS_{view_count}view_seed{seed}.json"
+                if not log_path.exists():
+                    run_step(
+                        [
+                            PS3_PY, str(REPO_ROOT / "experiments/scripts/runners/vanilla_3dgs_runner.py"),
+                            "--dataset", "re10k", "--re10k-scene-key", scene_key,
+                            "--re10k-subset-index", args.subset_index,
+                            "--scene", f"re10k_{scene_key}_c1a", "--view-count", str(view_count), "--seed", str(seed),
+                            "--image-shape", "256", "256",
+                            "--max-budget-seconds", str(max(BUDGETS)),
+                            "--budget-snapshots", *[str(b) for b in BUDGETS],
+                            "--output-dir", str(vanilla_output),
+                        ],
+                        "vanilla_3dgs_runner(re10k general)",
+                    )
+                if log_path.exists():
+                    trajectory = json.loads(log_path.read_text())
+                    by_budget = {r["wall_clock"]: r for r in trajectory}
+                    for budget in BUDGETS:
+                        r = by_budget.get(budget)
+                        rows.append({
+                            "scene": scene_key, "view_count": view_count, "budget": budget, "seed": seed,
+                            "method": "Vanilla3DGS",
+                            "status": "ok" if r else "no_result",
+                            "test_psnr": r["test_psnr"] if r else None,
+                            "init_source": r["init_source"] if r else None,
+                        })
 
             print(f"  done in {time.time()-t0:.1f}s")
 
