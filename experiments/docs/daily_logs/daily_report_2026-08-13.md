@@ -30,3 +30,15 @@
 
 **논문 연결**: 지금까지 실험은 "일반 3DGS vs FF 모델" 비교였는데, "sparse-view 특화 3DGS vs FF 모델" 비교가 빠지면 "특화 기법을 안 써서 optimization이 불리했던 것 아니냐"는 반박이 가능하다. FSGS가 붙어야 C1-a Regime Map의 "optimization" 쪽 대표성이 완성된다. 아직 실제 학습은 안 돌려봤고 환경만 준비된 상태 — 다음은 데이터 포맷 맞추기와 protocol_utils 스키마 러너 작성.
 
+## 4. FSGS 실제 학습 1회 성공
+
+**실험 목적**: FSGS가 우리 데이터에서 실제로 돌아가는지 검증(아직 protocol 통합 전 단계). 환경만 만들어놨지 진짜 학습 코드가 우리 데이터 포맷을 소화하는지는 확인 안 했었다.
+
+**실험 데이터/특징**: DTU scan1, seed=0, 12-view(다른 러너들과 같은 held-out 규칙: test는 1,8,...,43번 view). FSGS는 원래 `colmap patch_match_stereo`로 만든 dense point cloud를 요구하는데, 우리 시스템엔 COLMAP CLI(dense MVS 모듈)가 아예 없어서(pycolmap 파이썬 바인딩만 있음) 대신 우리가 이미 갖고 있는 sparse triangulation 결과(다른 러너와 동일 코어)를 그 자리에 채워 넣는 방식으로 우회했다(`prep_dtu_for_fsgs.py` 신규). Vanilla3DGS도 원래 sparse COLMAP init이라 방법론적으로 크게 벗어나지 않는다.
+
+**돌리면서 발견한 이슈 2개** (쉽게 설명): (1) FSGS는 옛날 LLFF 방식의 관례를 그대로 물려받아서 "카메라가 얼마나 가깝고 먼 곳까지 보는지"(근/원 깊이 경계)를 담은 `poses_bounds.npy`라는 파일도 따로 요구했다 — MVSplat DTU 설정에서 쓰던 값(near=2.125, far=4.525)을 그대로 갖다 썼다. (2) 이미지 폴더 이름 기본값이 `images_8`(LLFF에서 원본 해상도를 8배 줄인 폴더를 쓰는 관례)이었는데 우리는 `images`로 만들어서 처음엔 빈 목록 에러가 났다 — 폴더명을 명시해서 해결.
+
+**결과**: 1000 iteration(짧은 검증용, 정식 10000이 아님) 학습 완료. test PSNR 12.81dB / SSIM 0.562 / LPIPS 0.548 — 짧게 돌려서 낮지만, 학습이 끝까지 돌고 진짜 평가 숫자가 나왔다는 게 핵심.
+
+**논문 연결**: 이걸로 세 번째 방법론(sparse-view 특화 optimization)이 우리 데이터에서 실제로 돌아간다는 게 확인됐다. 아직 protocol_utils 스키마를 따르는 정식 러너는 아니고, RE10K/DL3DV 확장도 안 했다 — 다음 단계.
+
