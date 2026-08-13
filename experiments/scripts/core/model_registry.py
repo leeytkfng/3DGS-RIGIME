@@ -89,16 +89,23 @@ MODEL_REGISTRY = {
         default_checkpoint=None,
         notes="2026-08-10: DTU 16-scan 배치(2-view) + 42-view/30k-iter dense sanity check(24dB대) 검증 완료.",
     ),
-    "SparseGS": ModelSpec(
-        name="SparseGS",
+    "FSGS": ModelSpec(
+        name="FSGS",
         family="optimization",
         requires_pose=True,
         supports_views=[2, 4, 8, 12],
-        conda_env_python=None,
-        runner_script=None,
-        external_repo=None,
+        conda_env_python="/opt/conda/envs/fsgs/bin/python3",
+        runner_script="experiments/scripts/runners/fsgs_runner.py",
+        external_repo="/data/Re-feem/code/fsgs",
         default_checkpoint=None,
-        notes="Sparse-view specialized optimization baseline. 아직 미착수 — 코드 안정성 확인 후 FSGS와 교체 가능.",
+        notes="Sparse-view specialized optimization baseline, SparseGS 대신 채택(2026-08-12, 코드 상태/의존성 기준). "
+        "2026-08-13: `fsgs_runner.py` 작성 — FSGS 자체 Scene/GaussianModel/render()/loss는 그대로 재사용하되 "
+        "(a) view 선택을 우리 seed 기반 train_ids/test_ids로 monkey-patch(원본 readColmapSceneInfo의 "
+        "llffhold+linspace는 우리 선택을 무시하는 버그성 불일치였음), (b) 바깥 루프를 iteration 기반에서 "
+        "wall-clock budget 기반으로 교체. 초기화는 dense-MVS 대신 Vanilla3DGS와 동일한 sparse COLMAP "
+        "triangulation(overall.md §4.2에 명시적 프로토콜 편차로 문서화). 현재 DTU만 지원, RE10K/DL3DV는 "
+        "다음 단계. 실제 학습 검증은 DTU scan1/seed0/12-view/1000-iter로 완료(구 prep 스크립트 기준, "
+        "새 runner로 재검증 필요).",
     ),
 }
 

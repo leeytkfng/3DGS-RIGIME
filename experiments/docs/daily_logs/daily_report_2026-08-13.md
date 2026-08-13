@@ -68,5 +68,19 @@
 
 **FSGS 초기화 편차도 같이 정리**: FSGS 원 프로토콜은 dense-MVS 초기화를 쓰지만 우리는 COLMAP dense 모듈이 없어 Vanilla3DGS와 같은 sparse init을 공유시켰다(§3 참고). 이를 논문 methods/limitations 양쪽에 명시적으로 적어야 한다는 점, FSGS가 Vanilla3DGS를 못 이기더라도 그 자체로 유효한 결과(SplatFormer의 유사 사례)라는 점, dense-MVS 소규모(3~5 scene) 비교는 낮은 우선순위 백로그로 `overall.md` §4.2에 문서화했다.
 
-**논문 연결**: §5.12(통계 분석 계획)를 실제 예산 배분에 처음 적용한 사례이자, 실험 설계 단계에서 "리스크 대응"이 아니라 "선제적 최적화"로 같은 원칙을 사용한 것 — §9 리스크 완화표도 그에 맞게 갱신(`~~seed 3→2~~`로 취소선 처리, 사유 각주 추가). 다음 우선순위는 `fsgs_runner.py`(protocol_utils 스키마) 작성과 `model_registry.py` FSGS 등록 — 현재 manifest 생성 시 `Unknown method in config: FSGS` 경고가 뜨는 상태라, 이게 끝나야 30-scene 본 실험에 FSGS를 포함할 수 있다.
+**논문 연결**: §5.12(통계 분석 계획)를 실제 예산 배분에 처음 적용한 사례이자, 실험 설계 단계에서 "리스크 대응"이 아니라 "선제적 최적화"로 같은 원칙을 사용한 것 — §9 리스크 완화표도 그에 맞게 갱신(`~~seed 3→2~~`로 취소선 처리, 사유 각주 추가).
+
+## 8. fsgs_runner.py 작성 — 그 과정에서 진짜 버그 하나 발견
+
+**실험 목적**: §3~4에서 만든 FSGS 1회성 검증 스크립트를, 다른 모델들처럼 `protocol_utils` 스키마(budget checkpoint, trajectory 로그)를 따르는 정식 러너로 승격. §7에서 정한 30-scene 본 실험에 FSGS를 포함시키기 위한 선행 작업.
+
+**데이터/특징**: FSGS는 외부 repo(`/data/Re-feem/code/fsgs`)라 `train.py`를 통째로 재구현하지 않고, 그 안의 Scene/GaussianModel/render()/loss는 그대로 갖다 쓰되 바깥 학습 루프만 우리 wall-clock budget(1/10/60/300s) 체계로 감쌌다 — `vanilla_3dgs_runner.py`가 gsplat을 감싸는 것과 같은 패턴.
+
+**쉽게**: 만드는 과정에서 FSGS 코드를 한 줄씩 읽다가 진짜 버그를 하나 찾았다 — 우리가 seed로 "이 8개 view를 학습에 써라"라고 미리 골라놔도, FSGS 내부 코드(`readColmapSceneInfo`)가 그걸 무시하고 자기 방식(순서상 8번째마다 하나씩 test로 빼고, 남은 것 중에서 균등 간격으로 n_views개를 자체적으로 다시 고름)대로 view를 새로 골라버리고 있었다. 즉 지난번(§4) "첫 실제 학습 성공"때도 사실은 우리가 의도한 view가 아니라 FSGS가 자기 마음대로 고른 view로 학습했던 것 — 다른 모델(Vanilla3DGS/MVSplat)과 같은 조건으로 비교하는 게 이 연구의 핵심 전제인데, 그 전제가 깨져 있었다.
+
+**전문 용어**: `scene.dataset_readers.sceneLoadTypeCallbacks["Colmap"]`을 우리 함수로 monkey-patch — 카메라 로딩(`readColmapCameras`/`getNerfppNorm`/`fetchPly`)은 FSGS 원본을 그대로 재사용하고, train/test split 로직만 `prep_dtu_for_fsgs.py`가 만든 seed 기반 train_ids/test_ids로 강제 교체했다. 수정 후 실측: seed=0은 1998개, seed=1은 605개의 triangulated point로 서로 다르게 나와, seed가 실제로 view 선택에 반영되기 시작했음을 확인. 추가로 2-view처럼 극단적으로 sparse한 조건에서는 triangulation이 0점을 내놓는 경우가 있어 FSGS의 CUDA rasterizer가 빈 Gaussian으로 즉시 죽는 것도 발견 — `prep_dtu_for_fsgs.py`에 Vanilla3DGS와 동일한 `MIN_SFM_POINTS=200` 기준 random-sphere fallback을 추가해 해결(실측: 2-view/seed0에서 fallback 100,000점으로 정상 학습 확인).
+
+**결과**: DTU scan1 8-view(seed0/seed1)·2-view(fallback 경로) 모두 end-to-end로 정상 학습·평가·체크포인트 저장까지 확인(예: 8-view/seed1/5s budget → test PSNR 7.96→9.36dB). `model_registry.py`에 FSGS 정식 등록, `run_experiment.py` manifest 생성 시 뜨던 `Unknown method in config: FSGS` 경고도 해소.
+
+**논문 연결**: 이 view-selection 버그는 우리가 §4.2에서 이미 문서화한 "sparse-init 편차"와는 별개로, 고치지 않았다면 FSGS만 다른 (사실상 무작위) view 조건에서 비교되는 훨씬 더 심각한 confound였다 — 발견하고 고친 게 이번 세션의 가장 중요한 성과 중 하나. 다음 단계는 RE10K/DL3DV로 확장(현재 DTU만 지원)한 뒤 §7에서 정한 30-scene 본 실험에 FSGS를 포함시키는 것.
 
