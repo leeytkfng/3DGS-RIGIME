@@ -148,3 +148,15 @@
 
 **논문 연결**: 이게 완료되면 C1-a의 핵심 결과(regime map, 역전 경계, Pareto frontier)가 나온다 — §5.12에서 확정한 τ(2/4-view: 0.5dB, 8/12-view: 1.4dB)와 scene-cluster bootstrap CI를 적용해 최종 승패 판정을 낼 수 있다. overlap_level 축과 C1-b/C2는 이 본 실험 이후 단계.
 
+## 14. 본 실험이 도는 동안 병행 — co-visibility selector 전체 규모 검증 + 자잘한 결정 3개
+
+**실험 목적**: GPU가 40시간짜리 job에 묶여있는 동안, GPU를 안 쓰는 CPU 작업과 순수 결정/문서 작업을 먼저 처리. co-visibility selector(§11)는 3-scene pilot으로만 검증했었는데, COLMAP triangulation은 CPU 작업이라 GPU job과 안 겹치므로 지금 전체 규모로 돌려도 안전하다.
+
+**데이터/특징**: RE10K 30 scene 전체 + DL3DV 25 scene 전체 × view_count{2,4,8,12} × {high,low} — 총 220개 조건.
+
+**결과**: **RE10K 118/120(98.3%)**, **DL3DV 94/100(94%)** 조건에서 selector가 의도한 대로 high≥low를 만들어냈다. 실패는 DL3DV에 더 많고(6개, RE10K는 2개) 8·12-view에 몰려 있다(6개 중 4개) — DL3DV가 궤적이 더 다양해서(루프형 등) "index가 가까우면 공간적으로도 가깝다"는 가정이 가끔 깨지는 것으로 보인다. 실패 (scene, view_count) 목록은 로그에 남겨뒀고, overlap_level 축을 실제로 본 실험에 넣을 때 이 조합들은 제외하거나 재추출해야 한다.
+
+**병행해서 정리한 자잘한 결정 3개**: (1) RE10K/DL3DV 인용·라이선스 문구 — 웹서치로 정확한 서지사항 확인 후 정리(RE10K: Zhou et al. 2018 SIGGRAPH, CC BY 4.0 / DL3DV-10K: Ling et al. 2024 CVPR, CC BY-NC 4.0). (2) confidence 출력 열 — FSGS의 `confidence` 필드까지 코드로 확인해보니 기본 설정에서 전부 1.0 고정이라 세 방법 다 실질적 confidence 출력이 없다는 게 최종 확인됨, 오늘 발견한 gradient observation count를 optimization 쪽 대체 신호로 쓰기로 결정. (3) overlap bucket threshold 항목 — selector가 직접 low/high를 만드는 방식으로 바뀌면서 사후 threshold 자체가 불필요해져 자동 해소.
+
+**논문 연결**: co-visibility selector가 이제 전체 규모에서 검증된 도구가 됐다 — C1-a 본 실험(현재 view_count 축만)에 overlap_level 축을 추가할 다음 단계의 선행 작업이 끝났다.
+
