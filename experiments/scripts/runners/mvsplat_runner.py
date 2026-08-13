@@ -179,6 +179,25 @@ def run(args: argparse.Namespace) -> None:
         checkpoint_path,
     )
 
+    # C1-b 렌더 등가성 gate(§5.8)용 참조 산출물. MVSplat 자체 decoder가 만든 render를
+    # 그대로 남겨서, gsplat env(ps3)에서 이 Gaussians를 변환·재렌더링한 결과와 픽셀 단위로
+    # 비교할 수 있게 한다 — 카메라(extrinsics/intrinsics/near/far, DTU_SCALE_FACTOR 적용된
+    # 값 그대로)도 함께 남겨야 정확히 같은 시점을 재현할 수 있다.
+    render_reference_path = checkpoints_dir / "render_reference.pt"
+    torch.save(
+        {
+            "pred": pred.detach().cpu(),
+            "view_ids": test_ids,
+            "extrinsics": target_on_device["extrinsics"].detach().cpu(),
+            "intrinsics": target_on_device["intrinsics"].detach().cpu(),
+            "near": target_on_device["near"].detach().cpu(),
+            "far": target_on_device["far"].detach().cpu(),
+            "image_shape": IMAGE_SHAPE,
+            "dtu_scale_factor": DTU_SCALE_FACTOR,
+        },
+        render_reference_path,
+    )
+
     row = {
         "experiment_id": args.experiment_id,
         "scene": args.scene,

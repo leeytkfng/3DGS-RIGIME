@@ -52,25 +52,31 @@ MODEL_REGISTRY = {
         name="DepthSplat",
         family="feedforward",
         requires_pose=True,
-        supports_views=[2, 4, 8, 12],
+        supports_views=[2, 4],  # 체크포인트 randview2-6 학습 분포 기준(§5.2, 2026-08-12). 8/12는 OOD.
         conda_env_python="/opt/conda/envs/depthsplat/bin/python3",
         runner_script=None,  # 아직 probe 스크립트뿐: experiments/scripts/probes/depthsplat_dl3dv_probe.py
         external_repo="/data/Re-feem/code/depthsplat",
         default_checkpoint="/data/Re-feem/code/depthsplat/pretrained/depthsplat-gs-base-dl3dv-256x448-randview2-6-02c7b19d.pth",
         notes="2026-08-10: DL3DV in-domain probe로 mean PSNR 20.0dB 확인(2-view, 공식 test subset). "
-        "4/8/12-view 및 정식 러너(protocol_utils 스키마)는 아직 미구현.",
+        "2026-08-12: README/config 확인 결과 이 체크포인트는 2~6-view 랜덤 샘플링으로 학습됨(randview2-6) — "
+        "supports_views를 [2,4]로 좁힘(6은 우리 view_counts 축에 없어 제외, 8/12는 분포 밖). "
+        "공식으로는 별도 체크포인트(randview4-10, 448x768)로 최대 12-view까지 지원하나 아직 미다운로드. "
+        "4/8/12-view 실측 및 정식 러너(protocol_utils 스키마)는 아직 미구현.",
     ),
     "MVSplat": ModelSpec(
         name="MVSplat",
         family="feedforward",
         requires_pose=True,
-        supports_views=[2, 4, 8, 12],
+        supports_views=[2],  # RE10K 학습 분포는 고정 2-view(§5.2, 2026-08-12). 4/8/12는 저자도 OOD로 간주.
         conda_env_python="/opt/conda/envs/mvsplat/bin/python3",
         runner_script="experiments/scripts/runners/mvsplat_runner.py",
         external_repo="/data/Re-feem/code/mvsplat",
         default_checkpoint="/data/Re-feem/code/mvsplat/checkpoints/re10k.ckpt",
         notes="2026-08-10: DTU zero-shot(2-view) 검증 + RE10K in-domain probe mean PSNR 25.6dB 확인. "
-        "정식 러너는 2-view만 검증됨, 4/8/12-view는 분포 밖(§5.2 미확정).",
+        "2026-08-12: config(`view_sampler/bounded.yaml`)가 RE10K를 고정 2-view로 학습시킴을 확인, "
+        "DTU 공식 eval index도 N=2,3만 제공. README가 직접 '12-view는 DepthSplat 쓰라'고 안내 — "
+        "supports_views를 [2]로 좁힘. DTU smoke(2026-08-11)에서 4/8/12-view forward pass 자체는 안 죽었지만 "
+        "이는 분포 밖 사용이지 공식 지원이 아님(§5.2).",
     ),
     "Vanilla3DGS": ModelSpec(
         name="Vanilla3DGS",
@@ -83,16 +89,26 @@ MODEL_REGISTRY = {
         default_checkpoint=None,
         notes="2026-08-10: DTU 16-scan 배치(2-view) + 42-view/30k-iter dense sanity check(24dB대) 검증 완료.",
     ),
-    "SparseGS": ModelSpec(
-        name="SparseGS",
+    "FSGS": ModelSpec(
+        name="FSGS",
         family="optimization",
         requires_pose=True,
         supports_views=[2, 4, 8, 12],
-        conda_env_python=None,
-        runner_script=None,
-        external_repo=None,
+        conda_env_python="/opt/conda/envs/fsgs/bin/python3",
+        runner_script="experiments/scripts/runners/fsgs_runner.py",
+        external_repo="/data/Re-feem/code/fsgs",
         default_checkpoint=None,
-        notes="Sparse-view specialized optimization baseline. 아직 미착수 — 코드 안정성 확인 후 FSGS와 교체 가능.",
+        notes="Sparse-view specialized optimization baseline, SparseGS 대신 채택(2026-08-12, 코드 상태/의존성 기준). "
+        "2026-08-13: `fsgs_runner.py` 작성 — FSGS 자체 Scene/GaussianModel/render()/loss는 그대로 재사용하되 "
+        "(a) view 선택을 우리 seed 기반 train_ids/test_ids로 monkey-patch(원본 readColmapSceneInfo의 "
+        "llffhold+linspace는 우리 선택을 무시하는 버그성 불일치였음), (b) 바깥 루프를 iteration 기반에서 "
+        "wall-clock budget 기반으로 교체. 초기화는 dense-MVS 대신 Vanilla3DGS와 동일한 sparse COLMAP "
+        "triangulation(overall.md §4.2에 명시적 프로토콜 편차로 문서화). "
+        "2026-08-13(같은 날 후속): RE10K/DL3DV로 확장 — `prep_dtu_for_fsgs.py::prepare_views_for_fsgs()`"
+        "(dataset-agnostic 버전)가 `_colmap_init_from_loaded_views()`와 같은 패턴으로 이미 로드된 view를 "
+        "FSGS-ready 디렉토리로 변환. RE10K(near/far=1.0/100.0, mvsplat_re10k_runner.py와 동일)와 "
+        "DL3DV(near/far=0.5/200.0, depthsplat_dl3dv_runner.py와 동일) 둘 다 8-view smoke test로 "
+        "end-to-end 검증 완료(DTU 회귀 테스트도 통과). 이제 DTU/RE10K/DL3DV 세 데이터셋 모두 지원.",
     ),
 }
 
