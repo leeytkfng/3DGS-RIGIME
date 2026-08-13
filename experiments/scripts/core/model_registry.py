@@ -103,9 +103,12 @@ MODEL_REGISTRY = {
         "(a) view 선택을 우리 seed 기반 train_ids/test_ids로 monkey-patch(원본 readColmapSceneInfo의 "
         "llffhold+linspace는 우리 선택을 무시하는 버그성 불일치였음), (b) 바깥 루프를 iteration 기반에서 "
         "wall-clock budget 기반으로 교체. 초기화는 dense-MVS 대신 Vanilla3DGS와 동일한 sparse COLMAP "
-        "triangulation(overall.md §4.2에 명시적 프로토콜 편차로 문서화). 현재 DTU만 지원, RE10K/DL3DV는 "
-        "다음 단계. 실제 학습 검증은 DTU scan1/seed0/12-view/1000-iter로 완료(구 prep 스크립트 기준, "
-        "새 runner로 재검증 필요).",
+        "triangulation(overall.md §4.2에 명시적 프로토콜 편차로 문서화). "
+        "2026-08-13(같은 날 후속): RE10K/DL3DV로 확장 — `prep_dtu_for_fsgs.py::prepare_views_for_fsgs()`"
+        "(dataset-agnostic 버전)가 `_colmap_init_from_loaded_views()`와 같은 패턴으로 이미 로드된 view를 "
+        "FSGS-ready 디렉토리로 변환. RE10K(near/far=1.0/100.0, mvsplat_re10k_runner.py와 동일)와 "
+        "DL3DV(near/far=0.5/200.0, depthsplat_dl3dv_runner.py와 동일) 둘 다 8-view smoke test로 "
+        "end-to-end 검증 완료(DTU 회귀 테스트도 통과). 이제 DTU/RE10K/DL3DV 세 데이터셋 모두 지원.",
     ),
 }
 

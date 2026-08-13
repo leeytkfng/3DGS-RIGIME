@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""DTU scan을 FSGS(`scene/dataset_readers.py::readColmapSceneInfo`)가 기대하는 디렉토리
-구조로 준비한다. `prepare_dtu_for_fsgs()`는 `runners/fsgs_runner.py`가 데이터 prep 단계로
-직접 import해서 재사용한다(CLI로 단독 실행도 가능, 아래 main() 참고).
+"""FSGS(`scene/dataset_readers.py::readColmapSceneInfo`)가 기대하는 디렉토리 구조로 데이터를
+준비한다 — DTU 전용 `prepare_dtu_for_fsgs()`와 dataset-agnostic `prepare_views_for_fsgs()`
+(RE10K/DL3DV, 2026-08-13 추가) 둘 다 제공한다. `runners/fsgs_runner.py`가 데이터 prep 단계로
+직접 import해서 재사용한다(DTU는 CLI로 단독 실행도 가능, 아래 main() 참고).
 
 FSGS는 원래 `colmap patch_match_stereo`로 만든 dense point cloud(`{n_views}_views/dense/
 fused.ply`)를 기대하는데, 우리 시스템엔 COLMAP CLI(dense MVS)가 없다(pycolmap 파이썬
@@ -10,10 +11,11 @@ triangulation 결과(pycolmap known-pose triangulation, 다른 러너들과 동�
 그 자리에 넣는다 — dense가 아니라 sparse 초기화라는 차이는 있지만, Vanilla3DGS도 원래
 sparse COLMAP 초기화를 쓰므로 방법론적으로 이상하지 않다.
 
-만드는 구조:
-  <out>/images/*.png              (49 view 전체)
-  <out>/sparse/0/{cameras.bin,images.bin}   (49 view 전체, pose 등록용)
-  <out>/{n_views}_views/dense/fused.ply     (train pool만으로 triangulate한 sparse point)
+만드는 구조(공통):
+  <out>/images/*.png              (등록된 모든 view)
+  <out>/sparse/0/{cameras.bin,images.bin}   (pose 등록용)
+  <out>/{n_views}_views/dense/fused.ply     (train view만으로 triangulate한 sparse point)
+  <out>/poses_bounds.npy          (LLFF 관례, near/far만 실제로 읽힘)
 """
 
 from __future__ import annotations
@@ -25,6 +27,7 @@ from pathlib import Path
 
 import numpy as np
 import pycolmap
+from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "core"))
 from colmap_init import CameraParams, _write_known_pose_reconstruction_generic, triangulate_sfm_points_from_cameras  # noqa: E402
@@ -45,6 +48,75 @@ def _random_points_in_sphere(center: np.ndarray, radius: float, num_points: int,
     points = center[None, :] + directions * radii
     colors = np.full((num_points, 3), 128, dtype=np.uint8)
     return points, colors
+
+
+def prepare_views_for_fsgs(
+    train_views: list[dict],
+    test_views: list[dict],
+    seed: int,
+    out_dir: Path,
+    near: float,
+    far: float,
+    num_fallback_points: int = 100_000,
+) -> tuple[list[str], list[str], str]:
+    """RE10K/DL3DV처럼 이미 메모리에 로드된 view(image/K/R/t/width/height/center)로 FSGS-ready
+    디렉토리를 만든다. `prepare_dtu_for_fsgs()`의 dataset-agnostic 버전 — DTU는 view id가
+    1..49 정수라 직접 다뤘지만, RE10K/DL3DV는 원본 프레임 인덱스가 정돈된 정수가 아니므로
+    image_name(str)을 우리가 직접 붙여서 반환한다(`vanilla_3dgs_runner.py`의
+    `_colmap_init_from_loaded_views()`와 같은 패턴 — 이미 로드된 view를 임시 디렉토리에
+    써서 known-pose triangulation 코어를 재사용).
+
+    n_views(=FSGS `--n_views`, `{n_views}_views/dense/fused.ply` 경로명)는 len(train_views)로
+    고정한다 — FSGS의 `readColmapSceneInfo()`가 `assert len(train_cam_infos) == n_views`로
+    검증하므로 반드시 일치해야 한다.
+    """
+
+    if out_dir.exists():
+        shutil.rmtree(out_dir)
+
+    n_views = len(train_views)
+    train_names = [f"train_{i:04d}.png" for i in range(len(train_views))]
+    test_names = [f"test_{i:04d}.png" for i in range(len(test_views))]
+
+    images_out = out_dir / "images"
+    images_out.mkdir(parents=True, exist_ok=True)
+    camera_by_name: dict[str, CameraParams] = {}
+    for name, view in zip(train_names + test_names, train_views + test_views):
+        image_uint8 = (np.clip(view["image"], 0.0, 1.0) * 255.0).astype(np.uint8)
+        Image.fromarray(image_uint8).save(images_out / name)
+        camera_by_name[name] = CameraParams(K=view["K"], R=view["R"], t=view["t"], width=view["width"], height=view["height"])
+
+    sparse_dir = out_dir / "sparse" / "0"
+    sparse_dir.mkdir(parents=True, exist_ok=True)
+    all_names = train_names + test_names
+    id_map = {name: (idx + 1, idx + 1) for idx, name in enumerate(all_names)}
+    _write_known_pose_reconstruction_generic(sparse_dir, camera_by_name, id_map)
+
+    poses_bounds = np.zeros((len(all_names), 17), dtype=np.float64)
+    poses_bounds[:, -2] = near
+    poses_bounds[:, -1] = far
+    np.save(out_dir / "poses_bounds.npy", poses_bounds)
+
+    camera_by_name_train = {name: camera_by_name[name] for name in train_names}
+    sparse_workdir = out_dir / "_sparse_triangulation"
+    points, colors = triangulate_sfm_points_from_cameras(images_out, train_names, camera_by_name_train, sparse_workdir)
+    print(f"[colmap] sparse triangulation: {points.shape[0]} points from {len(train_names)} train views")
+
+    init_source = "colmap_sfm"
+    if points.shape[0] < MIN_SFM_POINTS:
+        centers = np.stack([v["center"] for v in train_views])
+        center = centers.mean(axis=0)
+        radius = float(np.median(np.linalg.norm(centers - center, axis=1))) or 1.0
+        points, colors = _random_points_in_sphere(center, radius, num_fallback_points, seed)
+        init_source = "random_sphere_fallback"
+        print(f"[colmap] fallback: random_sphere_fallback, {points.shape[0]} points (center={center}, radius={radius:.3f})")
+
+    dense_dir = out_dir / f"{n_views}_views" / "dense"
+    dense_dir.mkdir(parents=True, exist_ok=True)
+    _write_ply(dense_dir / "fused.ply", points, colors)
+    print(f"[done] FSGS-ready data at {out_dir}")
+    print(f"  images: {len(all_names)}, pose-registered: {len(all_names)}, sparse points: {points.shape[0]}")
+    return train_names, test_names, init_source
 
 
 def prepare_dtu_for_fsgs(

@@ -30,7 +30,11 @@ seed로 설정한다.
 COLMAP triangulation으로 대체한다(`prep_dtu_for_fsgs.py`) — 논문 methods/limitations 양쪽에
 명시해야 하는 의도적 편차.
 
-현재 범위(2026-08-13): DTU만 지원. RE10K/DL3DV 확장은 다음 단계(체크리스트 14번 참고).
+RE10K/DL3DV 지원(2026-08-13 확장): `prep_dtu_for_fsgs.py::prepare_views_for_fsgs()`(dataset-
+agnostic 버전)로 이미 메모리에 로드된 view를 FSGS-ready 디렉토리로 만든다 —
+`vanilla_3dgs_runner.py::_colmap_init_from_loaded_views()`와 같은 패턴. view 후보는 다른
+러너와 동일하게 `re10k_main_subset.json`/`dl3dv_overlap_v2` summary에서 가져와 seed/overlap
+축이 일관되게 유지된다.
 
 실행 환경: fsgs conda env 필요(`/opt/conda/envs/fsgs/bin/python3`).
 """
@@ -55,8 +59,11 @@ sys.path.insert(0, str(_SCRIPTS_ROOT / "analysis"))
 
 from protocol_utils import budget_checkpoint, oracle_checkpoint  # noqa: E402
 
+RE10K_NEAR_FAR = (1.0, 100.0)  # mvsplat_re10k_runner.py와 동일
+DL3DV_NEAR_FAR = (0.5, 200.0)  # depthsplat_dl3dv_runner.py와 동일
 
-def _make_patched_colmap_loader(train_ids: list[int], test_ids: list[int]):
+
+def _make_patched_colmap_loader(train_names: list[str], test_names: list[str]):
     """`sceneLoadTypeCallbacks["Colmap"]`을 대체할 함수를 만든다.
 
     FSGS 원본(`readColmapSceneInfo`)과 다른 점은 view 선택 로직뿐이다 — 카메라/포인트클라우드
@@ -98,10 +105,10 @@ def _make_patched_colmap_loader(train_ids: list[int], test_ids: list[int]):
             rgb_mapping=rgb_mapping,
         )
         by_name = {c.image_name: c for c in cam_infos}
-        train_cam_infos = [by_name[f"{v:03d}"] for v in train_ids]
-        test_cam_infos = [by_name[f"{v:03d}"] for v in test_ids]
-        assert len(train_cam_infos) == len(train_ids), (
-            f"expected {len(train_ids)} train cams, got {len(train_cam_infos)} "
+        train_cam_infos = [by_name[name] for name in train_names]
+        test_cam_infos = [by_name[name] for name in test_names]
+        assert len(train_cam_infos) == len(train_names), (
+            f"expected {len(train_names)} train cams, got {len(train_cam_infos)} "
             f"(image_name 매칭 실패 — prep_dtu_for_fsgs.py 파일명 규칙 확인 필요)"
         )
 
@@ -177,16 +184,52 @@ def run(args: argparse.Namespace) -> None:
     from utils.depth_utils import estimate_depth
     from utils.loss_utils import l1_loss_mask, ssim
 
-    from prep_dtu_for_fsgs import prepare_dtu_for_fsgs
+    from prep_dtu_for_fsgs import prepare_dtu_for_fsgs, prepare_views_for_fsgs
 
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     random.seed(args.seed)
 
     data_dir = Path(args.data_dir) if args.data_dir else Path(args.output_dir) / "fsgs_data" / f"{args.scene}_{args.view_count}view_seed{args.seed}"
-    train_ids, test_ids, init_source = prepare_dtu_for_fsgs(Path(args.scan_dir), args.view_count, args.seed, data_dir)
 
-    dataset_readers.sceneLoadTypeCallbacks["Colmap"] = _make_patched_colmap_loader(train_ids, test_ids)
+    if args.dataset == "dtu":
+        train_ids, test_ids, init_source = prepare_dtu_for_fsgs(Path(args.scan_dir), args.view_count, args.seed, data_dir)
+        train_names = [f"{v:03d}" for v in train_ids]
+        test_names = [f"{v:03d}" for v in test_ids]
+    elif args.dataset == "re10k":
+        from re10k_dataset import get_scene_item, load_views
+
+        target_shape = tuple(args.image_shape) if args.image_shape else None
+        subset = json.loads(Path(args.re10k_subset_index).read_text())
+        entry = subset[args.re10k_scene_key]
+        candidate = entry["view_candidates"][str(args.view_count)]
+        if candidate.get("context") is None:
+            raise SystemExit(f"{args.re10k_scene_key} view_count={args.view_count}: candidate 없음(too short)")
+        train_ids, test_ids = candidate["context"], candidate["target"]
+        item = get_scene_item(Path("/data/Re-feem/datasets/re10k/test") / entry["chunk_file"], args.re10k_scene_key)
+        train_views = load_views(item, train_ids, target_shape=target_shape)
+        test_views = load_views(item, test_ids, target_shape=target_shape)
+        near, far = RE10K_NEAR_FAR
+        train_names_ext, test_names_ext, init_source = prepare_views_for_fsgs(train_views, test_views, args.seed, data_dir, near, far)
+        train_names = [Path(n).stem for n in train_names_ext]
+        test_names = [Path(n).stem for n in test_names_ext]
+    else:  # dl3dv
+        from dl3dv_dataset import load_metadata, load_views
+
+        target_shape = tuple(args.image_shape) if args.image_shape else None
+        overlap_summary = json.loads(Path(args.dl3dv_overlap_summary).read_text())
+        row = next(r for r in overlap_summary if r["scene"] == args.dl3dv_scene_key and r["view_count"] == args.view_count)
+        train_ids, test_ids = row["context_indices"], row["target_indices"]
+        scene_dir = Path("/data/Re-feem/datasets/dl3dv") / args.dl3dv_scene_key
+        meta = load_metadata(scene_dir)
+        train_views = load_views(scene_dir, meta, train_ids, target_shape=target_shape)
+        test_views = load_views(scene_dir, meta, test_ids, target_shape=target_shape)
+        near, far = DL3DV_NEAR_FAR
+        train_names_ext, test_names_ext, init_source = prepare_views_for_fsgs(train_views, test_views, args.seed, data_dir, near, far)
+        train_names = [Path(n).stem for n in train_names_ext]
+        test_names = [Path(n).stem for n in test_names_ext]
+
+    dataset_readers.sceneLoadTypeCallbacks["Colmap"] = _make_patched_colmap_loader(train_names, test_names)
 
     checkpoints_dir = Path(args.output_dir) / "checkpoints" / args.scene / f"{args.view_count}view_seed{args.seed}_fsgs"
     logs_dir = Path(args.output_dir) / "logs"
@@ -344,10 +387,26 @@ def run(args: argparse.Namespace) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="FSGS runner for a single DTU scan (protocol_utils schema).")
-    parser.add_argument("--dataset", choices=["dtu"], default="dtu", help="현재 dtu만 지원(2026-08-13). RE10K/DL3DV는 다음 단계.")
-    parser.add_argument("--scan-dir", default="/data/Re-feem/datasets/dtu/scan1")
-    parser.add_argument("--scene", required=True, help="scene id used in logs, e.g. dtu_scan1")
+    parser = argparse.ArgumentParser(description="FSGS runner (protocol_utils schema), DTU/RE10K/DL3DV.")
+    parser.add_argument("--dataset", choices=["dtu", "re10k", "dl3dv"], default="dtu")
+    parser.add_argument("--scan-dir", default="/data/Re-feem/datasets/dtu/scan1", help="dataset=dtu일 때만 필요.")
+    parser.add_argument(
+        "--re10k-subset-index",
+        default="experiments/outputs/re10k_main_subset/re10k_main_subset.json",
+        help="dataset=re10k일 때만 사용. generate_re10k_main_subset.py 출력.",
+    )
+    parser.add_argument("--re10k-scene-key", default=None, help="dataset=re10k일 때 필요.")
+    parser.add_argument(
+        "--dl3dv-overlap-summary",
+        default="experiments/outputs/dl3dv_overlap_v2/all_scenes_summary.json",
+        help="dataset=dl3dv일 때만 사용. generate_dl3dv_view_overlap.py(v2) 출력.",
+    )
+    parser.add_argument("--dl3dv-scene-key", default=None, help="dataset=dl3dv일 때 필요.")
+    parser.add_argument(
+        "--image-shape", type=int, nargs=2, default=None, metavar=("HEIGHT", "WIDTH"),
+        help="dataset=re10k/dl3dv일 때 리사이즈 목표 해상도(vanilla_3dgs_runner.py와 동일 convention). 기본은 원본 해상도.",
+    )
+    parser.add_argument("--scene", required=True, help="scene id used in logs, e.g. dtu_scan1 or RE10K/DL3DV scene key")
     parser.add_argument("--method", default="FSGS")
     parser.add_argument("--experiment-id", default="regime-map-20260806")
     parser.add_argument("--view-count", type=int, default=8)

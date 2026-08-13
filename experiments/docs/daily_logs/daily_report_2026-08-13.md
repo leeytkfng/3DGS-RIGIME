@@ -96,3 +96,15 @@
 
 **논문 연결**: "sparse-view에서 optimization이 불리하다"는 지금까지의 서술을 "Gaussian 예산의 절반 이상이 gradient 신호를 거의 못 받는 채로 방치된다"는 구체적 메커니즘으로 대체할 수 있다. 전문은 `paper/paper_gaussian_observation_starvation_2026-08-13.md`. Pilot 규모(scene 3개)라 scene 확대 재현, overlap 축 추가, floater 지표와의 상관 확인이 남은 일.
 
+## 10. fsgs_runner.py를 RE10K/DL3DV로 확장
+
+**실험 목적**: §8에서 DTU만 지원하던 `fsgs_runner.py`를 RE10K/DL3DV까지 확장 — §7에서 정한 30-scene 본 실험(Vanilla3DGS/MVSplat/FSGS 세 방법론 비교)에 FSGS를 포함시키기 위한 마지막 선행 작업.
+
+**데이터/특징**: `prep_dtu_for_fsgs.py`에 dataset-agnostic `prepare_views_for_fsgs()`를 새로 추가 — DTU 전용 버전이 하던 일(images/, sparse/0/, poses_bounds.npy, {n_views}_views/dense/fused.ply 생성)을 "이미 메모리에 로드된 view 리스트"만 받아서 하도록 일반화했다. `vanilla_3dgs_runner.py`가 이미 RE10K/DL3DV용으로 쓰던 `_colmap_init_from_loaded_views()`와 정확히 같은 패턴(임시 디렉토리에 view를 써서 known-pose triangulation 코어 재사용).
+
+**쉽게**: DTU는 view id가 1~49 깔끔한 정수라 파일명도 그걸 그대로 썼는데, RE10K/DL3DV는 원본 프레임 번호가 그렇게 안 깔끔해서 "train_0000.png"처럼 우리가 새로 이름을 붙이는 방식으로 바꿨다. near/far(카메라가 볼 수 있는 최소/최대 거리) 값도 데이터셋마다 달라서, RE10K는 MVSplat 러너가 쓰던 값(1~100), DL3DV는 DepthSplat 러너가 쓰던 값(0.5~200)을 그대로 재사용했다.
+
+**전문 용어**: `fsgs_runner.py`에 `--dataset {dtu,re10k,dl3dv}` 분기 추가(vanilla_3dgs_runner.py와 동일 CLI 관례), view-selection monkeypatch(`_make_patched_colmap_loader`)를 int(DTU) 전용에서 문자열 이름 기반으로 일반화. RE10K(scene `0588138dfec165a1`, 8-view)·DL3DV(scene `09b05fa3...`, 8-view) 각각 실제 학습으로 end-to-end 검증(예: RE10K 10s budget → test PSNR 14.5→18.7dB), DTU 회귀 테스트도 재확인해서 기존 경로가 안 깨졌음을 확인.
+
+**논문 연결**: 체크리스트의 "본실험 착수 전 필수 4개" 중 하나가 끝났다 — 이제 co-visibility selector, §5.11/§5.12 동결만 남으면 30-scene 본 실험에 세 방법론(Vanilla3DGS/MVSplat/FSGS) 전부를 포함해 착수할 수 있다.
+
