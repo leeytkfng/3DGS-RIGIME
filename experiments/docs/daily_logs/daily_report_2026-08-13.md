@@ -136,3 +136,15 @@
 
 **논문 연결**: "본실험 착수 전 필수 4개"(FSGS RE10K/DL3DV 확장, co-visibility selector, §5.11, §5.12)가 오늘 전부 끝났다 — 이제 30-scene × seed 2회 본 실험(Vanilla3DGS/MVSplat/FSGS 세 방법론)에 착수할 수 있다. 동시에 이 정정은 "pooled 평균만 보면 놓치는 게 있다"는, 오늘 초반에 다뤘던 scene-cluster bootstrap 논리(§7)를 실제 데이터로 재확인해준 사례이기도 하다.
 
+## 13. C1-a 본 실험 착수 — RE10K 30 scene, 세 방법론, 백그라운드 실행 중
+
+**실험 목적**: 지금까지 준비한 모든 것(30-scene 확장, FSGS RE10K 연동, τ 확정)을 실제로 돌리는 단계. C1-a Regime Map의 진짜 본 실험 — "view 수·계산 예산에 따라 언제 optimization이 feed-forward를 이기는가"에 대한 최종 답을 낼 데이터.
+
+**데이터/특징**: RE10K main subset을 20→30 scene으로 추가 확장(`extend_re10k_main_subset.py`, 기존 20개는 그대로 두고 다른 seed로 10개만 새로 뽑음 — 기존 파일럿 결과 보존). `run_re10k_c1a_main.py` 신규 — 30 scene × view_count{2,4,8,12} × budget{1,10,60,300}s × {MVSplat 1회, Vanilla3DGS seed×2, FSGS seed×2}. **이번 착수 범위에서는 overlap_level(고/저) 축 제외** — selector가 아직 3-scene pilot 검증만 된 상태라 검증 안 된 축까지 넣어 84 GPU-hour를 한 번에 태우는 위험을 피함(view_count 축만으로 약 42 GPU-hour, 약 40시간 예상). 1 scene으로 세 방법론 전부 스모크 테스트 통과 후 백그라운드로 착수(nohup, PID 1149474, 07:00 KST 재시작 기준).
+
+**진행 중 관측**: 착수 직후 실제 GPU 사용을 직접 확인 — `nvidia-smi`로 H200 NVL, GPU util 95~99%, 메모리 21~22GB/143.8GB(15%), 온도 62°C, 전력 200W/600W(캡의 33%) 확인. 전부 정상 범위 — 40시간짜리 job이 안전하게 도는 중임을 실측으로 확인. 컨테이너 환경(`/.dockerenv` 확인)이라 `nvidia-smi`의 PID가 호스트 기준이라 컨테이너 안 프로세스 PID와 직접 매칭은 안 되지만(그래서 "No running processes found"로 표시됨), GPU-util과 온도/전력 추이 자체가 실제 학습이 진행 중이라는 증거.
+
+**결과 표시**: 진행 상황을 보여주는 대시보드를 Artifact로 배포(regime map 그리드, quality-vs-budget 곡선, 원본 데이터 표, 진행률/ETA) — summary JSON이 (scene, view_count) 조합 하나 끝날 때마다 갱신되므로 데이터가 쌓이는 대로 재배포해서 갱신할 예정.
+
+**논문 연결**: 이게 완료되면 C1-a의 핵심 결과(regime map, 역전 경계, Pareto frontier)가 나온다 — §5.12에서 확정한 τ(2/4-view: 0.5dB, 8/12-view: 1.4dB)와 scene-cluster bootstrap CI를 적용해 최종 승패 판정을 낼 수 있다. overlap_level 축과 C1-b/C2는 이 본 실험 이후 단계.
+
