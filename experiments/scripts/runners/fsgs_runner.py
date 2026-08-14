@@ -326,13 +326,25 @@ def run(args: argparse.Namespace) -> None:
                         opt.densify_grad_threshold, opt.prune_threshold, scene.cameras_extent, None, step
                     )
 
-            if step < opt.iterations:
-                gaussians.optimizer.step()
-                gaussians.optimizer.zero_grad(set_to_none=True)
+            # 2026-08-14 버그 수정: 원본 FSGS train.py는 `step < opt.iterations`(기본 10,000)로
+            # optimizer.step()을 막는다 — 원본은 루프 자체가 opt.iterations에서 끝나므로 이 체크가
+            # 사실상 no-op이었다. 우리는 wall-clock budget으로 도는데, 300초짜리 sparse scene은
+            # 4~5만 iteration까지도 간다 — 그러면 10,000 이후로는 gradient만 계산하고 파라미터는
+            # 절대 안 바뀌는 상태가 된다. optimizer step은 항상 해야 한다(우리 stopping 기준은
+            # elapsed/--max-iterations이지 opt.iterations가 아님).
+            gaussians.optimizer.step()
+            gaussians.optimizer.zero_grad(set_to_none=True)
             gaussians.update_learning_rate(step)
 
+            # 2026-08-14 버그 수정: opacity_reset_interval(기본 3000)은 원래 상한이 없어서, 위
+            # optimizer.step() 버그와 맞물리면 densify_until_iter(10,000) 이후에도 계속 opacity를
+            # 초기화시키는데 회복할 방법(=densify_and_prune에 의한 재성장)이 없어 누적 붕괴로
+            # 이어진다. 실측: 8/12-view FSGS 300s 결과가 60s 대비 12~13dB 폭락(예: 27.5→14.4dB,
+            # iteration 5,505→42,507). 원 3DGS/FSGS 설계 의도(reset은 densification이 살아있는
+            # 동안의 기법)에 맞춰 densify_until_iter 이후에는 reset을 끈다.
             if (
-                step > fsgs_args.start_sample_pseudo
+                step < opt.densify_until_iter
+                and step > fsgs_args.start_sample_pseudo
                 and (step - fsgs_args.start_sample_pseudo - 1) % opt.opacity_reset_interval == 0
             ):
                 gaussians.reset_opacity()
