@@ -100,7 +100,7 @@
 - [x] DepthSplat DL3DV in-domain (2-view, 20.0dB)
 - [x] DTU scan1 2/4/8/12-view 통제 스모크 (2026-08-11, 위 항목과 동일 근거)
 - [x] RE10K에서의 동일한 2/4/8/12-view 통제 스모크 — 2026-08-12, C1-b warm-start 경로로 2-view는 20 scene 전부, 4-view도 진행 중(8/12-view 대기). MVSplat "일반"(non-warm-start) 경로는 아직 없음(별도 항목)
-- [ ] DL3DV에서의 동일한 통제 스모크 — overlap 계산까지만 완료(아래), Vanilla3DGS/MVSplat 실행은 아직 없음
+- [x] DL3DV에서의 동일한 통제 스모크 — 2026-08-14. `dl3dv_overlap_v2`(고친 view 선택) 기준으로 Vanilla3DGS·FSGS·DepthSplat 세 방법 전부 실제 실행 확인(scene `09b05fa3...`, 8-view 10s: Vanilla3DGS 18.6dB/FSGS 18.7dB, 2-view: DepthSplat 20.1dB — 전부 정상 범위). RE10K 본 실험이 GPU 쓰는 동안 짧게(1/10s budget) 병행 실행. 이제 30-scene 규모 DL3DV 본 실험(`run_dl3dv_c1a_main.py`, 아직 미작성) 착수 전 마지막 파이프라인 검증이 끝남 — RE10K 본 실험 완료 후 착수 예정
 - [x] RE10K/DL3DV용 overlap bucket (low/high threshold) 산출 — 위 "모델/러너" 섹션 참고(중복 추적)
 
 ## 분석 / 이론
