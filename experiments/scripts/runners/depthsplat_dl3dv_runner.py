@@ -206,7 +206,10 @@ def run(args: argparse.Namespace) -> None:
         "peak_vram": float(torch.cuda.max_memory_allocated() / (1024 * 1024)),
     }
     log_path = logs_dir / f"{args.scene_key}_DepthSplat_{args.view_count}view.json"
-    log_path.write_text(json.dumps(row_out, indent=2), encoding="utf-8")
+    # 원자적 쓰기 — vanilla_3dgs_runner.py/fsgs_runner.py/mvsplat_re10k_runner.py와 동일 이유.
+    tmp_path = log_path.with_suffix(".json.tmp")
+    tmp_path.write_text(json.dumps(row_out, indent=2), encoding="utf-8")
+    tmp_path.replace(log_path)
 
     print(f"[eval] wall_clock={wall_clock:.3f}s gaussians={row_out['gaussian_count']}")
     print(f"[eval] test_psnr={row_out['test_psnr']:.3f} test_lpips={row_out['test_lpips']:.3f}")

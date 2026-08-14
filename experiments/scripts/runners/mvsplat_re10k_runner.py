@@ -56,12 +56,17 @@ def run(args: argparse.Namespace) -> None:
 
     subset = json.loads(Path(args.subset_index).read_text())
     entry = subset[args.scene_key]
-    candidate = entry["view_candidates"][str(args.view_count)]
-    if candidate.get("context") is None:
-        raise SystemExit(f"{args.scene_key} view_count={args.view_count}: candidate 없음(too short)")
-    context_ids = candidate["context"]
-    target_ids = candidate["target"]
-    print(f"[data] scene={args.scene_key} context={context_ids} target={target_ids}")
+    if args.overlap_level:
+        overlap_data = json.loads(Path(args.overlap_candidates_index).read_text())
+        ov_entry = overlap_data[args.scene_key][str(args.view_count)]
+        context_ids, target_ids = ov_entry[args.overlap_level]["context"], ov_entry["target"]
+    else:
+        candidate = entry["view_candidates"][str(args.view_count)]
+        if candidate.get("context") is None:
+            raise SystemExit(f"{args.scene_key} view_count={args.view_count}: candidate 없음(too short)")
+        context_ids = candidate["context"]
+        target_ids = candidate["target"]
+    print(f"[data] scene={args.scene_key} overlap_level={args.overlap_level} context={context_ids} target={target_ids}")
     if args.view_count != 2:
         print("[warn] MVSplat은 2-view context로 학습됐다. 이 run은 분포 밖(§5.2) 사용이다.")
 
@@ -134,7 +139,8 @@ def run(args: argparse.Namespace) -> None:
     lpipss = [float(lpips_model((pred[i] * 2 - 1)[None], (gt[i] * 2 - 1)[None]).item()) for i in range(pred.shape[0])]
 
     output_dir = Path(args.output_dir)
-    checkpoints_dir = output_dir / "checkpoints" / args.scene_key / f"{args.view_count}view"
+    overlap_suffix = f"_{args.overlap_level}" if args.overlap_level else ""
+    checkpoints_dir = output_dir / "checkpoints" / args.scene_key / f"{args.view_count}view{overlap_suffix}"
     logs_dir = output_dir / "logs"
     checkpoints_dir.mkdir(parents=True, exist_ok=True)
     logs_dir.mkdir(parents=True, exist_ok=True)
@@ -174,8 +180,11 @@ def run(args: argparse.Namespace) -> None:
         "gaussian_count": int(gaussians.means.shape[1]),
         "peak_vram": float(torch.cuda.max_memory_allocated() / (1024 * 1024)),
     }
-    log_path = logs_dir / f"{args.scene_key}_MVSplat_{args.view_count}view.json"
-    log_path.write_text(json.dumps(row, indent=2), encoding="utf-8")
+    log_path = logs_dir / f"{args.scene_key}_MVSplat_{args.view_count}view{overlap_suffix}.json"
+    # 원자적 쓰기 — vanilla_3dgs_runner.py/fsgs_runner.py와 동일 이유.
+    tmp_path = log_path.with_suffix(".json.tmp")
+    tmp_path.write_text(json.dumps(row, indent=2), encoding="utf-8")
+    tmp_path.replace(log_path)
 
     print(f"[eval] wall_clock={wall_clock:.3f}s gaussians={row['gaussian_count']}")
     print(f"[eval] test_psnr={row['test_psnr']:.3f} test_lpips={row['test_lpips']:.3f}")
@@ -186,6 +195,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="MVSplat runner for RE10K main subset (mvsplat conda env only).")
     parser.add_argument("--subset-index", default="experiments/outputs/re10k_main_subset/re10k_main_subset.json")
     parser.add_argument("--scene-key", required=True)
+    parser.add_argument(
+        "--overlap-level", choices=["high", "low"], default=None,
+        help="지정하면 co-visibility selector의 low/high 후보 사용(view_selector.py). 미지정 시 기존 단일 후보.",
+    )
+    parser.add_argument(
+        "--overlap-candidates-index",
+        default="experiments/outputs/re10k_overlap_candidates/re10k_overlap_candidates.json",
+    )
     parser.add_argument("--view-count", type=int, default=2)
     parser.add_argument("--experiment-id", default="regime-map-20260806")
     parser.add_argument("--mvsplat-repo", default="/data/Re-feem/code/mvsplat")
