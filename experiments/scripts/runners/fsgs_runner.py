@@ -190,7 +190,8 @@ def run(args: argparse.Namespace) -> None:
     torch.manual_seed(args.seed)
     random.seed(args.seed)
 
-    data_dir = Path(args.data_dir) if args.data_dir else Path(args.output_dir) / "fsgs_data" / f"{args.scene}_{args.view_count}view_seed{args.seed}"
+    overlap_suffix = f"_{args.overlap_level}" if args.overlap_level else ""
+    data_dir = Path(args.data_dir) if args.data_dir else Path(args.output_dir) / "fsgs_data" / f"{args.scene}_{args.view_count}view_seed{args.seed}{overlap_suffix}"
 
     if args.dataset == "dtu":
         train_ids, test_ids, init_source = prepare_dtu_for_fsgs(Path(args.scan_dir), args.view_count, args.seed, data_dir)
@@ -202,10 +203,15 @@ def run(args: argparse.Namespace) -> None:
         target_shape = tuple(args.image_shape) if args.image_shape else None
         subset = json.loads(Path(args.re10k_subset_index).read_text())
         entry = subset[args.re10k_scene_key]
-        candidate = entry["view_candidates"][str(args.view_count)]
-        if candidate.get("context") is None:
-            raise SystemExit(f"{args.re10k_scene_key} view_count={args.view_count}: candidate 없음(too short)")
-        train_ids, test_ids = candidate["context"], candidate["target"]
+        if args.overlap_level:
+            overlap_data = json.loads(Path(args.overlap_candidates_index).read_text())
+            ov_entry = overlap_data[args.re10k_scene_key][str(args.view_count)]
+            train_ids, test_ids = ov_entry[args.overlap_level]["context"], ov_entry["target"]
+        else:
+            candidate = entry["view_candidates"][str(args.view_count)]
+            if candidate.get("context") is None:
+                raise SystemExit(f"{args.re10k_scene_key} view_count={args.view_count}: candidate 없음(too short)")
+            train_ids, test_ids = candidate["context"], candidate["target"]
         item = get_scene_item(Path("/data/Re-feem/datasets/re10k/test") / entry["chunk_file"], args.re10k_scene_key)
         train_views = load_views(item, train_ids, target_shape=target_shape)
         test_views = load_views(item, test_ids, target_shape=target_shape)
@@ -231,7 +237,7 @@ def run(args: argparse.Namespace) -> None:
 
     dataset_readers.sceneLoadTypeCallbacks["Colmap"] = _make_patched_colmap_loader(train_names, test_names)
 
-    checkpoints_dir = Path(args.output_dir) / "checkpoints" / args.scene / f"{args.view_count}view_seed{args.seed}_fsgs"
+    checkpoints_dir = Path(args.output_dir) / "checkpoints" / args.scene / f"{args.view_count}view_seed{args.seed}{overlap_suffix}_fsgs"
     logs_dir = Path(args.output_dir) / "logs"
     checkpoints_dir.mkdir(parents=True, exist_ok=True)
     logs_dir.mkdir(parents=True, exist_ok=True)
@@ -387,7 +393,7 @@ def run(args: argparse.Namespace) -> None:
             print(f"[train] hit max_iterations={args.max_iterations} before budget exhausted, stopping.")
             break
 
-    log_path = logs_dir / f"{args.scene}_{args.method}_{args.view_count}view_seed{args.seed}.json"
+    log_path = logs_dir / f"{args.scene}_{args.method}_{args.view_count}view_seed{args.seed}{overlap_suffix}.json"
     # 원자적 쓰기 — vanilla_3dgs_runner.py와 동일 이유(배치 driver의 resume 판단이
     # log_path.exists()에 의존하므로 write 도중 kill되면 잘린 파일이 "완료"로 오인됨).
     tmp_path = log_path.with_suffix(".json.tmp")
@@ -412,6 +418,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="dataset=re10k일 때만 사용. generate_re10k_main_subset.py 출력.",
     )
     parser.add_argument("--re10k-scene-key", default=None, help="dataset=re10k일 때 필요.")
+    parser.add_argument(
+        "--overlap-level", choices=["high", "low"], default=None,
+        help="지정하면 --overlap-candidates-index에서 co-visibility selector가 만든 low/high 후보를 쓴다"
+        "(view_selector.py, 2026-08-13). 미지정 시 --re10k-subset-index의 단일 후보 사용(기존 동작, 하위호환).",
+    )
+    parser.add_argument(
+        "--overlap-candidates-index",
+        default="experiments/outputs/re10k_overlap_candidates/re10k_overlap_candidates.json",
+        help="--overlap-level 지정 시 사용.",
+    )
     parser.add_argument(
         "--dl3dv-overlap-summary",
         default="experiments/outputs/dl3dv_overlap_v2/all_scenes_summary.json",
