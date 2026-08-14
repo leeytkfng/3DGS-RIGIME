@@ -37,3 +37,19 @@
 **논문 연결**: `run_dl3dv_c1a_main.py`(아직 미작성, `run_re10k_c1a_main.py` 패턴을 그대로 옮기면 됨) 착수 전 마지막 파이프라인 검증이 끝났다. RE10K 본 실험 완료 후 바로 이어서 DL3DV 본 실험 착수 예정.
 
 ---
+
+## 3. overlap_level 축을 러너에 연결
+
+**실험 목적**: 어제 co-visibility selector를 30-scene 전체로 검증까지 끝냈는데(`re10k_overlap_candidates.json`), 정작 러너들은 아직 이걸 못 읽었다. RE10K 본 실험이 GPU를 쓰는 동안 코드만 고치는 작업이라 병행하기 좋음.
+
+**데이터/특징**: `vanilla_3dgs_runner.py`, `fsgs_runner.py`, `mvsplat_re10k_runner.py` 세 개 모두 대상. `--overlap-level {high,low}` 플래그를 추가하되, 지정 안 하면 기존 동작 그대로(하위호환) — 지금 도는 본 실험에 영향 안 주려고.
+
+**쉽게**: 옵션을 추가하면서 보니 진짜 버그가 될 뻔한 것도 하나 있었다 — checkpoint/로그 파일 이름에 "high인지 low인지"가 안 들어가 있어서, 나중에 이 축을 실제로 켜면 지금 한창 모으고 있는 view_count 전용 데이터를 같은 파일명으로 덮어써버릴 뻔했다. 파일명에 `_high`/`_low`를 붙이는 걸로 미리 막았다.
+
+**전문 용어**: 세 러너 모두 `--overlap-candidates-index`(기본값 `re10k_overlap_candidates.json`)에서 `[scene][view_count]["high"/"low"]["context"]`를 읽도록 분기 추가. `checkpoints_dir`/`log_path`/`colmap_workdir`에 `overlap_suffix` 반영. 짧은 budget(1~10s)으로 세 러너 전부 실제 실행해서 로그 파일명(`..._high.json`, `..._low.json`)까지 확인.
+
+**결과**: 세 러너 모두 정상 동작. Vanilla3DGS는 이번 테스트 scene/view_count 조합에서 "high" 후보가 triangulation 실패로 random-sphere fallback을 탐(정상 동작, 이미 알려진 현상).
+
+**논문 연결**: overlap_level 축 자체를 실행할 준비는 끝났다. 실제로 `run_re10k_c1a_main.py`에 이 축을 넣어 돌리는 건 지금 진행 중인 view_count-only 본 실험이 끝난 뒤로 미룬다(GPU 하나뿐이라 순차 진행).
+
+---
