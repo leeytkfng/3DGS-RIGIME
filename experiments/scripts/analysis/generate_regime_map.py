@@ -30,9 +30,13 @@ from protocol_utils import scene_cluster_bootstrap_ci  # noqa: E402
 REPO_ROOT = Path(__file__).resolve().parents[3]
 VIEW_COUNTS = [2, 4, 8, 12]
 BUDGETS = [1.0, 10.0, 60.0, 300.0]
-FF_METHOD = "MVSplat"
 OPT_METHODS = ["Vanilla3DGS", "FSGS"]
-PAIRS = [("Vanilla3DGS", "MVSplat"), ("FSGS", "MVSplat"), ("FSGS", "Vanilla3DGS")]
+METHOD_COLOR = {"MVSplat": "#4C72B0", "DepthSplat": "#4C72B0", "Vanilla3DGS": "#DD8452", "FSGS": "#55A868"}
+METHOD_MARKER = {"MVSplat": "o", "DepthSplat": "o", "Vanilla3DGS": "s", "FSGS": "^"}
+
+
+def pairs_for(ff_method: str) -> list[tuple[str, str]]:
+    return [("Vanilla3DGS", ff_method), ("FSGS", ff_method), ("FSGS", "Vanilla3DGS")]
 
 
 def tau_for(view_count: int) -> float:
@@ -82,9 +86,10 @@ CLASS_COLOR = {
 CLASS_TEXT = {"a_wins": "A", "b_wins": "B", "tie": "="}
 
 
-def plot_regime_map(rows: list[dict], out_dir: Path, progress_note: str) -> None:
+def plot_regime_map(rows: list[dict], out_dir: Path, progress_note: str, ff_method: str, dataset_label: str) -> None:
+    pairs = pairs_for(ff_method)
     fig, axes = plt.subplots(1, 3, figsize=(12.5, 3.4), sharey=True)
-    for ax, (method_a, method_b) in zip(axes, PAIRS):
+    for ax, (method_a, method_b) in zip(axes, pairs):
         grid = build_regime_grid(rows, method_a, method_b)
         color_grid = np.zeros((len(VIEW_COUNTS), len(BUDGETS), 3))
         for i in range(len(VIEW_COUNTS)):
@@ -112,7 +117,7 @@ def plot_regime_map(rows: list[dict], out_dir: Path, progress_note: str) -> None
         plt.Rectangle((0, 0), 1, 1, facecolor=CLASS_COLOR["no_data"], edgecolor="black", label="No data"),
     ]
     fig.legend(handles=handles, loc="lower center", ncol=4, frameon=False, bbox_to_anchor=(0.5, -0.05), fontsize=9)
-    fig.suptitle(f"C1-a Regime Map (RE10K, τ=0.5dB@2/4-view, 1.4dB@8/12-view) — {progress_note}", fontsize=10)
+    fig.suptitle(f"C1-a Regime Map ({dataset_label}, τ=0.5dB@2/4-view, 1.4dB@8/12-view) — {progress_note}", fontsize=10)
     fig.tight_layout(rect=(0, 0.05, 1, 0.95))
     fig.savefig(out_dir / "regime_map.png", dpi=150)
     fig.savefig(out_dir / "regime_map.pdf")
@@ -120,13 +125,11 @@ def plot_regime_map(rows: list[dict], out_dir: Path, progress_note: str) -> None
     print(f"wrote {out_dir / 'regime_map.png'}")
 
 
-def plot_pareto_frontier(rows: list[dict], out_dir: Path, progress_note: str) -> None:
+def plot_pareto_frontier(rows: list[dict], out_dir: Path, progress_note: str, ff_method: str, dataset_label: str) -> None:
     fig, axes = plt.subplots(2, 2, figsize=(8.5, 7.0), sharex=False)
-    colors = {"MVSplat": "#4C72B0", "Vanilla3DGS": "#DD8452", "FSGS": "#55A868"}
-    markers = {"MVSplat": "o", "Vanilla3DGS": "s", "FSGS": "^"}
 
     for ax, vc in zip(axes.flat, VIEW_COUNTS):
-        for method in [FF_METHOD] + OPT_METHODS:
+        for method in [ff_method] + OPT_METHODS:
             xs, ys, ylo, yhi = [], [], [], []
             for b in BUDGETS:
                 stat = cell_mean(rows, method, vc, b)
@@ -134,11 +137,12 @@ def plot_pareto_frontier(rows: list[dict], out_dir: Path, progress_note: str) ->
                     continue
                 xs.append(b)
                 ys.append(stat["mean"])
-                ylo.append(stat["mean"] - stat["ci_low"])
-                yhi.append(stat["ci_high"] - stat["mean"])
+                # n=1 scene bootstrap can yield ci bounds that cross the mean by float noise
+                ylo.append(max(0.0, stat["mean"] - stat["ci_low"]))
+                yhi.append(max(0.0, stat["ci_high"] - stat["mean"]))
             if not xs:
                 continue
-            ax.errorbar(xs, ys, yerr=[ylo, yhi], marker=markers[method], color=colors[method],
+            ax.errorbar(xs, ys, yerr=[ylo, yhi], marker=METHOD_MARKER[method], color=METHOD_COLOR[method],
                         label=method, capsize=3, linewidth=1.5, markersize=5)
         ax.set_xscale("log")
         ax.set_title(f"{vc}-view", fontsize=10)
@@ -146,7 +150,7 @@ def plot_pareto_frontier(rows: list[dict], out_dir: Path, progress_note: str) ->
         ax.set_ylabel("test PSNR (dB)")
 
     axes[0, 0].legend(frameon=False, fontsize=9)
-    fig.suptitle(f"C1-a Quality-Time Pareto Frontier (RE10K) — {progress_note}", fontsize=10)
+    fig.suptitle(f"C1-a Quality-Time Pareto Frontier ({dataset_label}) — {progress_note}", fontsize=10)
     fig.tight_layout(rect=(0, 0, 1, 0.96))
     fig.savefig(out_dir / "pareto_frontier.png", dpi=150)
     fig.savefig(out_dir / "pareto_frontier.pdf")
@@ -159,6 +163,8 @@ def main() -> int:
     parser.add_argument("--summary", default=str(REPO_ROOT / "experiments/outputs/re10k_c1a_main/c1a_main_summary.json"))
     parser.add_argument("--out-dir", default=str(REPO_ROOT / "experiments/docs/paper/overleaf_draft/figures"))
     parser.add_argument("--total-combos", type=int, default=len(VIEW_COUNTS) * 30, help="30 scenes x 4 view_counts = 120")
+    parser.add_argument("--ff-method", default="MVSplat", help="feed-forward method name as it appears in the summary rows (MVSplat for RE10K, DepthSplat for DL3DV)")
+    parser.add_argument("--dataset-label", default="RE10K", help="label used in figure titles")
     args = parser.parse_args()
 
     rows = json.loads(Path(args.summary).read_text())
@@ -170,8 +176,8 @@ def main() -> int:
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    plot_regime_map(rows, out_dir, progress_note)
-    plot_pareto_frontier(rows, out_dir, progress_note)
+    plot_regime_map(rows, out_dir, progress_note, args.ff_method, args.dataset_label)
+    plot_pareto_frontier(rows, out_dir, progress_note, args.ff_method, args.dataset_label)
     return 0
 
 
