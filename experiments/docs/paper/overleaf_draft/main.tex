@@ -402,13 +402,15 @@ Pooled 평균 & 51.5\% & 30.8\% & 3.2\% & 0.7\% \\
 가설 & 내용 & 상태 \\
 \midrule
 H1 & 초기 geometry 오차($\sigma$)가 커질수록 densification 이후 Gaussian 수는 증가하지만 held-out 품질은 감소하며, 이 관계는 저겹침 조건에서 강화된다 & \todo{C2 실행 후} \\
-H2 & Optimization의 품질 정점 도달 시점은 view 수가 줄수록 앞당겨지고, 정점 이후 하강 기울기가 가팔라진다 & \todo{C1-a 동역학 로그 분석} \\
+H2 & Optimization의 품질 정점 도달 시점은 view 수가 줄수록 앞당겨지고, 정점 이후 하강 기울기가 가팔라진다 & 부분 지지 (아래) \\
 H3 & 초기 geometry 품질이 일정 수준을 넘으면 refinement의 한계 이득이 소멸한다 & \todo{C1-b 실행 후} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 세 가설 중 어느 것이 기각되더라도 그 자체가 보고 대상이다. 실제로 \S\ref{sec:starvation}에서 원래 가설(관측 부족으로 인한 오탐)이 기각되고 다른 메커니즘(관측 부족 자체의 비율)이 발견된 사례가 있었다.
+
+\paragraph{H2 검증} RE10K C1-a 궤적 로그(scene당 예산 스냅샷 4개: 1/10/60/300\,s)에서, 4개 지점 중 test PSNR 최댓값이 300\,s 이전(=``조기 정점'')에 나타나는 비율을 view 수별로 집계했다. \textbf{정점 시점 부분은 지지된다}: 조기 정점 비율은 Vanilla3DGS에서 2-view 91.7\% $\to$ 12-view 63.3\%, FSGS에서 2-view 91.7\% $\to$ 12-view 18.3\%로 두 방법 모두 view 수가 늘수록 단조 감소했다 — view가 적을수록 정점이 일찍 온다는 예측과 일치한다. 그러나 \textbf{하강 기울기 부분은 기각된다}: 조기 정점 발생 시 정점 대비 300\,s 하강폭(scene cluster bootstrap 95\% CI)은 Vanilla3DGS에서 오히려 view 수가 늘수록 커졌다(2-view $0.69\,$dB $[0.45,0.95]$ $\to$ 12-view $2.80\,$dB $[1.88,3.93]$) — 예측과 정반대 방향이다. FSGS에서는 뚜렷한 추세 없이 $0.5$--$0.9\,$dB 범위에 머물렀다(단 12-view는 조기 정점 표본이 scene 7개뿐이라 CI가 넓음). 정점 시점이 앞당겨지는 것과 하강이 가팔라지는 것은 별개 현상이며, 후자는 view 수 자체보다 densification/opacity reset 주기와 예산 경계의 상호작용에 더 좌우되는 것으로 보인다 — 이는 \S\ref{sec:results}에서 관찰한 12-view Vanilla3DGS의 비단조성과 같은 계열의 현상일 가능성이 있다.
 
 \subsection{Depth 불확실도 개입}
 \label{sec:c2}
