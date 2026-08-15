@@ -58,11 +58,27 @@ RE10K C1-a 본 실험(30-scene) 마무리 대기. 사용자가 ReSplat/Diff3R/Sp
 
 ---
 
-## 오늘 할 일 (RE10K 마무리 대기 중 — 순서 무관, 병행 가능)
+## 5. RE10K C1-a 본 실험 완료 (30-scene, 120 combo, 2400 row)
 
-1. **RE10K 완료 대기 + 완료되는 즉시 `run_dl3dv_c1a_main.py` 착수** — 예상 완료 시각 오늘 UTC 11시경(102/120, 84.2% 진행 속도 기준 추정), 완료되면 바로 실행.
-2. **정성적 렌더 비교 PNG** (GT/MVSplat/Vanilla3DGS/FSGS) — 이미 완료된 체크포인트에서 생성 착수 예정, 아직 미착수.
-3. **DepthSplat C1-b v2 재실행** (`dl3dv_overlap_v2` 기준) — 체크리스트 미해결 항목, DL3DV 본 실험과 GPU 일정 조율 필요.
-4. **RE10K/DL3DV 베이스라인-overlap confound 확인** — DTU(궤도 rig)에서 나온 관계가 path-trajectory 데이터셋에서도 같은지, 아직 미착수.
-5. **대시보드/그림 주기적 갱신** — RE10K 완료 시 최종판으로 한 번 더.
+**실험 목적**: 2026-08-13 밤에 착수한 RE10K C1-a 본 실험(MVSplat vs Vanilla3DGS vs FSGS, view_count [2,4,8,12] × budget [1,10,60,300]s × seed{0,1})이 완료됐는지 확인.
+
+**데이터/특징**: `run_re10k_c1a_main.py` 프로세스가 14:08 UTC경 종료(30 scene 전체 처리 완료). `c1a_main_summary.json` 검사 결과 120/120 combo는 채워졌지만, **딱 두 개의 개별 하위 실행이 조용히 실패**해 2400개 기대 row 중 2388개만 있었다 — scene `a9b3ff60b213e099`의 (view_count=8, Vanilla3DGS, seed 0·1 둘 다)와 (view_count=12, MVSplat)이 빠져있었다.
+
+**쉽게**: 원인을 재현해보니 3DGS 렌더러(gsplat)가 CUDA 확장을 JIT 컴파일할 때 필요한 `ninja` 빌드 도구를 못 찾아서 실패한 것. 오케스트레이터 원본 코드는 `_env_with_bin()`으로 conda 환경의 `bin` 경로를 PATH에 미리 넣어줘서 평소엔 문제가 없는데, 이 두 실행에서만 그게 왜 실패했는지는 정확히 못 밝혔다(캐시된 빌드가 이미 있었는데도 재빌드를 시도한 정황은 확인 — 아마 이 시점에 다른 프로세스와의 일시적 경쟁 상태였을 가능성). 오케스트레이터는 실패해도 멈추지 않고 다음 단계로 계속 진행하도록 짜여 있어서(의도된 동작 — 크래시 시 전체 job이 죽는 것보다 안전), 이 두 구멍만 남기고 끝까지 완주했다.
+
+**수정**: 두 실행을 conda env `bin` 경로를 PATH에 명시적으로 포함해 개별 재실행 → 둘 다 정상 완료. `c1a_main_summary.json`에 누락 row 12개(MVSplat 4개 + Vanilla3DGS 8개)를 직접 append해 병합.
+
+**결과**: 최종 **120/120 combo, 30 scene, 2400/2400 row, 전부 status="ok"**. 결측치 없는 완전한 데이터셋 확보.
+
+**논문 연결**: `regime_map.png`, `pareto_frontier.png`를 최종 완전 데이터로 재생성, 대시보드도 "complete" 스냅샷으로 재배포. 이제 이 데이터가 C1-a RE10K 최종 결과다 — 통계 분석(τ 판정, Holm 보정)을 이 기준으로 확정해도 된다.
+
+---
+
+## 오늘 할 일
+
+1. ~~RE10K 완료 대기~~ — **완료됨** (§5).
+2. **DL3DV 본 실험 착수** — `run_dl3dv_c1a_main.py` 실행, RE10K와 동일 규모(25 scene × 4 view_count × budget × seed).
+3. **정성적 렌더 비교 PNG** (GT/MVSplat/Vanilla3DGS/FSGS) — 이미 완료된 체크포인트에서 생성 착수 예정, 아직 미착수.
+4. **DepthSplat C1-b v2 재실행** (`dl3dv_overlap_v2` 기준) — 체크리스트 미해결 항목, DL3DV 본 실험과 GPU 일정 조율 필요.
+5. **RE10K/DL3DV 베이스라인-overlap confound 확인** — DTU(궤도 rig)에서 나온 관계가 path-trajectory 데이터셋에서도 같은지, 아직 미착수.
 6. **ReSplat 스코프 결정 대기** — 사용자가 원문 다 읽으면 spot-check 방식(2-view RE10K, 8-view DL3DV) 실행 여부 확정.
