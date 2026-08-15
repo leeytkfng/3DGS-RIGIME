@@ -256,30 +256,43 @@ MVSplat/RE10K 240샘플과 DepthSplat/DL3DV 150샘플, 총 390개의 view별 PSN
 \label{sec:results}
 % =====================================================================
 
-\todo{이 절 전체는 C1-a 본 실험(RE10K 30-scene $\times$ view $\times$ overlap $\times$ budget $\times$ \{MVSplat, 3DGS $\times$ 2 seed, FSGS $\times$ 2 seed\}) 완료 후 채운다. 현재 view 수 $\times$ 예산 축을 실행 중이며, overlap 축은 selector 전체 적용 후 추가 실행 예정이다.}
+본 절의 RE10K 결과는 C1-a 본 실험(30-scene $\times$ view 수 $\times$ 예산 $\times$ \{MVSplat, Vanilla3DGS $\times$ 2 seed, FSGS $\times$ 2 seed\}, 2026-08-15 완료, 총 2400개 결과 셀 전량 확보)의 view 수 $\times$ 예산 축 전체를 반영한다. overlap 축은 co-visibility selector 검증만 끝난 상태로 별도 실행이 필요하며, 보조 데이터셋 DL3DV는 착수 직후라 이번 판에는 포함하지 않는다(완료 후 갱신).
 
 \subsection{품질--시간 Regime Map}
 
 \begin{table}[h]
 \centering
-\caption{View 수 $\times$ 계산 예산별 승패 판정(RE10K, 식~\eqref{eq:wtl}의 $\tau$ 적용). \todo{본 실험 완료 후 채움}}
+\caption{View 수 $\times$ 계산 예산별 승패 판정(RE10K 30-scene, 식~\eqref{eq:wtl}의 $\tau$ 적용). FF=MVSplat 우세, OPT=해당 optimization 방법 우세, Tie=$|\Delta| \le \tau$.}
 \label{tab:regime}
 \begin{tabular}{@{}l cccc@{}}
 \toprule
 View 수 & 1\,s & 10\,s & 60\,s & 300\,s \\
 \midrule
-2  & --- & --- & --- & --- \\
-4  & --- & --- & --- & --- \\
-8  & --- & --- & --- & --- \\
-12 & --- & --- & --- & --- \\
+\multicolumn{5}{@{}l}{\textit{Vanilla3DGS vs.\ MVSplat}} \\
+2  & FF & FF & FF & FF \\
+4  & FF & FF & FF & FF \\
+8  & FF & FF & FF & FF \\
+12 & FF & OPT & FF & OPT \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{FSGS vs.\ MVSplat}} \\
+2  & FF & FF & FF & FF \\
+4  & FF & FF & FF & FF \\
+8  & FF & Tie & OPT & OPT \\
+12 & FF & OPT & OPT & OPT \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{FSGS vs.\ Vanilla3DGS}} \\
+2  & V3DGS & V3DGS & V3DGS & V3DGS \\
+4  & V3DGS & V3DGS & FSGS & Tie \\
+8  & Tie & FSGS & FSGS & FSGS \\
+12 & Tie & FSGS & FSGS & FSGS \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{figure}[h]
 \centering
-\todo{Regime Map heatmap 자리 — view 수(행) $\times$ 예산(열) 격자를 방법별 승리 색상(예: feed-forward=파랑, optimization=주황, tie=회색)으로 채운 히트맵. 표~\ref{tab:regime}과 같은 데이터를 시각화만 다르게 한 것. `c1a\_main\_summary.json`에서 바로 생성 가능(matplotlib `imshow`류).}
-\caption{품질--시간 Regime Map. 색은 $\tau$ 적용 승패 판정(식~\eqref{eq:wtl}), 각 셀에 pooled PSNR 격차 표기.}
+\includegraphics[width=\linewidth]{figures/regime_map.png}
+\caption{품질--시간 Regime Map(RE10K 30-scene). 세 방법 쌍(Vanilla3DGS-vs-MVSplat, FSGS-vs-MVSplat, FSGS-vs-Vanilla3DGS) 각각에 대해 $\tau$ 적용 승패 판정(식~\eqref{eq:wtl})을 view 수 $\times$ 예산 격자로 표시. 표~\ref{tab:regime}과 동일한 데이터의 시각화.}
 \label{fig:regime-heatmap}
 \end{figure}
 
@@ -287,14 +300,14 @@ View 수 & 1\,s & 10\,s & 60\,s & 300\,s \\
 
 \begin{figure}[h]
 \centering
-\todo{View 수별(2/4/8/12, 4-panel 또는 4색 1-panel) quality-vs-budget 곡선. x축 예산(log scale 권장, 1--300s), y축 test PSNR, 방법별 선 색 구분. 오늘 만든 대시보드(Artifact)의 Pareto 패널과 같은 데이터, 논문용으로 matplotlib 재생성.}
-\caption{View 수별 품질--시간 Pareto frontier. 방법마다 다른 색/마커.}
+\includegraphics[width=\linewidth]{figures/pareto_frontier.png}
+\caption{View 수별(2/4/8/12) 품질--시간 Pareto frontier(RE10K 30-scene). x축 예산(log scale, 1--300s), y축 test PSNR, 오차 막대는 scene cluster bootstrap 95\% CI.}
 \label{fig:pareto}
 \end{figure}
 
 \subsection{장면별 win rate와 신뢰구간}
 
-\todo{Scene cluster bootstrap CI(식~\eqref{eq:bootstrap}) 적용 결과. Pooled 평균과 함께 scene별 분해를 반드시 병기한다(\S\ref{sec:protocol}의 $\tau$ 교정 사례 참조).}
+표~\ref{tab:regime}의 판정 중 두 지점은 신뢰구간까지 함께 보면 해석이 갈린다. 첫째, FSGS-vs-MVSplat의 8-view 역전은 예산이 늘수록 명확해진다. 60\,s에서 FSGS $20.85$\,dB(95\% CI $[17.48, 24.32]$) 대 MVSplat $18.71$\,dB($[17.79, 19.60]$), 300\,s에서는 FSGS $21.00$\,dB($[17.48, 24.64]$) 대 MVSplat $18.71$\,dB로, 두 CI가 겹치기는 하나 $\Delta$가 $\tau=1.4$\,dB를 넘게 유지되며 scene 수를 30개로 채운 뒤에도 방향이 뒤집히지 않았다(30-scene 이전 부분 데이터에서는 이 경계가 예산에 따라 판정이 흔들렸던 지점이었다). 둘째, 12-view에서 Vanilla3DGS는 예산에 대해 단조롭지 않다 — 10\,s에서 $21.06$\,dB로 MVSplat($19.06$\,dB)을 앞서지만 60\,s에서 $16.97$\,dB로 떨어졌다가 300\,s에 $21.38$\,dB로 회복한다. 이 60\,s 지점의 CI($[14.54, 19.45]$)는 MVSplat의 CI($[18.14, 19.93]$)와 크게 겹쳐 판정 자체는 유지되지만, pooled 평균만으로는 이 비단조성이 개별 scene의 학습 불안정(예: densification/opacity reset 주기와 예산 경계의 우연한 정렬)에서 오는지 체계적 현상인지 구분되지 않는다 — 원인 분석은 \S\ref{sec:failure}에서 다룬다.
 
 \subsection{정성적 비교}
 
