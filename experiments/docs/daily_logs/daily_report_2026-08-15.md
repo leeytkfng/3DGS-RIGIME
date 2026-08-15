@@ -128,12 +128,30 @@ RE10K C1-a 본 실험(30-scene) 마무리 대기. 사용자가 ReSplat/Diff3R/Sp
 
 ---
 
+## 10. C2 depth back-projection init 경로 구현 + 스케일 버그 발견·수정
+
+**실험 목적**: §9에서 확보한 depth 모델을 실제로 `vanilla_3dgs_runner.py`의 세 번째 init 경로(COLMAP triangulation, random-sphere fallback에 이어)로 연결. §5.9의 (a) iid 오차, (b) global scale bias 두 교란을 실제로 주입할 수 있는 상태를 만드는 게 목표.
+
+**데이터/특징**: 신규 파일 3개 — `core/depth_backprojection.py`(depth 교란 `d'=s·d·(1+ε)` + 카메라 K/R/t로 3D back-projection, world-to-camera는 `X_cam=R@X_world+t` 관례라 역변환은 `X_world=(X_cam-t)@R`), `core/depth_model.py`(Depth Anything V2 Metric wrapper), `analysis/precompute_depth_maps.py`(train view마다 depth를 미리 뽑아 캐시 `.pt`로 저장 — 모델을 sigma/scale sweep마다 다시 돌리지 않기 위해 raw depth와 교란을 분리). `vanilla_3dgs_runner.py`에는 `--init-source depth_backprojection`/`--depth-cache-path`/`--depth-noise-sigma`/`--depth-scale-bias` 등 신규 인자와 세 번째 init 분기 추가.
+
+**쉽게**: 다 짜고 DTU scan1 4-view로 실제 돌려봤는데 test SSIM이 0.04(거의 무작위 수준)로 나와서 뭔가 잘못됐다는 걸 바로 알았다. 점 구름의 중심 좌표를 확인해보니 실제 장면 중심에서 장면 반지름의 2배 넘게 떨어져 있었다 — depth 모델이 예측한 절대 거리가 view마다 완전히 다른 값으로 틀려서 그런 것. DTU는 물체를 아주 가까이서 찍는 특수한 촬영이라(카메라-물체 거리 ~608 world-unit인데 "Indoor" 모델은 그런 근접 촬영을 학습해본 적이 없어서), 이 모델을 그대로 쓰면 못 믿을 절대 거리가 나온다는 걸 실측으로 확인한 셈. 다행히 카메라 위치는 이미 정확히 알고 있으니(pose-given), 그 정보로 각 view의 depth를 "카메라에서 장면 중심까지의 실제 거리"에 맞춰 재조정(median depth를 그 거리에 맞추는 식)하는 보정을 추가했다.
+
+**전문 용어**: 좌표 변환(R/t) 자체가 맞는지는 별도로 검증했다 — 알려진 카메라-scene중심 거리를 상수 depth로 강제 주고 back-project하면 scene 중심 15 이내로 정확히 떨어지는 걸 확인해서(scene radius 213 기준), 버그가 좌표계가 아니라 depth 모델의 절대 스케일 쪽이라는 걸 먼저 격리했다. 교정 함수는 `precompute_depth_maps.py::calibrate_depth` — `calibration_scale = camera_to_scene_center_distance / median(raw_depth)`.
+
+**결과**: 교정 전 point cloud 중심이 scene 중심에서 515.6 떨어져 있었는데(radius 213의 2.4배), 교정 후 145.7로 줄어 scene 안쪽으로 들어왔다. 같은 조건(DTU scan1, 4-view, seed0, budget 60s) 학습 스모크에서 test PSNR 5.57→9.08dB(1s 시점), SSIM 0.042→0.386로 뚜렷이 개선됨을 확인 — 60s까지 계속 개선되는 정상적인 학습 곡선도 나옴.
+
+**논문 연결**: `overall.md` §5.9에 버그·수정 기록. C2가 실제로 통제하는 것은 σ(iid 노이즈)와 s(scale bias)이고, 이 교정은 그 두 값이 각각 "0"과 "1.0"일 때(=교란 없음) 기준선이 실제로 의미 있는 depth가 되도록 만드는 전처리다.
+
+**남은 것**: DTU에 co-visibility selector 적용해 `representative_conditions` 4개(2view_low_overlap 등)에 실제 scene 배정. 그거 끝나면 C2 파일럿(GPU는 DL3DV 끝난 뒤) 실행 가능.
+
+---
+
 ## 오늘 할 일
 
 1. ~~RE10K 완료 대기~~ — **완료됨** (§5).
 2. **DL3DV 본 실험** — 진행 중, cron으로 매시 자동 모니터링 (§7).
-3. **C2 depth-init 러너 구현** — `vanilla_3dgs_runner.py`에 depth back-projection + noise/scale-bias 주입 경로 추가 (§9 후속).
-4. **DTU co-visibility selector 적용** — C2 representative_conditions 4개에 실제 scene 배정 (§9 후속).
+3. ~~C2 depth-init 러너 구현~~ — **완료됨, 스케일 버그까지 잡고 검증됨** (§10).
+4. **DTU co-visibility selector 적용** — C2 representative_conditions 4개에 실제 scene 배정, 다음 착수 항목.
 5. **정성적 렌더 비교 PNG** (GT/MVSplat/Vanilla3DGS/FSGS) — 이미 완료된 체크포인트에서 생성 착수 예정, 아직 미착수.
 6. **DepthSplat C1-b v2 재실행** — **황인재 담당으로 확인됨**(§6), 우리 쪽에서 먼저 손대지 않는다.
 7. **RE10K/DL3DV 베이스라인-overlap confound 확인** — DTU(궤도 rig)에서 나온 관계가 path-trajectory 데이터셋에서도 같은지, 아직 미착수.
