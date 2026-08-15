@@ -261,6 +261,13 @@ Feed-forward Gaussian을 gsplat/standard 3DGS 표현으로 변환할 때 **중�
 
 C2는 전체 실험 격자를 반복하지 않는다. 결과를 본 뒤 고르지 않도록 **파일럿 전에 대표 조건을 고정**한다: 최저 view–low overlap / 중간 view–low overlap / 중간 view–high overlap / 최고 view–high overlap. 12-view 미지원 시 최고 지원 view로 대체. DTU 5~8개 장면에서 깊게 분석하며, C1-b와 C2의 완성도를 selector보다 우선한다.
 
+**2026-08-15 depth back-projection 모델 결정 및 구현 착수**: RE10K C1-a 완료 후 C2 설계에 착수하며 확인한 바, 지금까지 VGGT·DA3 계열 모델이 이 환경에 전혀 설치돼 있지 않았다(모든 conda env, `/data/Re-feem` 어디에도 없음) — C2는 코드가 아예 없는 상태에서 시작한다.
+
+- **모델 선택**: VGGT 대신 **Depth Anything V2 Metric**을 쓴다. 우리 트랙은 pose-given(카메라 pose를 이미 알고 있음)이라 VGGT의 pose 추정 기능이 불필요하고, VGGT는 point map을 자체 좌표계로 출력해 우리 world 좌표계로 다시 정렬해야 하는 반면, DepthAnything-V2-Metric은 known intrinsics로 바로 back-projection 가능한 metric depth를 직접 출력해 파이프라인이 더 단순하다. `transformers` 라이브러리로 설치, 전용 conda env(`depth`) 분리 — 기존 env(`ps3` 등)의 torch 버전과 충돌 방지.
+- **주입 지점**: `vanilla_3dgs_runner.py`에 `--init-source depth_backprojection` 신규 옵션 추가. COLMAP triangulation/random-sphere fallback과 나란한 세 번째 init 경로가 된다. 각 context view에서 depth map 추정 → `d' = d(1+ε)` 또는 `d' = s·d` 교란 적용 → 카메라 intrinsics로 3D 포인트 back-projection → 여러 view의 포인트를 합쳐 초기 Gaussian center로 사용.
+- **대표 조건의 실제 DTU scene 배정**: `experiment_config.yaml`의 `representative_conditions`(`2view_low_overlap`/`4view_low_overlap`/`4view_high_overlap`/`12view_high_overlap`)에 대응하는 실제 DTU scene은 아직 미배정 — RE10K/DL3DV에서 쓴 `generate_*_overlap_candidates.py`와 동일한 co-visibility selector를 DTU에도 적용해야 한다(DTU는 지금까지 2-view 파일럿만 있었고 고/저 overlap 후보가 없다). 다음 착수 항목.
+- **일정**: 위 세 가지(모델 설치·검증, init 경로 구현, DTU overlap 후보 생성)가 끝나야 C2 파일럿을 돌릴 수 있다. GPU는 지금 DL3DV 본 실험이 쓰고 있으므로, 모델 설치·검증(CPU 다운로드 + 소규모 추론 테스트)까지는 병행하고 실제 300s-budget 실행은 DL3DV 완료 후로 순연한다.
+
 **2026-08-12 budget 결정(§5.4 GPU-hour 재계산에서 발견된 미결 항목)**: C2 row에는 원래 `budget_seconds`가 없어서(매니페스트 생성 코드에 빠져 있었음) 별도 예산으로 새로 정의할지 고민이 있었으나, **main phase/C1-b와 동일하게 `budgets_seconds=[1,10,60,300]` 체크포인트를 가진 단일 300s trajectory로 통일**하기로 한다. 근거:
 
 1. 이미 존재하는 budget_snapshot 메커니즘을 그대로 재사용하므로 새 코드가 필요 없다.

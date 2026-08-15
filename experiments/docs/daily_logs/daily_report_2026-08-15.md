@@ -74,11 +74,67 @@ RE10K C1-a 본 실험(30-scene) 마무리 대기. 사용자가 ReSplat/Diff3R/Sp
 
 ---
 
+## 6. main.tex §4 Results 채움 + 팀 역할 재확인
+
+**실험 목적**: RE10K C1-a가 끝났으니 논문 초안의 Results 절(지금까지 `\todo`/`\chk` placeholder였던 부분)을 실제 수치로 채운다.
+
+**데이터/특징**: `regime_map.png`/`pareto_frontier.png`를 표~\ref{tab:regime}·그림 자리에 실제 삽입. 승패 판정 표는 세 방법 쌍(Vanilla3DGS-vs-MVSplat, FSGS-vs-MVSplat, FSGS-vs-Vanilla3DGS) 전부를 view 수 × budget 격자로 채웠다. "장면별 win rate와 신뢰구간" 절에는 CI까지 곁들여 두 지점을 서술했다 — FSGS가 8-view·budget≥60s에서 MVSplat을 역전한 것(30-scene 완비 후 robust하게 유지됨)과, Vanilla3DGS가 12-view에서 예산에 대해 비단조(10s에 앞서다가 60s에 떨어지고 300s에 회복)라는 아직 원인 불명인 패턴.
+
+**팀 역할 재확인**: 사용자가 `팀 실행 가이드.pdf`(이용수/황인재/서창희 3인 역할표)를 공유해 확인한 결과, **C1-b 실행은 황인재(2저자) 담당**임이 명확해졌다(이용수는 C1-b의 전제조건인 렌더 등가성 gate만 담당, 이미 완료). 이 구조를 memory에 기록해뒀다 — 앞으로 C1-b 실행에는 먼저 손대지 않고 확인만 하기로.
+
+**논문 연결**: commit `c3c81a2`.
+
+---
+
+## 7. DL3DV 대시보드 생성 + 시간당 자동 갱신
+
+**실험 목적**: RE10K 대시보드처럼 DL3DV 진행 상황도 실시간으로 볼 수 있게 요청받음. 추가로 "1시간마다 자동 갱신"도 요청받아 자동화 방법을 검토.
+
+**막힌 점과 해결**: 처음엔 클라우드 스케줄(`/schedule`, RemoteTrigger 기반 cron routine)로 시도했으나, 클라우드 루틴은 완전히 격리된 샌드박스에서 돌아 이 로컬 머신의 실험 출력 파일(`experiments/outputs/dl3dv_c1a_main/c1a_main_summary.json`)에 접근할 수 없다는 걸 확인 — 만들어도 빈 데이터로 덮어쓰기만 할 뿐이라 무의미해서 중단. 대신 **이 세션 안에서 도는 cron**(`CronCreate`, 매시 07분, 세션 유지되는 동안 · 최대 7일)으로 전환.
+
+**데이터/특징**: RE10K 대시보드 HTML을 템플릿으로 삼아 DL3DV용으로 복제·수정(제목, 방법명 MVSplat→DepthSplat, TOTAL_COMBOS 30→25, 범례·footer 텍스트). 새 Artifact로 발행: `https://claude.ai/code/artifact/24c35b05-4da3-4877-a37b-bf38811fdbf5`.
+
+**결과**: cron이 매시 07분에 (1) 진행률 확인 (2) `generate_regime_map.py`로 그림 재생성 (3) 대시보드 ROWS/SNAPSHOT_AT 갱신 후 재배포를 자동 수행. 첫 실행에서 `generate_regime_map.py`가 방법명(FF)을 `MVSplat`으로 하드코딩해뒀던 걸 발견해 `--ff-method`/`--dataset-label` CLI 옵션으로 일반화했고, scene 1개뿐인 초반 구간에서 Pareto 그림이 음수 오차막대로 에러나던 버그도 같이 고침.
+
+**논문 연결**: 없음(운영 인프라). commit `37c4a88`.
+
+---
+
+## 8. H2 가설 검증 — RE10K 궤적 로그 분석
+
+**실험 목적**: "내가 맡은 최종 목표가 뭐냐"는 질문에 답하며 정리한 우선순위(§C2, H가설) 중 H2("view 수가 적을수록 optimization 품질 정점이 빨리 오고 하강이 가파르다")는 이미 완료된 RE10K C1-a 궤적 로그만으로 바로 검증 가능하다는 걸 확인, 즉시 착수.
+
+**데이터/특징**: `h2_dynamics_analysis.py` 신규 작성. Vanilla3DGS·FSGS의 (scene, view_count, seed) 궤적(예산 스냅샷 4개: 1/10/60/300s) 480개에서, 4개 중 test PSNR 최댓값이 300s 이전에 나오는 비율("조기 정점 비율")과 조기 정점 시 정점 대비 300s 하강폭을 view 수별로 집계(하강폭은 scene cluster bootstrap CI).
+
+**결과**: 가설이 정확히 절반만 맞았다. **정점 시점**은 지지됨 — 조기 정점 비율이 view 수가 늘수록 단조 감소(Vanilla3DGS 91.7%→63.3%, FSGS 91.7%→18.3%, 2→12-view). **하강 기울기**는 기각(그것도 정반대)됨 — Vanilla3DGS는 view 수가 늘수록 하강폭이 오히려 커짐(2-view 0.69dB → 12-view 2.80dB), FSGS는 뚜렷한 추세 없음. 12-view Vanilla3DGS의 이 큰 하강폭은 §7에서 서술한 "12-view 예산 비단조성"과 같은 원인일 가능성이 있어 보인다.
+
+**논문 연결**: `main.tex` 가설 표 H2 행 갱신 + 새 문단 추가. commit `ea97e0a`.
+
+---
+
+## 9. C2 설계 착수 — depth back-projection 모델 확보
+
+**실험 목적**: H2 다음으로 C2(depth noise 개입 실험) 설계 착수. 시작하자마자 막힌 지점부터 확인.
+
+**막힌 점**: overall.md §5.9는 C2의 depth 개입 트랙을 "VGGT/DA3 계열 depth back-projection 초기화"로 명시하는데, 확인해보니 이 환경 어디에도(모든 conda env, `/data/Re-feem`) 그런 모델이 설치돼 있지 않았다 — C2는 코드가 전혀 없는 상태에서 시작해야 했다.
+
+**결정**: VGGT 대신 **Depth Anything V2 Metric**을 쓰기로 했다. 우리 트랙은 pose-given(카메라 pose를 이미 알고 있음)이라 VGGT의 pose 추정 기능이 불필요하고, VGGT는 자체 좌표계로 point map을 출력해 우리 world 좌표계로 재정렬해야 하는 반면 DepthAnything-V2-Metric은 known intrinsics로 바로 back-projection 가능한 metric depth를 직접 준다 — 파이프라인이 더 단순하다.
+
+**데이터/특징**: 전용 conda env `depth` 신규 생성(torch/torchvision/transformers/pillow만 설치, 기존 env와 버전 충돌 방지). `core/depth_model_smoke_test.py` 작성해 DTU scan1 이미지 1장으로 실제 추론 확인.
+
+**결과**: 정상 동작 확인 — depth 범위 0.537~3.006m(DTU가 근접 촬영 tabletop object라 이 정도가 정상 범위), NaN/Inf 없음, 추론 0.33초. 모델 설치·검증까지는 끝났고, 아직 남은 건 (1) `vanilla_3dgs_runner.py`에 `--init-source depth_backprojection` 경로 구현(noise/scale-bias 주입 포함), (2) DTU에도 RE10K/DL3DV처럼 co-visibility selector를 적용해 `representative_conditions`(2view_low_overlap 등 4개)에 실제 DTU scene 배정. GPU는 지금 DL3DV가 쓰고 있어 실제 300s 실행은 DL3DV 완료 후로 순연.
+
+**논문 연결**: `overall.md` §5.9에 2026-08-15 항목으로 결정 근거 기록.
+
+---
+
 ## 오늘 할 일
 
 1. ~~RE10K 완료 대기~~ — **완료됨** (§5).
-2. **DL3DV 본 실험 착수** — `run_dl3dv_c1a_main.py` 실행, RE10K와 동일 규모(25 scene × 4 view_count × budget × seed).
-3. **정성적 렌더 비교 PNG** (GT/MVSplat/Vanilla3DGS/FSGS) — 이미 완료된 체크포인트에서 생성 착수 예정, 아직 미착수.
-4. **DepthSplat C1-b v2 재실행** (`dl3dv_overlap_v2` 기준) — 체크리스트 미해결 항목, DL3DV 본 실험과 GPU 일정 조율 필요.
-5. **RE10K/DL3DV 베이스라인-overlap confound 확인** — DTU(궤도 rig)에서 나온 관계가 path-trajectory 데이터셋에서도 같은지, 아직 미착수.
-6. **ReSplat 스코프 결정 대기** — 사용자가 원문 다 읽으면 spot-check 방식(2-view RE10K, 8-view DL3DV) 실행 여부 확정.
+2. **DL3DV 본 실험** — 진행 중, cron으로 매시 자동 모니터링 (§7).
+3. **C2 depth-init 러너 구현** — `vanilla_3dgs_runner.py`에 depth back-projection + noise/scale-bias 주입 경로 추가 (§9 후속).
+4. **DTU co-visibility selector 적용** — C2 representative_conditions 4개에 실제 scene 배정 (§9 후속).
+5. **정성적 렌더 비교 PNG** (GT/MVSplat/Vanilla3DGS/FSGS) — 이미 완료된 체크포인트에서 생성 착수 예정, 아직 미착수.
+6. **DepthSplat C1-b v2 재실행** — **황인재 담당으로 확인됨**(§6), 우리 쪽에서 먼저 손대지 않는다.
+7. **RE10K/DL3DV 베이스라인-overlap confound 확인** — DTU(궤도 rig)에서 나온 관계가 path-trajectory 데이터셋에서도 같은지, 아직 미착수.
+8. **ReSplat 스코프 결정 대기** — 사용자가 원문 다 읽으면 spot-check 방식(2-view RE10K, 8-view DL3DV) 실행 여부 확정.
