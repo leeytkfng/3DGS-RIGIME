@@ -273,12 +273,23 @@ def run(args: argparse.Namespace) -> None:
         # 둘 다 지원(RE10K와 동일).
         from dl3dv_dataset import load_metadata, load_views
 
-        overlap_summary = json.loads(Path(args.dl3dv_overlap_summary).read_text())
-        row = next(
-            r for r in overlap_summary if r["scene"] == args.dl3dv_scene_key and r["view_count"] == args.view_count
-        )
-        train_ids, test_ids = row["context_indices"], row["target_indices"]
-        print(f"[data] DL3DV scene={args.dl3dv_scene_key} train(context)={train_ids} test(target)={test_ids}")
+        if args.overlap_level:
+            # overlap 축: co-visibility selector가 만든 low/high 후보 사용
+            # (generate_dl3dv_overlap_candidates.py, RE10K와 동일 패턴). 주의: DL3DV는
+            # target도 high/low마다 따로 뽑혀 있다(같은 scene이라도 high/low target이 다름 —
+            # target_coverage_confound 진단에서 이미 확인된 특성).
+            overlap_data = json.loads(Path(args.dl3dv_overlap_candidates_index).read_text())
+            ov_entry = overlap_data[args.dl3dv_scene_key][str(args.view_count)][args.overlap_level]
+            train_ids, test_ids = ov_entry["context"], ov_entry["target"]
+            print(f"[data] DL3DV scene={args.dl3dv_scene_key} overlap_level={args.overlap_level} "
+                  f"train(context)={train_ids} test(target)={test_ids}")
+        else:
+            overlap_summary = json.loads(Path(args.dl3dv_overlap_summary).read_text())
+            row = next(
+                r for r in overlap_summary if r["scene"] == args.dl3dv_scene_key and r["view_count"] == args.view_count
+            )
+            train_ids, test_ids = row["context_indices"], row["target_indices"]
+            print(f"[data] DL3DV scene={args.dl3dv_scene_key} train(context)={train_ids} test(target)={test_ids}")
 
         scene_dir = Path("/data/Re-feem/datasets/dl3dv") / args.dl3dv_scene_key
         meta = load_metadata(scene_dir)
@@ -295,10 +306,21 @@ def run(args: argparse.Namespace) -> None:
         scan_dir = Path(args.scan_dir)
         all_view_ids = list(range(1, 50))
         test_ids = all_view_ids[::7]  # 1,8,15,...,43 -> 고정 held-out test split
-        train_pool = [v for v in all_view_ids if v not in test_ids]
 
-        rng = np.random.default_rng(args.seed)
-        train_ids = sorted(rng.choice(train_pool, size=min(args.view_count, len(train_pool)), replace=False).tolist())
+        if args.overlap_level:
+            # C2: co-visibility selector가 만든 low/high 후보 사용(generate_dtu_overlap_candidates.py).
+            # target은 항상 기존 고정 held-out split과 동일 — high/low 사이에서도 바뀌지 않는다
+            # (target까지 조건마다 달라지면 A-2에서 확인한 target-coverage confound가 그대로 재현된다).
+            overlap_data = json.loads(Path(args.dtu_overlap_candidates_index).read_text())
+            scene_key = args.scene.split("_", 1)[1] if args.scene.startswith("dtu_") else args.scene
+            ov_entry = overlap_data[scene_key][str(args.view_count)]
+            train_ids, test_ids = ov_entry[args.overlap_level]["context"], ov_entry["target"]
+            print(f"[data] DTU scene={scene_key} overlap_level={args.overlap_level} "
+                  f"train(context)={train_ids} test(target)={test_ids}")
+        else:
+            train_pool = [v for v in all_view_ids if v not in test_ids]
+            rng = np.random.default_rng(args.seed)
+            train_ids = sorted(rng.choice(train_pool, size=min(args.view_count, len(train_pool)), replace=False).tolist())
 
         print(f"[data] train views ({len(train_ids)}): {train_ids}")
         print(f"[data] test views ({len(test_ids)}): {test_ids}")
@@ -688,9 +710,19 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--dl3dv-overlap-summary",
         default="experiments/outputs/dl3dv_overlap/all_scenes_summary.json",
-        help="dataset=dl3dv일 때만 사용. generate_dl3dv_view_overlap.py 출력.",
+        help="dataset=dl3dv일 때만 사용, --overlap-level 미지정 시. generate_dl3dv_view_overlap.py 출력.",
+    )
+    parser.add_argument(
+        "--dl3dv-overlap-candidates-index",
+        default="experiments/outputs/dl3dv_overlap_lowhigh/dl3dv_overlap_candidates.json",
+        help="dataset=dl3dv이고 --overlap-level 지정 시 사용. generate_dl3dv_overlap_candidates.py 출력.",
     )
     parser.add_argument("--dl3dv-scene-key", default=None, help="dataset=dl3dv일 때 필요. DL3DV scene 폴더명(hash).")
+    parser.add_argument(
+        "--dtu-overlap-candidates-index",
+        default="experiments/outputs/dtu_overlap_candidates/dtu_overlap_candidates.json",
+        help="dataset=dtu이고 --overlap-level 지정 시 사용. generate_dtu_overlap_candidates.py 출력(C2 전용).",
+    )
     parser.add_argument("--method", default="Vanilla3DGS")
     parser.add_argument("--experiment-id", default="regime-map-20260806")
     parser.add_argument("--view-count", type=int, default=8)

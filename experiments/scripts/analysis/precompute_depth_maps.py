@@ -74,12 +74,20 @@ def load_train_views(args: argparse.Namespace) -> list[dict]:
         if not args.scan_dir:
             raise SystemExit("--dataset dtu는 --scan-dir가 필요하다.")
         scan_dir = Path(args.scan_dir)
-        all_view_ids = list(range(1, 50))
-        test_ids = set(all_view_ids[::7])
-        train_pool = [v for v in all_view_ids if v not in test_ids]
 
-        rng = np.random.default_rng(args.seed)
-        train_ids = sorted(rng.choice(train_pool, size=min(args.view_count, len(train_pool)), replace=False).tolist())
+        if args.overlap_level:
+            # C2: vanilla_3dgs_runner.py와 반드시 같은 context view를 써야 같은 depth cache를
+            # 재사용할 수 있다 — generate_dtu_overlap_candidates.py 출력을 그대로 읽는다.
+            overlap_data = json.loads(Path(args.dtu_overlap_candidates_index).read_text())
+            scene_key = Path(args.scan_dir).name  # e.g. "scan1"
+            ov_entry = overlap_data[scene_key][str(args.view_count)]
+            train_ids = ov_entry[args.overlap_level]["context"]
+        else:
+            all_view_ids = list(range(1, 50))
+            test_ids = set(all_view_ids[::7])
+            train_pool = [v for v in all_view_ids if v not in test_ids]
+            rng = np.random.default_rng(args.seed)
+            train_ids = sorted(rng.choice(train_pool, size=min(args.view_count, len(train_pool)), replace=False).tolist())
         return load_scan(scan_dir, train_ids, target_shape=target_shape)
 
     if args.dataset == "re10k":
@@ -109,6 +117,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", choices=["dtu", "re10k", "dl3dv"], required=True)
     parser.add_argument("--scan-dir", default=None)
+    parser.add_argument("--overlap-level", choices=["high", "low"], default=None, help="dtu 전용. 지정 시 --dtu-overlap-candidates-index에서 context를 읽는다(C2).")
+    parser.add_argument("--dtu-overlap-candidates-index", default=str(REPO_ROOT / "experiments/outputs/dtu_overlap_candidates/dtu_overlap_candidates.json"))
     parser.add_argument("--re10k-scene-key", default=None)
     parser.add_argument("--re10k-subset-index", default=str(REPO_ROOT / "experiments/outputs/re10k_main_subset/re10k_main_subset.json"))
     parser.add_argument("--dl3dv-scene-key", default=None)

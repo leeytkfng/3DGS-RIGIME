@@ -99,12 +99,19 @@ def run(args: argparse.Namespace) -> None:
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    overlap_summary = json.loads(Path(args.overlap_summary).read_text())
-    row = next(
-        r for r in overlap_summary if r["scene"] == args.scene_key and r["view_count"] == args.view_count
-    )
-    context_ids, target_ids = row["context_indices"], row["target_indices"]
-    print(f"[data] scene={args.scene_key} view_count={args.view_count} context={context_ids} target={target_ids}")
+    if args.overlap_level:
+        overlap_data = json.loads(Path(args.overlap_candidates_index).read_text())
+        ov_entry = overlap_data[args.scene_key][str(args.view_count)][args.overlap_level]
+        context_ids, target_ids = ov_entry["context"], ov_entry["target"]
+        print(f"[data] scene={args.scene_key} view_count={args.view_count} overlap_level={args.overlap_level} "
+              f"context={context_ids} target={target_ids}")
+    else:
+        overlap_summary = json.loads(Path(args.overlap_summary).read_text())
+        row = next(
+            r for r in overlap_summary if r["scene"] == args.scene_key and r["view_count"] == args.view_count
+        )
+        context_ids, target_ids = row["context_indices"], row["target_indices"]
+        print(f"[data] scene={args.scene_key} view_count={args.view_count} context={context_ids} target={target_ids}")
 
     scene_dir = DL3DV_ROOT / args.scene_key
     meta = load_metadata(scene_dir)
@@ -218,7 +225,12 @@ def run(args: argparse.Namespace) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="DepthSplat runner for DL3DV pilot scenes (depthsplat conda env only).")
-    parser.add_argument("--overlap-summary", default="experiments/outputs/dl3dv_overlap/all_scenes_summary.json")
+    parser.add_argument("--overlap-summary", default="experiments/outputs/dl3dv_overlap/all_scenes_summary.json",
+                         help="--overlap-level 미지정 시 사용.")
+    parser.add_argument("--overlap-level", choices=["high", "low"], default=None,
+                         help="지정하면 --overlap-candidates-index에서 co-visibility selector 후보를 쓴다.")
+    parser.add_argument("--overlap-candidates-index",
+                         default="experiments/outputs/dl3dv_overlap_lowhigh/dl3dv_overlap_candidates.json")
     parser.add_argument("--scene-key", required=True)
     parser.add_argument("--view-count", type=int, default=2)
     parser.add_argument("--experiment-id", default="regime-map-20260806")
