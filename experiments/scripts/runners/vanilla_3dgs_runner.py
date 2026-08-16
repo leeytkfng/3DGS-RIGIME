@@ -35,6 +35,7 @@ from scipy.spatial import cKDTree
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "core"))
 
 from colmap_init import CameraParams, triangulate_sfm_points, triangulate_sfm_points_from_cameras  # noqa: E402
+from depth_backprojection import back_project_multi_view  # noqa: E402
 from dtu_dataset import estimate_scene_sphere, load_camera, load_scan  # noqa: E402
 from protocol_utils import budget_checkpoint, oracle_checkpoint  # noqa: E402
 
@@ -309,6 +310,9 @@ def run(args: argparse.Namespace) -> None:
         center, radius = estimate_scene_sphere(cameras_for_sphere)
         print(f"[init] estimated scene center={center}, radius={radius:.3f}")
 
+    if args.warm_start_checkpoint and args.depth_cache_path:
+        raise SystemExit("--warm-start-checkpoint와 --depth-cache-path는 동시에 줄 수 없다(둘 다 init 단계 전체를 대체하는 경로).")
+
     if args.warm_start_checkpoint:
         # C1-b: FF(MVSplat/DepthSplat) Gaussian 출력을 그대로 최적화 시작점으로 쓴다.
         # COLMAP triangulation/random init은 건너뛴다 — §5.8 렌더 등가성 gate를
@@ -318,6 +322,31 @@ def run(args: argparse.Namespace) -> None:
             f"[init] source={init_source}, num_points={params['means'].shape[0]} "
             f"(FF warm-start, pose_scale_factor={args.pose_scale_factor})"
         )
+    elif args.depth_cache_path:
+        # C2: analysis/precompute_depth_maps.py가 미리 뽑아둔 raw depth를 교란(§5.9)한 뒤
+        # back-projection해서 초기값으로 쓴다. COLMAP triangulation은 건너뛴다 — C2의 목적
+        # 자체가 "depth 품질을 통제된 방식으로 나쁘게 만들었을 때 무슨 일이 일어나는가"이므로,
+        # COLMAP(=깨끗한 기하)로 되돌아가면 개입 효과가 섞인다.
+        cache = torch.load(args.depth_cache_path, map_location="cpu")
+        cache_view_ids = set(cache["view_ids"])
+        train_view_ids = {v["view_id"] for v in train_views}
+        if cache_view_ids != train_view_ids:
+            raise SystemExit(
+                f"depth cache의 view_id({sorted(cache_view_ids)})가 train view({sorted(train_view_ids)})와 다르다"
+                " — precompute_depth_maps.py를 이 run과 같은 --view-count/--seed로 다시 돌려야 한다."
+            )
+        cameras = [(K, R, t) for K, R, t in zip(cache["K"], cache["R"], cache["t"])]
+        points, colors = back_project_multi_view(
+            cache["depths"], cameras, cache["images"],
+            sigma=args.depth_noise_sigma, scale_bias=args.depth_scale_bias, seed=args.seed,
+            stride=args.depth_stride, max_points_per_view=args.depth_max_points_per_view,
+        )
+        init_source = "depth_backprojection"
+        print(
+            f"[init] source={init_source}, num_points={points.shape[0]} "
+            f"(sigma={args.depth_noise_sigma}, scale_bias={args.depth_scale_bias})"
+        )
+        params = init_gaussians(points, colors, device)
     else:
         overlap_suffix = f"_{args.overlap_level}" if args.overlap_level else ""
         colmap_workdir = Path(args.output_dir) / "colmap_work" / args.scene / f"{args.view_count}view_seed{args.seed}{overlap_suffix}"
@@ -729,6 +758,33 @@ def build_parser() -> argparse.ArgumentParser:
         help="카메라 translation에 곱할 배율. warm-start 소스가 좌표계를 스케일해서 썼다면"
         "(예: mvsplat_runner.py의 DTU_SCALE_FACTOR=1/200) 반드시 같은 값을 줘야 Gaussian과"
         " 카메라 좌표계가 맞는다. 기본 1.0은 기존 동작(원본 DTU 좌표계)과 동일.",
+    )
+    parser.add_argument(
+        "--depth-cache-path",
+        default=None,
+        help="C2: analysis/precompute_depth_maps.py가 저장한 .pt 캐시 경로. 주어지면 COLMAP/random"
+        " init을 건너뛰고 이 depth map을 교란(--depth-noise-sigma/--depth-scale-bias)한 뒤"
+        " back-projection해서 초기값으로 쓴다. --warm-start-checkpoint와는 동시에 못 쓴다"
+        " (둘 다 init 단계를 완전히 대체하는 경로라 상호배타적).",
+    )
+    parser.add_argument(
+        "--depth-noise-sigma", type=float, default=0.0,
+        help="C2 (a) iid 오차: d' = d(1+eps), eps~N(0,sigma^2). --depth-cache-path와 함께 쓴다."
+        " 0.0이면 노이즈 없음(overall.md §5.9 sigma 후보: 0/0.01/0.03/0.05/0.10).",
+    )
+    parser.add_argument(
+        "--depth-scale-bias", type=float, default=1.0,
+        help="C2 (b) global scale bias: d' = s*d. --depth-cache-path와 함께 쓴다. 1.0이면 편향 없음"
+        " (overall.md §5.9 s 후보: 0.9/0.95/1.0/1.05/1.1).",
+    )
+    parser.add_argument(
+        "--depth-stride", type=int, default=4,
+        help="depth back-projection 시 픽셀을 몇 칸 간격으로 샘플링할지(밀도 조절, COLMAP 수준 점"
+        " 개수에 맞추기 위한 서브샘플).",
+    )
+    parser.add_argument(
+        "--depth-max-points-per-view", type=int, default=50_000,
+        help="view당 back-projection 점 상한(그 이상이면 무작위 서브샘플).",
     )
     parser.add_argument("--output-dir", default=str(Path(__file__).resolve().parents[2] / "outputs"))
     parser.add_argument("--compute-lpips", action="store_true", default=True, help="AlexNet 기반 LPIPS도 함께 계산.")
