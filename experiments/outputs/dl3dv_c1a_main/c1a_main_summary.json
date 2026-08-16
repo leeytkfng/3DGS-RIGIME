@@ -1,0 +1,7202 @@
+[
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.082394282023113,
+    "wall_clock": 0.07464239897672087
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.082394282023113,
+    "wall_clock": 0.07464239897672087
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.082394282023113,
+    "wall_clock": 0.07464239897672087
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.082394282023113,
+    "wall_clock": 0.07464239897672087
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.896573702494303,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.589421908060709,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.579386393229166,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.5844087600708,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.937115987141928,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.807223002115885,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.875840822855631,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.93748664855957,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.916902224222818,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.40485668182373,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.042361577351889,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.096995989481607,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.870485623677572,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.42475446065267,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.903123219807943,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.924029986063639,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 22.792428334554035,
+    "wall_clock": 0.09061845496762544
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 22.792428334554035,
+    "wall_clock": 0.09061845496762544
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 22.792428334554035,
+    "wall_clock": 0.09061845496762544
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 22.792428334554035,
+    "wall_clock": 0.09061845496762544
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.085733413696289,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.061234792073568,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.30837313334147,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.29323641459147,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.038630485534668,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.027305603027344,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.412996927897135,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.387059529622396,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.188427925109863,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.844128926595053,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.768050829569498,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.550798734029135,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.507925669352213,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.764439264933268,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.420613606770834,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.416546503702799,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.30035146077474,
+    "wall_clock": 0.13186401093844324
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.30035146077474,
+    "wall_clock": 0.13186401093844324
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.30035146077474,
+    "wall_clock": 0.13186401093844324
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.30035146077474,
+    "wall_clock": 0.13186401093844324
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.194708506266275,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 19.367685953776043,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.5836238861084,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 20.91141637166341,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.177087465922037,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 19.10009829203288,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 23.514262517293293,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 22.51922543843587,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 15.793144543965658,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 22.40179379781087,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.46138636271159,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.44825808207194,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 15.89815362294515,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 20.568373998006184,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.278746287027996,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.0818297068278,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.677253087361652,
+    "wall_clock": 0.18577605299651623
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.677253087361652,
+    "wall_clock": 0.18577605299651623
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.677253087361652,
+    "wall_clock": 0.18577605299651623
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.677253087361652,
+    "wall_clock": 0.18577605299651623
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 16.04898198445638,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.54140027364095,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 25.92269515991211,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 25.79311243693034,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 16.214109420776367,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.482358932495117,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 26.458611806233723,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 24.5313237508138,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.670881907145183,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 24.88306490580241,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 27.90862274169922,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.473931630452473,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.44596989949544,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 24.375258763631184,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 26.49921162923177,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.195144017537434,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.604958216349285,
+    "wall_clock": 0.07175385404843837
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.604958216349285,
+    "wall_clock": 0.07175385404843837
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.604958216349285,
+    "wall_clock": 0.07175385404843837
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.604958216349285,
+    "wall_clock": 0.07175385404843837
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.00745932261149,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.010974248250326,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.009495417277018,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.008942286173502,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.01154359181722,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.020133336385092,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.018332163492838,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.017521858215332,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.0657320022583,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.075483640034994,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.062771161397299,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.178755442301432,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.066898028055826,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.063766479492188,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.210926373799643,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.25940195719401,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.116268793741863,
+    "wall_clock": 0.09046093805227429
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.116268793741863,
+    "wall_clock": 0.09046093805227429
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.116268793741863,
+    "wall_clock": 0.09046093805227429
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.116268793741863,
+    "wall_clock": 0.09046093805227429
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.26943333943685,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.011160850524902,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.944477717081705,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.950201670328775,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.276632308959961,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.977869669596354,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.758683522542318,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.772254625956217,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.718778292338053,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.484955787658691,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.528738657633463,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.111375172932943,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.740991274515787,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.729880015055338,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.577038764953613,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.286812464396158,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.373933792114258,
+    "wall_clock": 0.13902063702698797
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.373933792114258,
+    "wall_clock": 0.13902063702698797
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.373933792114258,
+    "wall_clock": 0.13902063702698797
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.373933792114258,
+    "wall_clock": 0.13902063702698797
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.549901326497396,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 20.83049964904785,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 26.29491424560547,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 26.4205265045166,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.338827133178711,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 20.13913853963216,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 23.220773061116535,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 25.868351618448894,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.953407923380535,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 27.152848561604817,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.503159205118816,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.72217051188151,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.943708419799805,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 26.995540618896484,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 28.83696746826172,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.163646062215168,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.866867701212566,
+    "wall_clock": 0.18920807598624378
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.866867701212566,
+    "wall_clock": 0.18920807598624378
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.866867701212566,
+    "wall_clock": 0.18920807598624378
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.866867701212566,
+    "wall_clock": 0.18920807598624378
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.709490140279135,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.524844487508137,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 22.56025759379069,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 28.462779998779297,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 16.04045073191325,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 22.00023905436198,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 27.490182876586914,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 28.06629689534505,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 18.041065851847332,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.455718994140625,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 28.556052525838215,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 31.180034637451172,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 18.146690368652344,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 28.874291737874348,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 30.479509353637695,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 31.35766092936198,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.441897710164387,
+    "wall_clock": 0.0714352399809286
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.441897710164387,
+    "wall_clock": 0.0714352399809286
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.441897710164387,
+    "wall_clock": 0.0714352399809286
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 20.441897710164387,
+    "wall_clock": 0.0714352399809286
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.987935066223145,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.566945711771647,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.691481590270996,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.83808453877767,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.925396601359049,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.78058910369873,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.007863362630209,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.031689325968424,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.431644439697266,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.763744354248047,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.890961647033691,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.812335968017578,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.34123166402181,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.909326871236166,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.230327606201172,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.578690528869629,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.792219161987305,
+    "wall_clock": 0.08839308505412191
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.792219161987305,
+    "wall_clock": 0.08839308505412191
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.792219161987305,
+    "wall_clock": 0.08839308505412191
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.792219161987305,
+    "wall_clock": 0.08839308505412191
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.010753313700357,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.072559038798014,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.917014439900717,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.961402575174967,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.047918001810709,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.102517445882162,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.86521848042806,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.974103609720865,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.334166844685873,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.237906455993652,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.419771512349447,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.291179021199545,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.397247632344564,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.650282859802246,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.125986417134603,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.038545926411947,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.551517486572266,
+    "wall_clock": 0.12959805293940008
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.551517486572266,
+    "wall_clock": 0.12959805293940008
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.551517486572266,
+    "wall_clock": 0.12959805293940008
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.551517486572266,
+    "wall_clock": 0.12959805293940008
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.150383949279785,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 19.171898523966473,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.139560063680014,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 20.911771138509113,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.594692866007486,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 19.820955276489258,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.161775588989258,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.6032657623291,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.185261408487957,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.440212885538738,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 28.420074462890625,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.437724431355793,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.062578519185383,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 24.768712361653645,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 28.48613103230794,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.35909080505371,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.51272201538086,
+    "wall_clock": 0.18164589803200215
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.51272201538086,
+    "wall_clock": 0.18164589803200215
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.51272201538086,
+    "wall_clock": 0.18164589803200215
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.51272201538086,
+    "wall_clock": 0.18164589803200215
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.512653350830078,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 20.88501230875651,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.317487716674805,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 24.155078252156574,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.505125363667807,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 20.83159891764323,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.16159725189209,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.411575317382812,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.900545120239258,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 27.27318509419759,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 30.553791681925457,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 32.60498301188151,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.56909942626953,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 26.713115056355793,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 31.140196482340496,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 33.22776540120443,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 18.208302179972332,
+    "wall_clock": 0.07091134402435273
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 18.208302179972332,
+    "wall_clock": 0.07091134402435273
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 18.208302179972332,
+    "wall_clock": 0.07091134402435273
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 18.208302179972332,
+    "wall_clock": 0.07091134402435273
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.618797302246094,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.281219482421875,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.020020802815756,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.772773106892904,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.610227584838867,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.027945518493652,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.11941401163737,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.072581926981607,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.593633333841959,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.388235251108805,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.159517606099447,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.809189478556315,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.91436735788981,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.116849899291992,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.119853337605795,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.594624837239584,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.403619130452473,
+    "wall_clock": 0.09156253898981959
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.403619130452473,
+    "wall_clock": 0.09156253898981959
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.403619130452473,
+    "wall_clock": 0.09156253898981959
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.403619130452473,
+    "wall_clock": 0.09156253898981959
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.795797030131022,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.934282620747885,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.197004636128744,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.662527084350586,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.81715456644694,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.215392112731934,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.603253682454428,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.875350952148438,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.101895650227865,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.792506217956543,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.54775301615397,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.473968187967936,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.984285036722818,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.87871519724528,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.402475039164225,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.119579633076986,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.212823232014973,
+    "wall_clock": 0.1328445429680869
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.212823232014973,
+    "wall_clock": 0.1328445429680869
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.212823232014973,
+    "wall_clock": 0.1328445429680869
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.212823232014973,
+    "wall_clock": 0.1328445429680869
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.03066889444987,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 16.472169876098633,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.830827077229818,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 17.121226628621418,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.299190839131674,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 18.557267506917317,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 19.472881317138672,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 17.085408846537273,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.114891370137533,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 22.05802345275879,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 23.36247444152832,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 23.80765215555827,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.831839561462402,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 21.824124018351238,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 23.31408627827962,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 23.20715395609538,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.01917330423991,
+    "wall_clock": 0.1816823671106249
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.01917330423991,
+    "wall_clock": 0.1816823671106249
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.01917330423991,
+    "wall_clock": 0.1816823671106249
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.01917330423991,
+    "wall_clock": 0.1816823671106249
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.040101369222006,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 20.503159205118816,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 24.01828893025716,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 23.377337137858074,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.895578066507975,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 20.123427708943684,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 22.877865473429363,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.829964955647785,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 14.661951700846354,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 22.054619471232098,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 24.730464299519856,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 26.094829559326172,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 14.895917892456055,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 21.659805297851562,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 24.60867691040039,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.524824778238933,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 13.10461393992106,
+    "wall_clock": 0.07029567298013717
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 13.10461393992106,
+    "wall_clock": 0.07029567298013717
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 13.10461393992106,
+    "wall_clock": 0.07029567298013717
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 13.10461393992106,
+    "wall_clock": 0.07029567298013717
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.448240280151367,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.453984896341959,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.455410957336426,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.454760233561197,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.45046297709147,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.45558993021647,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.455061276753744,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.45544687906901,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.403170267740885,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.146235783894857,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.30437151590983,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.132018089294434,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.437242190043131,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.318248430887857,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.377684275309244,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.000656763712565,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 22.912614822387695,
+    "wall_clock": 0.0884465859271586
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 22.912614822387695,
+    "wall_clock": 0.0884465859271586
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 22.912614822387695,
+    "wall_clock": 0.0884465859271586
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 22.912614822387695,
+    "wall_clock": 0.0884465859271586
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.412827173868815,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.163014729817709,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.914557456970215,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.25796906153361,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.502769470214844,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.87673536936442,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.007616996765137,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.567209084828695,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.555582523345947,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.452964305877686,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.83149242401123,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.736299196879068,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.637035051981607,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.06050173441569,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 8.751126448313395,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 8.854249318440756,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.63092041015625,
+    "wall_clock": 0.13246449397411197
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.63092041015625,
+    "wall_clock": 0.13246449397411197
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.63092041015625,
+    "wall_clock": 0.13246449397411197
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.63092041015625,
+    "wall_clock": 0.13246449397411197
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.635797818501791,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 17.500349680582683,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 24.616928100585938,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 24.580604553222656,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.756908416748047,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 17.64703114827474,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 25.00018246968587,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 24.80141766866048,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.393134117126465,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 24.10154660542806,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.31191062927246,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.55779202779134,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.628523826599121,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 24.01943016052246,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.481800715128582,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 26.145851771036785,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.063800811767578,
+    "wall_clock": 0.17623193806502968
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.063800811767578,
+    "wall_clock": 0.17623193806502968
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.063800811767578,
+    "wall_clock": 0.17623193806502968
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.063800811767578,
+    "wall_clock": 0.17623193806502968
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.093763669331869,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 18.061055501302082,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 25.331823984781902,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 25.321488698323567,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.97143300374349,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 18.379459381103516,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 25.177418390909832,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 25.067902247111004,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.741437276204428,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.66467539469401,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.598730087280273,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 26.559964497884113,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.791959126790365,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.609341939290363,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.857847849527996,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 26.618817647298176,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.87372398376465,
+    "wall_clock": 0.06942083209287375
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.87372398376465,
+    "wall_clock": 0.06942083209287375
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.87372398376465,
+    "wall_clock": 0.06942083209287375
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.87372398376465,
+    "wall_clock": 0.06942083209287375
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.459569613138834,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.271909713745117,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.762763659159342,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.754073143005371,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.450272560119629,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.761661529541016,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.160642306009928,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.096975008646647,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.208860079447428,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.35050360361735,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.22122891743978,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.890325864156088,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.099331537882486,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.521655082702637,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.89200496673584,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.160935084025065,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 30.189722696940105,
+    "wall_clock": 0.08611992094665766
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 30.189722696940105,
+    "wall_clock": 0.08611992094665766
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 30.189722696940105,
+    "wall_clock": 0.08611992094665766
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 30.189722696940105,
+    "wall_clock": 0.08611992094665766
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.783210754394531,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.545571327209473,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 8.981251875559488,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.131270249684652,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.77499500910441,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.828827540079752,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.722407817840576,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.924358050028482,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.90462350845337,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.816484133402506,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.189083258310953,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.462682247161865,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.959699153900146,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.774335702260336,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.290401617685953,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.405260880788168,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 32.69887733459473,
+    "wall_clock": 0.1269961759680882
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 32.69887733459473,
+    "wall_clock": 0.1269961759680882
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 32.69887733459473,
+    "wall_clock": 0.1269961759680882
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 32.69887733459473,
+    "wall_clock": 0.1269961759680882
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.145532290140787,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.377704620361328,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.424429893493652,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 28.10531743367513,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.363437334696451,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.558047612508137,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.200411160786947,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 26.83289845784505,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 15.746219952901205,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.934240341186523,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 33.829156239827476,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 35.250467936197914,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 15.702290217081705,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 32.151135762532554,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 33.20653406778971,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 35.25290044148763,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 31.462551752726238,
+    "wall_clock": 0.17411987902596593
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 31.462551752726238,
+    "wall_clock": 0.17411987902596593
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 31.462551752726238,
+    "wall_clock": 0.17411987902596593
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 31.462551752726238,
+    "wall_clock": 0.17411987902596593
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.972179412841797,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 22.694759368896484,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 26.075173060099285,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 27.04068438212077,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.11108112335205,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 19.82369550069173,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.14328670501709,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 26.789417902628582,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.10048993428548,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 32.65274556477865,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 32.78760274251302,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 35.08700307210287,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.18660545349121,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 32.77516174316406,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 33.21982192993164,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 34.71620559692383,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 14.395059585571289,
+    "wall_clock": 0.07064389891456813
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 14.395059585571289,
+    "wall_clock": 0.07064389891456813
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 14.395059585571289,
+    "wall_clock": 0.07064389891456813
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 14.395059585571289,
+    "wall_clock": 0.07064389891456813
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.71340243021647,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.554984410603842,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.247708320617676,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.023322105407715,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.714586893717447,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.077550570170084,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.197429339090982,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.978418668111166,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.885563532511393,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.852985064188639,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.870340665181478,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.780062357584635,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.88281504313151,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.616372426350912,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.83398405710856,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.408079783121744,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.083346048990887,
+    "wall_clock": 0.0916228829883039
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.083346048990887,
+    "wall_clock": 0.0916228829883039
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.083346048990887,
+    "wall_clock": 0.0916228829883039
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.083346048990887,
+    "wall_clock": 0.0916228829883039
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.141756852467855,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.317482630411783,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.128072738647461,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.799705187479654,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.081936359405518,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.916412671407064,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.724011103312174,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.441270510355631,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.29685115814209,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.814099311828613,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.026228268941244,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.928044954935709,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.132548967997232,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.686497370402018,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.28114382425944,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 9.849930763244629,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.87985674540202,
+    "wall_clock": 0.13203422108199447
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.87985674540202,
+    "wall_clock": 0.13203422108199447
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.87985674540202,
+    "wall_clock": 0.13203422108199447
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 26.87985674540202,
+    "wall_clock": 0.13203422108199447
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.633641084035238,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.192908922831217,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.527298291524252,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.380132993062338,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 9.60691245396932,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.958332697550455,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.648719469706217,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.266778310139975,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.039839744567871,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.301519076029459,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.278975486755371,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.32587973276774,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.071262200673422,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.249293009440104,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.38137944539388,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.483966827392578,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.864739100138348,
+    "wall_clock": 0.18106574506964535
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.864739100138348,
+    "wall_clock": 0.18106574506964535
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.864739100138348,
+    "wall_clock": 0.18106574506964535
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.864739100138348,
+    "wall_clock": 0.18106574506964535
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.119925816853842,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 18.58361562093099,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 27.13406817118327,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 26.570111592610676,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.245084444681803,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 18.651228586832683,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 27.804126739501953,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 24.354153951009113,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 14.774463335673014,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 27.951700846354168,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 30.18568738301595,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 32.5782413482666,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 13.99433167775472,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 21.121100743611652,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.552714665730793,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 31.60885747273763,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 16.473992029825848,
+    "wall_clock": 0.07034203596413136
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 16.473992029825848,
+    "wall_clock": 0.07034203596413136
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 16.473992029825848,
+    "wall_clock": 0.07034203596413136
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 16.473992029825848,
+    "wall_clock": 0.07034203596413136
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.13776969909668,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.258041699727377,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.194154739379883,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.189425468444824,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.051256815592447,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.538352966308594,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.375645319620768,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.244700113932291,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.3030637105306,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.431167602539062,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.416206359863281,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.276771863301596,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.183689753214518,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.56527328491211,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.615689277648926,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.028588930765787,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.847261428833008,
+    "wall_clock": 0.08820341294631362
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.847261428833008,
+    "wall_clock": 0.08820341294631362
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.847261428833008,
+    "wall_clock": 0.08820341294631362
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.847261428833008,
+    "wall_clock": 0.08820341294631362
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.784627119700113,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.148792266845703,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.124919573465982,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.27337614695231,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.912763436635336,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.483933766682943,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.18691349029541,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 11.280104001363119,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.533148288726807,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.598769823710123,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.091266949971518,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.141687075297037,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.516272068023682,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.295285860697428,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.072317282358805,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 10.605987548828125,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.285892486572266,
+    "wall_clock": 0.12729624495841563
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.285892486572266,
+    "wall_clock": 0.12729624495841563
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.285892486572266,
+    "wall_clock": 0.12729624495841563
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 25.285892486572266,
+    "wall_clock": 0.12729624495841563
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.175017674763998,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 19.65066146850586,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 23.987887064615887,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 25.015475591023762,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.1699800491333,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 19.43909200032552,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 25.994418462117512,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 25.165077209472656,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 15.835620244344076,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 23.76582400004069,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 24.56079928080241,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 26.149503072102863,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 15.977118810017904,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 24.390106836954754,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 26.21550114949544,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 27.1536070505778,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.051994959513348,
+    "wall_clock": 0.17474870302248746
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.051994959513348,
+    "wall_clock": 0.17474870302248746
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.051994959513348,
+    "wall_clock": 0.17474870302248746
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.051994959513348,
+    "wall_clock": 0.17474870302248746
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 16.11025269826253,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 22.0546875,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 30.004262924194336,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 28.865903854370117,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 16.08110173543294,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.589085896809895,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 26.329212824503582,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 29.645640055338543,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.65456263224284,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.531787236531574,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 30.32629648844401,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 32.34808667500814,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.597180048624676,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.55716896057129,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.705937067667644,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 32.62641398111979,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.07050323486328,
+    "wall_clock": 0.0873508540680632
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.07050323486328,
+    "wall_clock": 0.0873508540680632
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.07050323486328,
+    "wall_clock": 0.0873508540680632
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 23.07050323486328,
+    "wall_clock": 0.0873508540680632
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.681607564290365,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.854917526245117,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.73215421040853,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.740588506062826,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.676578203837076,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.763643264770508,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.771852811177572,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 12.778508504231771,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.207199414571127,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.779923756917318,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.17696444193522,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.742990175882975,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.372069358825684,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.568229993184408,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 12.132925669352213,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 2,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 11.90899403889974,
+    "init_source": "random_sphere_fallback"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.902037302652996,
+    "wall_clock": 0.08876666205469519
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.902037302652996,
+    "wall_clock": 0.08876666205469519
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.902037302652996,
+    "wall_clock": 0.08876666205469519
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.902037302652996,
+    "wall_clock": 0.08876666205469519
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.088507970174154,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 16.603871663411457,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 16.03183714548747,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 16.343724886576336,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 13.15795103708903,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 17.15460777282715,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.368703206380209,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.260539372762045,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 14.267714818318685,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 23.246854146321613,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.49265988667806,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.78798548380534,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 14.118502934773764,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 23.43905766805013,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.411104202270508,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 4,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.979825973510742,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 28.745285669962566,
+    "wall_clock": 0.12925293704029173
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 28.745285669962566,
+    "wall_clock": 0.12925293704029173
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 28.745285669962566,
+    "wall_clock": 0.12925293704029173
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 28.745285669962566,
+    "wall_clock": 0.12925293704029173
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.061710357666016,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 20.936243693033855,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.96589183807373,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.236557642618816,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 14.462916692097982,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 20.787967681884766,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 16.31063715616862,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 20.83782132466634,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.11251386006673,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 28.138670603434246,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 31.985986073811848,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 35.65455118815104,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.43789227803548,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 23.84336535135905,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 31.051199595133465,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 8,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 35.15310033162435,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 1.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.778786341349285,
+    "wall_clock": 0.17550413601566106
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 10.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.778786341349285,
+    "wall_clock": 0.17550413601566106
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 60.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.778786341349285,
+    "wall_clock": 0.17550413601566106
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 300.0,
+    "method": "DepthSplat",
+    "seed": null,
+    "status": "ok",
+    "test_psnr": 27.778786341349285,
+    "wall_clock": 0.17550413601566106
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.258879025777182,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.330604553222656,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 23.234391530354817,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 21.33579699198405,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 15.320453643798828,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 19.23375956217448,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 10.54377555847168,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "Vanilla3DGS",
+    "status": "ok",
+    "test_psnr": 22.18910090128581,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 17.535615921020508,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 29.5538330078125,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 32.14363225301107,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 0,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 36.61139933268229,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 1.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 16.83708381652832,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 10.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 25.338027954101562,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 60.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 31.572696685791016,
+    "init_source": "colmap_sfm"
+  },
+  {
+    "scene": "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a",
+    "view_count": 12,
+    "budget": 300.0,
+    "seed": 1,
+    "method": "FSGS",
+    "status": "ok",
+    "test_psnr": 36.528672536214195,
+    "init_source": "colmap_sfm"
+  }
+]
