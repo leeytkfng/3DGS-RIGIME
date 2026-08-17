@@ -314,7 +314,7 @@ View 수 & 1\,s & 10\,s & 60\,s & 300\,s \\
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{figures/qualitative_comparison.png}
-\caption{RE10K scene \texttt{0588138dfec165a1}에서의 정성적 비교, 왼쪽부터 GT, MVSplat, Vanilla3DGS, FSGS(budget=300\,s). 위 행은 8-view(FSGS-vs-MVSplat 역전 경계 근방, \S\ref{sec:results}), 아래 행은 12-view(FSGS가 명확히 앞서는 조건). MVSplat은 2-view 전용 학습이라 8/12-view 모두 분포 밖(OOD)이며 렌더에 그림자 같은 아티팩트가 뚜렷이 남는다 — Vanilla3DGS/FSGS는 두 조건 모두 GT에 훨씬 가깝다.}
+\caption{RE10K scene \texttt{0588138dfec165a1}에서의 정성적 비교, 왼쪽부터 GT, MVSplat, Vanilla3DGS, FSGS(budget=300\,s). 위 행은 8-view(FSGS-vs-MVSplat 역전 경계 근방, \S\ref{sec:results}), 아래 행은 12-view(FSGS가 명확히 앞서는 조건). 각 패널 하단은 해당 target view의 PSNR(최고값은 초록색), 빨간 박스는 확대 영역(창틀 디테일)이다. MVSplat은 2-view 전용 학습이라 8/12-view 모두 분포 밖(OOD)이며 창틀이 흐릿하게 뭉개지는 것이 확대 영역에서 뚜렷이 보인다 — Vanilla3DGS/FSGS는 두 조건 모두 창틀 선이 살아있고 GT에 훨씬 가깝다.}
 \label{fig:qualitative}
 \end{figure}
 
