@@ -16,7 +16,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 LABEL_H = 40
-ROW_LABEL_W = 210
+ROW_LABEL_W = 270
 GRID = "#dcd8cc"
 INK = "#1d2225"
 ACCENT = "#0d6e68"
@@ -26,10 +26,14 @@ INSET_SCALE = 3
 INSET_SIZE = 44  # crop 정사각형 한 변(원본 px)
 
 
+_FONT_DIR = "/opt/conda/envs/ps3/lib/python3.9/site-packages/matplotlib/mpl-data/fonts/ttf"
+
+
 def load_font(size: int, bold: bool = False):
-    path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-    if Path(path).exists():
-        return ImageFont.truetype(path, size)
+    name = "DejaVuSans-Bold.ttf" if bold else "DejaVuSans.ttf"
+    path = Path(_FONT_DIR) / name
+    if path.exists():
+        return ImageFont.truetype(str(path), size)
     return ImageFont.load_default()
 
 
