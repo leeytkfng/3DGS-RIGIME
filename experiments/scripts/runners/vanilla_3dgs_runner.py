@@ -416,10 +416,11 @@ def run(args: argparse.Namespace) -> None:
     checkpoints_dir.mkdir(parents=True, exist_ok=True)
     logs_dir.mkdir(parents=True, exist_ok=True)
 
-    if args.dataset in ("re10k", "dl3dv"):
-        # DTU 분기는 view 선택에 쓴 rng를 셔플에도 이어서 쓰지만, re10k/dl3dv 분기는 view를
-        # seed 기반 rng로 뽑지 않으므로(overlap summary의 candidate 재사용) 셔플 전용 rng가
-        # 따로 필요하다.
+    if args.dataset != "dtu" or args.overlap_level:
+        # DTU의 random 선택 분기(else, line ~322)는 view 선택에 쓴 rng를 셔플에도 이어서
+        # 쓰지만, re10k/dl3dv 분기와 DTU의 overlap-level 분기(view를 seed 기반 rng로 뽑지
+        # 않고 candidate JSON에서 그대로 읽음)는 셔플 전용 rng가 따로 필요하다 — 안 만들면
+        # 아래 order 셔플에서 rng가 unbound(2026-08-17 C2 스모크 테스트에서 발견).
         rng = np.random.default_rng(args.seed)
 
     train_cams = [build_camera_tensors(v, device, args.pose_scale_factor) for v in train_views]
