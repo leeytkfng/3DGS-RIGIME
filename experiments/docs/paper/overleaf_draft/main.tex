@@ -313,8 +313,8 @@ View 수 & 1\,s & 10\,s & 60\,s & 300\,s \\
 
 \begin{figure}[h]
 \centering
-\todo{정성적 렌더링 비교 자리 — 대표 scene 1--2개에 대해 GT / MVSplat / 3DGS / FSGS 렌더를 나란히 배치. 역전 경계 근방 조건(예: 8-view)과 명확한 승패가 갈리는 조건(예: 2-view, 12-view/300s)을 각 1개씩 고르는 걸 권장. 이미 완료된 checkpoint(`re10k\_c1a\_main/checkpoints/`, `vanilla\_runs/`, `fsgs\_runs/`)에서 저장된 Gaussian을 다시 렌더링해 생성 — GPU를 잠깐만 쓰는 순수 추론이라 본 실험과 크게 안 겹침. 아직 미생성.}
-\caption{대표 scene에서의 정성적 비교. 왼쪽부터 GT, MVSplat, 3DGS, FSGS.}
+\includegraphics[width=\textwidth]{figures/qualitative_comparison.png}
+\caption{RE10K scene \texttt{0588138dfec165a1}에서의 정성적 비교, 왼쪽부터 GT, MVSplat, Vanilla3DGS, FSGS(budget=300\,s). 위 행은 8-view(FSGS-vs-MVSplat 역전 경계 근방, \S\ref{sec:results}), 아래 행은 12-view(FSGS가 명확히 앞서는 조건). MVSplat은 2-view 전용 학습이라 8/12-view 모두 분포 밖(OOD)이며 렌더에 그림자 같은 아티팩트가 뚜렷이 남는다 — Vanilla3DGS/FSGS는 두 조건 모두 GT에 훨씬 가깝다.}
 \label{fig:qualitative}
 \end{figure}
 
