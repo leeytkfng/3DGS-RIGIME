@@ -1,0 +1,24 @@
+% =====================================================================
+\section{실용 가이드라인}
+\label{sec:guideline}
+% =====================================================================
+
+\todo{\S\ref{sec:results}--\S\ref{sec:failure} 결과가 나온 뒤 채운다. 아래는 형식 예시이며 실제 값은 결과로 대체한다.}
+
+\begin{table}[h]
+\centering
+\caption{조건별 권장 방법론(형식 예시)}
+\label{tab:guideline}
+\small
+\begin{tabular}{@{}L{7.5cm} l@{}}
+\toprule
+조건 & 권장 \\
+\midrule
+view $\le 4$ 이고 overlap이 낮음 & Feed-forward \\
+view $\ge 8$ 이고 overlap이 높음 & Per-scene optimization \\
+예산 $< 10$초 & Feed-forward \\
+예산 $> 300$초이고 초기 geometry 신뢰도가 높음 & Per-scene optimization \\
+그 외 & Tie 영역, Pareto frontier 참조 \\
+\bottomrule
+\end{tabular}
+\end{table}

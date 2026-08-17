@@ -1,0 +1,164 @@
+% =====================================================================
+\section{실험 프로토콜}
+\label{sec:protocol}
+% =====================================================================
+
+\begin{figure}[t]
+\centering
+\todo{Figure 1(프로토콜 개요) 자리. 아래 note 참고 — 모델 아키텍처 파이프라인 그림은 권장하지 않음.}
+\caption{실험 설계 개요: 통제 축(view 수 $\times$ overlap $\times$ 계산 예산)과 서사 사슬(Regime Map $\to$ 메커니즘 증거 $\to$ 통제 검증 $\to$ 가이드라인, \S\ref{sec:intro}).}
+\label{fig:overview}
+\end{figure}
+
+\noindent\chk{\textbf{Figure 자리에 대한 판단}: 모델 내부 아키텍처(cost volume, densification 등)를 보여주는 상세 파이프라인 다이어그램은 \emph{권장하지 않는다} — 이 논문은 새 아키텍처를 제안하는 게 아니라 기존 방법들을 비교하는 분석 논문이라, 남의 모델 내부 구조를 다시 그리는 건 지면만 차지하고 기여로 안 잡힌다. 대신 위 Figure 1처럼 \textbf{통제 축 3개(view/overlap/budget) + 서사 사슬 4단계}를 보여주는 가벼운 개요 다이어그램 하나만 Protocol 절 도입부에 두는 걸 추천한다 — 독자가 전체 실험 설계를 한눈에 파악하게 하는 용도로, 만들기도 간단하다(3~4개 박스와 화살표 수준).}
+
+\subsection{공정성 원칙}
+
+\paragraph{Pose-given track 통일} 모든 방법에 동일한 카메라 pose를 제공한다. 한쪽에 정답 pose, 다른 쪽에 COLMAP 추정 pose를 주면 패러다임 비교가 아니라 pose 정확도 비교가 된다. Pose-free 세팅은 본 연구 범위 밖이다.
+
+\paragraph{입력 해상도 상속} Feed-forward 체크포인트가 학습한 입력 해상도를 그대로 따른다(RE10K: $256\times256$, DL3DV/DepthSplat track: $256\times448$). Per-scene optimization도 동일한 이미지로 학습·평가해야 공정한 비교가 된다.
+
+\paragraph{주장 수위와 교란요인} 서로 다른 시스템 간 성능 차이는 학습 데이터, 모델 크기, 학습 view 수 분포, depth prior, 구현 최적화의 영향을 함께 받는다. 따라서 본 논문의 주 결과(Regime Map)는 ``대표 시스템들의 실용적 우위 영역''으로 서술 수위를 제한하며, 패러다임 자체나 refinement 효과에 관한 인과적 진술은 모델 요인을 고정한 \S\ref{sec:c1b}의 통제된 범위 안에서만 제기한다.
+
+특히 아래에서 상술하는 \emph{학습 view 분포 이탈}은 본 연구의 핵심 해석 쟁점이므로 별도로 다룬다(\S\ref{sec:ood-confound}).
+
+\subsection{학습 view 분포 이탈이라는 교란}
+\label{sec:ood-confound}
+
+\chk{이 절은 본 논문의 결과 해석에서 가장 중요한 쟁점이므로, 결과가 나온 뒤 이 틀에 맞춰 서술할 것}
+
+Feed-forward 모델은 특정 view 수 분포로 학습된다. MVSplat의 RE10K 공개 체크포인트는 2-view로 학습되었고, DepthSplat의 DL3DV 체크포인트는 2--6-view 범위로 학습되었다. 따라서 view 수를 4, 8, 12로 늘리면 feed-forward 쪽은 점차 학습 분포를 벗어나는 반면 per-scene optimization은 그러한 개념 자체가 없다. 이 비대칭 때문에 ``view 수가 늘면 optimization이 역전한다''는 관찰은 두 가지로 해석될 수 있다.
+
+\begin{enumerate}
+  \item \textbf{정보량 가설}: view가 늘면 per-scene optimization이 활용할 관측 제약이 증가해 실제로 유리해진다.
+  \item \textbf{분포 이탈 가설}: feed-forward 모델이 학습 분포를 벗어나 성능이 저하될 뿐이며, 역전은 패러다임의 성질이 아니라 특정 체크포인트의 한계다.
+\end{enumerate}
+
+두 가설은 관찰 하나만으로는 분리되지 않는다. 본 연구는 세 가지 방식으로 이를 다룬다.
+
+\begin{itemize}
+  \item \textbf{서로 다른 학습 분포를 가진 두 feed-forward 모델의 대조}: MVSplat(2-view 학습)과 DepthSplat(2--6-view 학습)의 역전 지점이 각자의 학습 분포 경계를 따라 이동하면 분포 이탈 가설이 지지되고, 학습 분포가 다름에도 역전 지점이 유사하면 정보량 가설이 지지된다.
+  \item \textbf{동일 초기값 통제 실험}(\S\ref{sec:c1b}): feed-forward 출력을 고정한 뒤 refinement만 켜고 끄면 모델 요인이 상수가 되므로, 최적화 절차 자체의 순효과가 분리된다.
+  \item \textbf{서술 수위 제한}: Regime Map은 ``대표 시스템의 실용적 우위''로만 서술하고, 패러다임 수준의 일반화는 하지 않는다.
+\end{itemize}
+
+\subsection{비교 대상}
+
+\begin{table}[t]
+\centering
+\caption{비교 대상 방법론}
+\label{tab:methods}
+\small
+\begin{tabular}{@{}l l l L{6.0cm}@{}}
+\toprule
+방법 & 계열 & 학습 view 분포 & 비고 \\
+\midrule
+MVSplat~\cite{chen2024mvsplat} & Feed-forward & RE10K: 고정 2-view & 4/8/12-view는 학습 분포 밖(\S\ref{sec:ood-confound}) \\
+DepthSplat~\cite{xu2025depthsplat} & Feed-forward & DL3DV: 2--6-view & 8/12-view는 학습 분포 밖 \\
+3DGS~\cite{kerbl20233d} & Optimization & 해당 없음 & COLMAP sparse triangulation 초기화, gsplat~\cite{ye2024gsplat} 구현 \\
+FSGS~\cite{zhu2024fsgs} & Optimization (sparse 특화) & 해당 없음 & 원 논문은 dense-MVS 초기화를 사용하나, 본 연구는 공정성을 위해 3DGS와 동일한 sparse COLMAP 초기화로 대체(아래 참고) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+각 데이터셋에는 해당 데이터셋으로 학습된 in-domain feed-forward 모델을 짝짓는다(RE10K--MVSplat, DL3DV--DepthSplat). 두 optimization 방법은 두 데이터셋 모두에서 동일하게 평가된다.
+
+\paragraph{FSGS 초기화에 대한 명시적 편차} FSGS 원 논문은 \texttt{colmap patch\_match\_stereo}로 생성한 dense multi-view stereo point cloud를 초기화로 사용한다. 본 연구 환경에는 COLMAP CLI의 dense MVS 모듈이 없어(pycolmap 바인딩만 보유), 3DGS와 동일한 sparse COLMAP triangulation을 대신 사용한다.
+
+이는 의도적 선택이다. (i) 두 optimization 방법에 서로 다른 초기화 품질을 주면 ``sparse-view 특화 기법 대 일반 기법'' 비교가 아니라 ``dense init 대 sparse init'' 비교로 오염되며, (ii) dense MVS는 본 연구 인프라에 없는 외부 의존성이다. 이로 인해 FSGS의 보고 성능이 원 논문보다 낮게 나올 수 있으며, 이는 알고리즘의 결함이 아니라 초기화 조건의 차이임을 명시한다. FSGS가 3DGS를 능가하지 못하는 결과가 나오더라도 그 자체로 유효한 보고 대상이다.
+
+\chk{"선행 연구(SplatFormer~\cite{chen2025splatformer})에서도 sparse-view 특화 기법이 표준 3DGS를 일관되게 앞서지 못한다는 관찰이 보고되었다"는 주장은 SplatFormer 논문의 abstract 수준에서 직접 확인되지 않았다(해당 논문의 핵심 주장은 자신의 point-transformer 정제 기법이 다른 baseline들을 능가한다는 것으로, "sparse-view 특화 기법 대 vanilla 3DGS"의 직접 비교를 명시적으로 보고하는지는 본문 표를 확인해야 한다). 본문을 확인해 인용을 확정하거나, 확인 전까지는 이 문장을 빼고 "FSGS가 3DGS를 능가하지 못해도 유효한 보고 대상"이라는 진술만 남길 것}
+
+\subsection{데이터셋}
+
+주 데이터셋은 RealEstate10K~\cite{zhou2018stereo}(CC BY 4.0), 보조 데이터셋은 DL3DV-10K~\cite{ling2024dl3dv}(CC BY-NC 4.0, 비상업적 연구 목적)이다. RealEstate10K는 MVSplat 공식 평가 프로토콜과 동일한 test split에서 30개 scene을 사용한다(20개는 공식 evaluation index와의 교집합에서 결정론적으로 선정, 나머지 10개는 기존 파일럿 결과 보존을 위해 별도 seed로 추가 확장).
+
+DL3DV-10K는 \texttt{DL3DV-ALL-480P}에서 무작위 추출한 25-scene pilot subset을 사용하며, 공식 평가 split(\texttt{DL3DV-Benchmark})과 겹치지 않음을 확인했다. 외부 검증에는 GT geometry가 제공되는 DTU~\cite{jensen2014dtu}를 사용한다.
+
+\subsection{통제 축}
+
+\begin{itemize}
+  \item \textbf{View 수}: $\{2, 4, 8, 12\}$
+  \item \textbf{View overlap}: 고/저 2단계, co-visibility 수치 구간으로 정의(\S\ref{sec:overlap})
+  \item \textbf{계산 예산}: $\{1, 10, 60, 300\}$초. End-to-end 시간 기준이 메인 비교이며, post-initialization 시간은 동역학 분석으로 병기한다.
+\end{itemize}
+
+Domain(데이터셋)은 완전교차 축에서 제외하고 외부 검증(DTU)으로 사용한다.
+
+\subsection{Co-visibility overlap의 정의}
+\label{sec:overlap}
+
+두 view $i, j$의 co-visibility overlap을 다음과 같이 정의한다.
+\begin{equation}
+O_{ij} \;=\; \frac{2\,\lvert P_i \cap P_j \rvert}{\lvert P_i \rvert + \lvert P_j \rvert}
+\label{eq:overlap}
+\end{equation}
+여기서 $P_i$는 view $i$가 관측한 SfM 3D 점 집합이다. SfM 매칭이 실패하거나 공통 점이 임계 미만인 pair는 \textbf{제외하지 않고 $O_{ij} = 0$으로 포함}한다. 매칭 실패 자체가 낮은 overlap의 강한 증거이며, 이런 pair를 제외하면 저텍스처·저겹침 장면에서 overlap이 체계적으로 과대평가되어 regime map의 축이 왜곡되기 때문이다.
+
+집계 시에는 유효 pair의 중앙값이 아니라 전체 pair(0 포함)의 평균과 하위 25\% 분위수를 함께 산출한다. 고/저 overlap 구간은 전체 분포가 아니라 \textbf{view 수 수준 내에서 층화}해 정의한다.
+
+\paragraph{Co-visibility selector} 같은 장면에서 고/저 두 overlap 조건을 모두 확보하기 위해, farthest-point sampling을 서로 다른 두 후보 pool에 적용하는 selector를 사용한다. 좁은 index window 안에서 sampling하면 서로 가까운 view들(고 overlap 목표)이, 전체 범위에서 sampling하면 넓게 퍼진 view들(저 overlap 목표)이 선택된다.
+
+RE10K 30-scene 전체에서 118/120(98.3\%), DL3DV 25-scene 전체에서 94/100(94\%) 조건에서 의도한 방향($\text{고} \ge \text{저}$)이 실측으로 확인되었다. 방향이 반전된 소수 사례는 루프형 궤적처럼 index 근접성이 공간적 근접성과 일치하지 않는 경우에서 발생했다.
+
+\subsection{승패 판정 규칙}
+
+$\Delta = \mathrm{PSNR}_{\mathrm{FF}} - \mathrm{PSNR}_{\mathrm{OPT}}$에 대해 다음과 같이 판정한다.
+\begin{equation}
+\text{label} =
+\begin{cases}
+\text{feed-forward win} & \Delta > \tau \\[2pt]
+\text{optimization win} & \Delta < -\tau \\[2pt]
+\text{tie} & \lvert \Delta \rvert \le \tau
+\end{cases}
+\label{eq:wtl}
+\end{equation}
+임계값 $\tau$는 \emph{seed 변동성}과 \emph{실용적으로 의미 있는 최소 차이}(0.5\,dB) 중 큰 값으로 정의한다.
+\begin{equation}
+\tau = \max\bigl(\text{seed 변동성},\ 0.5\,\text{dB}\bigr)
+\label{eq:tau}
+\end{equation}
+
+5-scene $\times$ seed 3회 파일럿에서 seed 변동성을 실측한 결과 view 수에 따라 한 자릿수 이상 차이가 났다(2/4-view: scene당 평균 0.04--0.17\,dB, 8/12-view: 0.13--1.41\,dB). 따라서 단일 $\tau$ 대신 구간별 $\tau$를 사용한다: $\tau_{2,4\text{-view}} = 0.5\,$dB, $\tau_{8,12\text{-view}} = 1.4\,$dB. 이 값은 파일럿 단계에서 산출해 본 실험 착수 전 동결하였으며, 본 실험의 seed 수와 독립적인 상수로 취급한다.
+
+\paragraph{$\tau$ 도입이 실제로 교정한 사례} 파일럿 초기 관찰에서 8-view/10초 조건의 $\Delta = -0.3\,$dB를 ``역전''으로 기록했으나, 같은 조건의 seed 변동성이 1.4\,dB로 측정되어 이 차이는 잡음 수준임이 드러났다.
+
+나아가 scene별로 분해하면 5개 중 3개는 optimization이 크게 우세($+1.1$--$5.3\,$dB), 2개는 feed-forward가 크게 우세($+1.0$--$5.8\,$dB)하여 단일한 방향이 존재하지 않았고, 평균이 우연히 상쇄된 결과였다. 이 사례는 사전 동결한 판정 기준과 scene 단위 분해가 pooled 평균만으로는 놓칠 수 있는 오류를 실제로 차단함을 보여준다.
+
+\subsection{계산 예산 시점의 결과 선택 규칙}
+
+메인 비교는 예산 종료 시점 결과를 사용한다. 방법 $m$과 예산 $B$에 대해 $t_B = \max\{t : t \le B\}$, $Q_m(B) = Q_m(t_B)$로 정의한다. \textbf{Test PSNR이 가장 높은 체크포인트를 사후 선택하지 않는다.} 이는 test leakage이며, 특히 과적합이 연구 주제인 본 논문에서는 과적합 현상 자체가 측정에서 지워지는 문제를 낳는다.
+
+Feed-forward의 추론 시간이 $B$를 초과하면 해당 예산 칸은 결과 없음으로 둔다. Test PSNR 기준 최고점은 별도의 oracle peak 분석으로만 보고한다.
+
+\subsection{통계 분석 계획}
+\label{sec:stats}
+
+\paragraph{독립 단위} 같은 장면의 seed 반복은 상관된 표본이므로, 실질적 독립 단위는 개별 실행이 아니라 \emph{scene}이다. Scene별로 seed 결과를 먼저 평균 낸 뒤, scene을 단위로 복원추출하는 \textbf{scene cluster bootstrap}으로 95\% 신뢰구간을 산출한다(2000회 리샘플).
+\begin{equation}
+\hat\mu_{\mathrm{scene}} = \frac{1}{S}\sum_{s=1}^{S}\bar y_s,
+\qquad
+\mathrm{CI}_{95\%} = \Bigl[\,\mathrm{pct}_{2.5}\{\hat\mu^{(b)}\}_{b=1}^{2000},\ \ \mathrm{pct}_{97.5}\{\hat\mu^{(b)}\}_{b=1}^{2000}\Bigr]
+\label{eq:bootstrap}
+\end{equation}
+
+신뢰구간 폭이 seed 수가 아니라 scene 수($\propto 1/\sqrt{S}$)에 좌우된다는 점에 근거해, 동일한 총 연산량 아래에서 seed 3회 $\times$ 20 scene 대신 \textbf{seed 2회 $\times$ 30 scene}을 채택하였다($20\times3 = 30\times2$). 이는 GPU 예산을 늘리지 않고 신뢰구간 폭을 약 18\% 축소한다.
+
+\paragraph{다중 비교 보정} view 수 $\times$ overlap $\times$ 예산 격자에서 다수의 승패 검정이 발생하므로 Holm--Bonferroni 보정~\cite{holm1979simple}을 적용한다.
+\begin{equation}
+p_{(i)}^{\mathrm{adj}} = \max_{j \le i}\bigl\{(n - j + 1)\cdot p_{(j)}\bigr\},
+\qquad p_{(1)} \le \cdots \le p_{(n)}
+\label{eq:holm}
+\end{equation}
+보정 대상 family는 \textbf{방법 쌍당} $4 \times 2 \times 4 = 32$개 비교로 정의하며, 서로 다른 방법 쌍은 서로 다른 family로 독립 보정한다.
+
+\subsection{조기 종료 규칙}
+
+메인 결과는 예산 종료 시점 체크포인트를 사용하지만, ``더 일찍 멈췄어야 한다''는 반론에 대응하기 위해 view 수 $\in \{8, 12\}$ 조건에 한해 \textbf{보조 실험}을 부록으로 수행한다. 기존 context view 중 1개를 학습에서 제외해 별도의 held-out validation view로 두고(메인 비교에 쓰는 고정 test set과는 구분된다), 촘촘한 budget snapshot으로 validation PSNR이 최종값의 95\%에 처음 도달하는 시점 $t_{95}$를 ``조기 종료했다면 멈췄을 시점''으로 정의해, $t_{95}$에서의 test PSNR과 예산 종료 시점 test PSNR의 차이를 보고한다.
+
+\subsection{렌더 등가성 검증}
+\label{sec:equivalence}
+
+Feed-forward Gaussian을 표준 3DGS 표현(gsplat~\cite{ye2024gsplat})으로 변환할 때 중심 좌표계, scene scale, scale 파라미터화, quaternion convention, opacity의 pre/post-sigmoid 상태, 색상(spherical harmonics) 표현을 명시적으로 매핑한다. 변환 전 원래 렌더러와 변환 후 렌더러가 동일 입력 view에서 사실상 같은 영상을 출력하는지 확인하며, \textbf{렌더 등가성이 확보되지 않으면 \S\ref{sec:c1b}의 통제 실험을 진행하지 않는다.} 변환 자체의 오차가 refinement 효과로 오인될 수 있기 때문이다.
+
+MVSplat/RE10K 240샘플과 DepthSplat/DL3DV 150샘플, 총 390개의 view별 PSNR을 측정한 결과 전체 중앙값 45.21\,dB, 최솟값 26.76\,dB였으며, \textbf{PSNR $\ge 33\,$dB}를 등가성 기준으로 확정했다. 이 기준에서 미달은 390개 중 9개(2.3\%)이고 대부분 임계 바로 아래에 분포하여, 서로 다른 CUDA rasterizer 간 경계 픽셀의 blending 순서 및 정밀도 차이에서 오는 정상적인 수치 오차 범위로 판단했다. 이 임계값은 재구성 품질이 실제로 나타나는 범위(8--25\,dB대)와 충분히 분리되어 있어 혼동 위험이 낮다.

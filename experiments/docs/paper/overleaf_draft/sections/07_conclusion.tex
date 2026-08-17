@@ -1,0 +1,18 @@
+% =====================================================================
+\section{결론 및 한계}
+\label{sec:conclusion}
+% =====================================================================
+
+\todo{전체 결과 요약. 실험 완료 후 작성}
+
+\paragraph{한계}
+\begin{itemize}
+  \item \textbf{학습 view 분포 이탈}: \S\ref{sec:ood-confound}에서 상술한 대로, view 수를 늘릴 때 feed-forward 모델은 학습 분포를 벗어나는 반면 optimization은 그러한 개념이 없다. 본 연구는 서로 다른 학습 분포를 가진 두 feed-forward 모델의 대조와 동일 초기값 통제 실험으로 이를 완화하지만, 완전히 제거하지는 못한다. 따라서 Regime Map의 결과는 패러다임의 본질적 우열이 아니라 \emph{현재 공개된 대표 체크포인트들의 실용적 우위 영역}으로 해석되어야 한다.
+  \item \textbf{Confidence 출력의 비대칭}: 세 방법(MVSplat, DepthSplat, FSGS) 모두 기본 설정에서 실질적인 confidence 출력을 제공하지 않는다. Feed-forward 계열은 관련 출력이 없고, FSGS의 \texttt{confidence} 필드는 기본 설정에서 상수로 고정된 placeholder다. Optimization 쪽은 \S\ref{sec:starvation}의 관측 count를 confidence에 가까운 대체 신호로 사용할 수 있으나, 이는 optimization 계열에만 존재하는 비대칭임을 밝힌다.
+  \item \textbf{FSGS 초기화 편차}: 원 논문의 dense-MVS 초기화 대신 sparse COLMAP 초기화를 사용했다. \todo{dense-MVS 초기화를 3--5 scene에 한해 별도 실행해 sparse-init 대비 격차를 정량화하는 보조 검증(낮은 우선순위, COLMAP dense MVS 모듈 확보가 선행 조건)}
+  \item \textbf{Overlap 축의 부분 적용}: 본 실험 1단계는 view 수 $\times$ 예산 축으로 수행하고, overlap 축은 selector의 전체 scene 검증 이후 2단계로 추가한다.
+  \item \textbf{DL3DV의 pilot 규모}: DL3DV 실험은 공식 10{,}581-scene 전체가 아니라 25-scene pilot subset을 사용한다(공식 평가 split과 중복이 없음은 확인).
+  \item \textbf{단일 GPU 예산 제약}: 전체 실험은 약 250 GPU-hour로 추정되며 단일 H200 서버에서 순차 실행된다. 해당 workload가 압도적으로 연산 병목임을 실측으로 확인해(단일 job만으로 GPU 사용률 92--99\%) 다중 프로세스 병렬화로는 총 처리량이 증가하지 않았다.
+  \item \textbf{RE10K 데이터 출처}: 확보한 114-scene 중 일부는 원저작자가 아닌 커뮤니티 mirror에서 확보했다. 원 데이터셋과 동일한 chunk 포맷임을 확인하고 공식 체크포인트로 품질을 검증했으나, mirror 자체의 신뢰성은 원저작자가 보증한 것이 아니다.
+  \item \textbf{비교 범위}: 본 연구의 주 비교는 단일 pass feed-forward와 per-scene optimization의 두 축이다. ReSplat~\cite{xu2026resplat}처럼 학습된 recurrent 갱신을 사용하는 계열은 별도의 패러다임으로 간주하여 메인 비교에서 제외했다. DL3DV에서 탐색적으로 실행해본 결과(\S\ref{sec:resplat-exploratory}, 사전 등록 설계 밖)는 8-view(in-domain)에서 ReSplat이 DepthSplat을 소폭 능가하지만 12-view에서는 FSGS에 여전히 못 미쳐, 본 연구의 핵심 서사가 더 강한 feed-forward 기준선 아래에서도 유지됨을 시사한다 — 다만 사전 등록되지 않은 단일 실행이라 통제된 비교로 취급하지 않으며, RE10K를 포함한 완전한 통제 비교는 후속 과제로 남긴다.
+\end{itemize}

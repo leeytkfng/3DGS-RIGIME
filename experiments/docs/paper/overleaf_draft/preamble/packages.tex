@@ -1,0 +1,26 @@
+% ---- 한글 및 기본 ----------------------------------------------------------
+\usepackage{kotex}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% ---- 표 ---------------------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tabularx}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% ---- 캡션/리스트 -------------------------------------------------------------
+\usepackage[font=small, labelfont=bf, skip=6pt]{caption}
+\captionsetup[table]{position=top}
+\captionsetup[figure]{position=bottom}
+
+\usepackage{enumitem}
+\setlist{itemsep=0.35em, topsep=0.5em, parsep=0pt}
+
+\usepackage{microtype}               % 자간 미세 조정 (가독성)
+
+% ---- 링크 -------------------------------------------------------------------
+\usepackage[colorlinks=true, linkcolor=black, citecolor=black,
+            urlcolor=blue!60!black]{hyperref}

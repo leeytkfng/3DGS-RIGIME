@@ -1,0 +1,13 @@
+% ---- 레이아웃 및 간격 -------------------------------------------------------
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\setstretch{1.15}                    % 줄 간격
+\setlength{\parskip}{0.55em}         % 문단 간격
+\setlength{\parindent}{1em}          % 들여쓰기
+
+\usepackage{titlesec}
+\titlespacing*{\section}      {0pt}{2.0em}{0.9em}
+\titlespacing*{\subsection}   {0pt}{1.5em}{0.6em}
+\titlespacing*{\subsubsection}{0pt}{1.2em}{0.5em}
+\titlespacing*{\paragraph}    {0pt}{1.0em}{0.7em}
+\titleformat{\paragraph}[runin]{\normalfont\bfseries}{}{0pt}{}[.]
