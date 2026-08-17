@@ -16,7 +16,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 LABEL_H = 34
-ROW_LABEL_W = 170
+ROW_LABEL_W = 230
 GRID = "#dcd8cc"
 INK = "#1d2225"
 ACCENT = "#0d6e68"

@@ -350,6 +350,13 @@ view\_count & ReSplat & DepthSplat & FSGS & Vanilla3DGS \\
 
 Gaussian 수는 view당 DepthSplat의 약 1/16(8-view: 57{,}344 대 917{,}504) 수준으로, ReSplat README가 밝힌 설계(subsampled space 예측)가 실측으로도 확인된다. 다만 peak VRAM은 Gaussian 수만큼 줄지 않는다(recurrent 반복 forward pass 비용).
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/qualitative_comparison_dl3dv_resplat.png}
+\caption{DL3DV scene(§4.2 in-domain 체크포인트 매칭 원칙에 따라 DepthSplat/ReSplat 모두 이 데이터셋으로 학습된 체크포인트 사용)에서 GT/DepthSplat/Vanilla3DGS/FSGS/ReSplat 5개 방법 정성적 비교, budget=300\,s. 위 행은 8-view(ReSplat의 진짜 in-domain 지점, ReSplat이 27.99\,dB로 4개 방법 중 최고), 아래 행은 12-view(FSGS가 30.26\,dB로 최고). 확대 영역(빨간 박스)에서 DepthSplat의 구조물 경계 흐림이 가장 두드러지며, ReSplat은 같은 계보의 DepthSplat보다 뚜렷이 선명하지만 8-view에서도 FSGS와 근소한 차이, 12-view에서는 FSGS에 못 미친다 — 표~\ref{tab:resplat-exploratory}의 수치와 일관된다.}
+\label{fig:qualitative-dl3dv-resplat}
+\end{figure}
+
 % =====================================================================
 \section{실패 분석}
 \label{sec:failure}
