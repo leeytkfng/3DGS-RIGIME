@@ -15,27 +15,21 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
-LABEL_H = 34
-ROW_LABEL_W = 230
+LABEL_H = 40
+ROW_LABEL_W = 210
 GRID = "#dcd8cc"
 INK = "#1d2225"
 ACCENT = "#0d6e68"
 INSET_BORDER = "#c63f3f"
-PSNR_BAR_H = 22
+PSNR_BAR_H = 30
 INSET_SCALE = 3
 INSET_SIZE = 44  # crop 정사각형 한 변(원본 px)
 
 
-def load_font(size: int, bold: bool = False, korean: bool = False):
-    if korean:
-        candidates = ["/root/task 2/assets/fonts/NanumGothic-Regular.ttf"]
-    else:
-        candidates = [
-            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        ]
-    for path in candidates:
-        if Path(path).exists():
-            return ImageFont.truetype(path, size)
+def load_font(size: int, bold: bool = False):
+    path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+    if Path(path).exists():
+        return ImageFont.truetype(path, size)
     return ImageFont.load_default()
 
 
@@ -84,14 +78,14 @@ def annotate_cell(img: Image.Image, label: str, crop_xy: tuple[int, int], is_bes
         crop = ImageOps.expand(crop, border=2, fill=INSET_BORDER)
         img.paste(crop, (w - crop.width - 4, h - crop.height - 4))
 
-    bar = Image.new("RGBA", (w, PSNR_BAR_H), (20, 20, 20, 175))
+    bar = Image.new("RGBA", (w, PSNR_BAR_H), (15, 15, 15, 195))
     img.paste(Image.alpha_composite(img.crop((0, h - PSNR_BAR_H, w, h)).convert("RGBA"), bar), (0, h - PSNR_BAR_H))
     draw = ImageDraw.Draw(img, "RGBA")
-    font = load_font(14, bold=is_best)
-    color = "#7ee6b8" if is_best else "#f0efe8"
+    font = load_font(18, bold=True)
+    color = "#8CFFC7" if is_best else "#ffffff"
     bbox = draw.textbbox((0, 0), label, font=font)
-    tw = bbox[2] - bbox[0]
-    draw.text(((w - tw) // 2, h - PSNR_BAR_H + 3), label, fill=color, font=font)
+    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+    draw.text(((w - tw) // 2, h - PSNR_BAR_H + (PSNR_BAR_H - th) // 2 - bbox[1]), label, fill=color, font=font)
     return img
 
 
@@ -132,23 +126,25 @@ def main() -> int:
 
     canvas = Image.new("RGB", (total_w, total_h), "white")
     draw = ImageDraw.Draw(canvas)
-    header_font = load_font(17, bold=True)
-    row_font = load_font(14, korean=True)
+    header_font = load_font(21, bold=True)
+    row_font = load_font(17, bold=True)
 
     for c, method in enumerate(methods):
         x = ROW_LABEL_W + c * (cell_w + gap)
         bbox = draw.textbbox((0, 0), method, font=header_font)
         tw = bbox[2] - bbox[0]
-        draw.text((x + (cell_w - tw) // 2, 7), method, fill=INK, font=header_font)
+        draw.text((x + (cell_w - tw) // 2, (LABEL_H - 21) // 2), method, fill=INK, font=header_font)
 
     for r, (row_label, images) in enumerate(rows):
         y = LABEL_H + r * (cell_h + gap)
-        # 여러 줄 라벨 지원(공백 기준 줄바꿈 없이, "," 뒤에서 줄바꿈)
         lines = row_label.split(", ", 1)
-        ty = y + cell_h // 2 - (len(lines) * 9)
+        line_h = 24
+        ty = y + cell_h // 2 - (len(lines) * line_h) // 2
         for line in lines:
-            draw.text((10, ty), line, fill=INK, font=row_font)
-            ty += 20
+            bbox = draw.textbbox((0, 0), line, font=row_font)
+            tw = bbox[2] - bbox[0]
+            draw.text(((ROW_LABEL_W - tw) // 2, ty), line, fill=INK, font=row_font)
+            ty += line_h
         for c, img in enumerate(images):
             x = ROW_LABEL_W + c * (cell_w + gap)
             canvas.paste(img, (x, y))
