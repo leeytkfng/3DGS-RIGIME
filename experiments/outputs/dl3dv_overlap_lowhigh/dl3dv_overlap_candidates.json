@@ -1,0 +1,5152 @@
+{
+  "09b05fa3b32cff0d17dc9ae53191728c33e04f9703eb832775a225d9fa786304": {
+    "2": {
+      "high": {
+        "context": [
+          272,
+          279
+        ],
+        "target": [
+          166,
+          206,
+          275
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          41,
+          156
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          266,
+          274,
+          277,
+          280
+        ],
+        "target": [
+          165,
+          205,
+          275
+        ],
+        "sfm_points": 283,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7737809335657105,
+        "q25_overlap": 0.6634873949579831,
+        "median_overlap_reference": 0.7739598561318018,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          41,
+          94,
+          156,
+          297
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 7,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 3,
+        "zero_pair_ratio": 0.5,
+        "mean_overlap": 0.24074074074074073,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.1111111111111111,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          253,
+          258,
+          262,
+          267,
+          271,
+          274,
+          277,
+          282
+        ],
+        "target": [
+          163,
+          202,
+          275
+        ],
+        "sfm_points": 665,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.4559467597415079,
+        "q25_overlap": 0.26174130129505385,
+        "median_overlap_reference": 0.4625341924377294,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          41,
+          57,
+          78,
+          94,
+          108,
+          156,
+          207,
+          297
+        ],
+        "target": [
+          5,
+          12,
+          23
+        ],
+        "sfm_points": 27,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 13,
+        "zero_pair_ratio": 0.4642857142857143,
+        "mean_overlap": 0.1823066485195159,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0754985754985755,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          240,
+          244,
+          254,
+          259,
+          262,
+          265,
+          269,
+          271,
+          275,
+          278,
+          281,
+          285
+        ],
+        "target": [
+          161,
+          200,
+          274
+        ],
+        "sfm_points": 1074,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.335917865851501,
+        "q25_overlap": 0.13396858138182446,
+        "median_overlap_reference": 0.2982176752071649,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          2,
+          41,
+          57,
+          67,
+          78,
+          94,
+          108,
+          156,
+          192,
+          207,
+          285,
+          297
+        ],
+        "target": [
+          6,
+          13,
+          24
+        ],
+        "sfm_points": 122,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 30,
+        "zero_pair_ratio": 0.45454545454545453,
+        "mean_overlap": 0.12675543829293767,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.020416666666666666,
+        "has_isolated_view": true
+      }
+    }
+  },
+  "3208cb31878a16c840b18656fcb057f5c934d7274aa5839b106a482593151feb": {
+    "2": {
+      "high": {
+        "context": [
+          251,
+          258
+        ],
+        "target": [
+          153,
+          191,
+          255
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          0,
+          186
+        ],
+        "target": [
+          5,
+          13,
+          23
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          244,
+          247,
+          251,
+          258
+        ],
+        "target": [
+          152,
+          189,
+          255
+        ],
+        "sfm_points": 434,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7642497877270982,
+        "q25_overlap": 0.7254637883368213,
+        "median_overlap_reference": 0.7767549794649005,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          74,
+          134,
+          186
+        ],
+        "target": [
+          5,
+          13,
+          23
+        ],
+        "sfm_points": 5,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 3,
+        "zero_pair_ratio": 0.5,
+        "mean_overlap": 0.5,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.5,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          233,
+          237,
+          243,
+          249,
+          252,
+          255,
+          259,
+          262
+        ],
+        "target": [
+          150,
+          187,
+          254
+        ],
+        "sfm_points": 1113,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.41714304450178263,
+        "q25_overlap": 0.15239865097391425,
+        "median_overlap_reference": 0.36674103894844057,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          29,
+          74,
+          134,
+          186,
+          246,
+          263,
+          279
+        ],
+        "target": [
+          5,
+          13,
+          23
+        ],
+        "sfm_points": 16,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.35810188539898846,
+        "q25_overlap": 0.178030303030303,
+        "median_overlap_reference": 0.22875816993464052,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          217,
+          222,
+          225,
+          232,
+          240,
+          245,
+          250,
+          252,
+          254,
+          258,
+          260,
+          264
+        ],
+        "target": [
+          148,
+          184,
+          253
+        ],
+        "sfm_points": 1602,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.31685478973305625,
+        "q25_overlap": 0.05856446776611694,
+        "median_overlap_reference": 0.2421993603822294,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          29,
+          74,
+          98,
+          115,
+          134,
+          153,
+          186,
+          226,
+          246,
+          263,
+          279
+        ],
+        "target": [
+          5,
+          12,
+          22
+        ],
+        "sfm_points": 126,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.21678523691356888,
+        "q25_overlap": 0.044513457556935816,
+        "median_overlap_reference": 0.1229712858926342,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "365d7c185e3501ab4b13b3de19ddd36f02c1bb0a4c980d55fd6491cd27245f12": {
+    "2": {
+      "high": {
+        "context": [
+          338,
+          345
+        ],
+        "target": [
+          205,
+          256,
+          342
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          0,
+          176
+        ],
+        "target": [
+          7,
+          17,
+          31
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          332,
+          339,
+          343,
+          346
+        ],
+        "target": [
+          204,
+          254,
+          341
+        ],
+        "sfm_points": 184,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.6317238187613837,
+        "q25_overlap": 0.41246115139854966,
+        "median_overlap_reference": 0.6530043361552756,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          77,
+          176,
+          231
+        ],
+        "target": [
+          7,
+          17,
+          31
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          319,
+          328,
+          332,
+          335,
+          338,
+          341,
+          344,
+          349
+        ],
+        "target": [
+          202,
+          252,
+          340
+        ],
+        "sfm_points": 596,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.3837311837792275,
+        "q25_overlap": 0.18863641397027883,
+        "median_overlap_reference": 0.36633669619034087,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          45,
+          77,
+          137,
+          176,
+          192,
+          231,
+          272
+        ],
+        "target": [
+          7,
+          17,
+          30
+        ],
+        "sfm_points": 0,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 28,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          307,
+          310,
+          314,
+          319,
+          326,
+          330,
+          334,
+          339,
+          343,
+          347,
+          349,
+          351
+        ],
+        "target": [
+          200,
+          249,
+          340
+        ],
+        "sfm_points": 657,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.22730304869483695,
+        "q25_overlap": 0.01152766639935846,
+        "median_overlap_reference": 0.06452032520325204,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          45,
+          59,
+          77,
+          137,
+          156,
+          176,
+          192,
+          231,
+          255,
+          272,
+          319
+        ],
+        "target": [
+          7,
+          17,
+          30
+        ],
+        "sfm_points": 7,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 11,
+        "zero_pair_ratio": 0.16666666666666666,
+        "mean_overlap": 0.4004329004329004,
+        "q25_overlap": 0.2976190476190476,
+        "median_overlap_reference": 0.3333333333333333,
+        "has_isolated_view": true
+      }
+    }
+  },
+  "6a5371535b64ca65f83081146ecd8bdd78d92ae881ce15e1dd7659cd77c9afea": {
+    "2": {
+      "high": {
+        "context": [
+          309,
+          316
+        ],
+        "target": [
+          188,
+          234,
+          313
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          185,
+          356
+        ],
+        "target": [
+          6,
+          15,
+          27
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          302,
+          304,
+          307,
+          316
+        ],
+        "target": [
+          187,
+          233,
+          313
+        ],
+        "sfm_points": 72,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7997792524612716,
+        "q25_overlap": 0.7465970961887477,
+        "median_overlap_reference": 0.8119310344827586,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          185,
+          226,
+          269,
+          356
+        ],
+        "target": [
+          6,
+          14,
+          27
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          289,
+          294,
+          296,
+          298,
+          301,
+          304,
+          312,
+          320
+        ],
+        "target": [
+          185,
+          230,
+          314
+        ],
+        "sfm_points": 222,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.47186519253472814,
+        "q25_overlap": 0.3492647058823529,
+        "median_overlap_reference": 0.4470434533610137,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          40,
+          120,
+          159,
+          185,
+          226,
+          269,
+          303,
+          356
+        ],
+        "target": [
+          5,
+          14,
+          27
+        ],
+        "sfm_points": 33,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.3306890790987959,
+        "q25_overlap": 0.07621082621082621,
+        "median_overlap_reference": 0.1324110671936759,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          275,
+          279,
+          281,
+          283,
+          287,
+          292,
+          296,
+          298,
+          300,
+          303,
+          307,
+          321
+        ],
+        "target": [
+          183,
+          228,
+          314
+        ],
+        "sfm_points": 452,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.36724445792670307,
+        "q25_overlap": 0.19520139826805435,
+        "median_overlap_reference": 0.3373132131026868,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          40,
+          74,
+          120,
+          159,
+          185,
+          226,
+          236,
+          256,
+          269,
+          303,
+          356
+        ],
+        "target": [
+          6,
+          15,
+          27
+        ],
+        "sfm_points": 53,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.2649846332890097,
+        "q25_overlap": 0.0625,
+        "median_overlap_reference": 0.11794871794871795,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "6f5a4f5affda1c45fdf5f6b420d526cb9f6f1991d6f7fb5a79f4905e15975aac": {
+    "2": {
+      "high": {
+        "context": [
+          273,
+          280
+        ],
+        "target": [
+          167,
+          207,
+          277
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          142,
+          328
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          267,
+          274,
+          277,
+          281
+        ],
+        "target": [
+          166,
+          206,
+          276
+        ],
+        "sfm_points": 218,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7325047805193342,
+        "q25_overlap": 0.6442740683229813,
+        "median_overlap_reference": 0.755578559926386,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          6,
+          142,
+          247,
+          328
+        ],
+        "target": [
+          5,
+          14,
+          25
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          253,
+          255,
+          259,
+          263,
+          267,
+          274,
+          277,
+          281
+        ],
+        "target": [
+          164,
+          203,
+          278
+        ],
+        "sfm_points": 534,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.4176979600348286,
+        "q25_overlap": 0.20415253438854344,
+        "median_overlap_reference": 0.3388558178505665,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          6,
+          96,
+          142,
+          193,
+          247,
+          265,
+          299,
+          328
+        ],
+        "target": [
+          5,
+          14,
+          25
+        ],
+        "sfm_points": 1,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.8571428571428571,
+        "q25_overlap": 0.6666666666666666,
+        "median_overlap_reference": 1.0,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          239,
+          242,
+          246,
+          252,
+          254,
+          256,
+          261,
+          266,
+          271,
+          276,
+          281,
+          286
+        ],
+        "target": [
+          162,
+          201,
+          277
+        ],
+        "sfm_points": 749,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.2945682948383072,
+        "q25_overlap": 0.10316328954960459,
+        "median_overlap_reference": 0.18918381548861715,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          6,
+          34,
+          58,
+          96,
+          142,
+          193,
+          226,
+          247,
+          265,
+          276,
+          299,
+          328
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 55,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.25962729035988036,
+        "q25_overlap": 0.07692307692307693,
+        "median_overlap_reference": 0.1,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "71c907da92df5dbaf1bed19b369e4ecafd7110308c667a2545be141c9689efe6": {
+    "2": {
+      "high": {
+        "context": [
+          261,
+          268
+        ],
+        "target": [
+          159,
+          198,
+          265
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          143,
+          309
+        ],
+        "target": [
+          5,
+          12,
+          23
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          257,
+          262,
+          266,
+          270
+        ],
+        "target": [
+          158,
+          197,
+          264
+        ],
+        "sfm_points": 316,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.8705619656243652,
+        "q25_overlap": 0.8464361663365287,
+        "median_overlap_reference": 0.8688229751582057,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          44,
+          64,
+          143,
+          309
+        ],
+        "target": [
+          5,
+          12,
+          23
+        ],
+        "sfm_points": 42,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.6890339576001341,
+        "q25_overlap": 0.6588541666666666,
+        "median_overlap_reference": 0.6717948717948719,
+        "has_isolated_view": false
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          241,
+          244,
+          248,
+          255,
+          259,
+          261,
+          266,
+          270
+        ],
+        "target": [
+          156,
+          194,
+          265
+        ],
+        "sfm_points": 536,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.693898669291375,
+        "q25_overlap": 0.6231248437369781,
+        "median_overlap_reference": 0.7101610248390804,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          1,
+          44,
+          64,
+          116,
+          143,
+          186,
+          232,
+          309
+        ],
+        "target": [
+          6,
+          13,
+          24
+        ],
+        "sfm_points": 238,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.44832984045672475,
+        "q25_overlap": 0.3704968944099379,
+        "median_overlap_reference": 0.4129969214295275,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          227,
+          234,
+          238,
+          244,
+          249,
+          252,
+          257,
+          259,
+          264,
+          270,
+          272,
+          274
+        ],
+        "target": [
+          154,
+          192,
+          265
+        ],
+        "sfm_points": 820,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.5820248387268085,
+        "q25_overlap": 0.5201204819277109,
+        "median_overlap_reference": 0.578261488120643,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          1,
+          33,
+          44,
+          64,
+          83,
+          97,
+          116,
+          143,
+          168,
+          186,
+          232,
+          309
+        ],
+        "target": [
+          6,
+          13,
+          23
+        ],
+        "sfm_points": 545,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.37918025458646626,
+        "q25_overlap": 0.2508030431107354,
+        "median_overlap_reference": 0.31772003745318356,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "72b6ba3996c1c7e32c19b46b399948f084903946abb2bf7d20d0be4993983c47": {
+    "2": {
+      "high": {
+        "context": [
+          277,
+          284
+        ],
+        "target": [
+          169,
+          210,
+          280
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          66,
+          137
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          272,
+          274,
+          277,
+          285
+        ],
+        "target": [
+          168,
+          208,
+          281
+        ],
+        "sfm_points": 15,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 3,
+        "zero_pair_ratio": 0.5,
+        "mean_overlap": 0.4777777777777778,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.4666666666666667,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          66,
+          87,
+          137,
+          161
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          256,
+          259,
+          261,
+          266,
+          269,
+          273,
+          279,
+          286
+        ],
+        "target": [
+          166,
+          206,
+          281
+        ],
+        "sfm_points": 107,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.3103930483251923,
+        "q25_overlap": 0.02162349676225717,
+        "median_overlap_reference": 0.11061881553684833,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          24,
+          66,
+          87,
+          137,
+          161,
+          173,
+          199,
+          216
+        ],
+        "target": [
+          5,
+          13,
+          25
+        ],
+        "sfm_points": 9,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 18,
+        "zero_pair_ratio": 0.6428571428571429,
+        "mean_overlap": 0.18181818181818182,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          244,
+          250,
+          253,
+          256,
+          259,
+          262,
+          265,
+          268,
+          272,
+          276,
+          284,
+          290
+        ],
+        "target": [
+          164,
+          203,
+          281
+        ],
+        "sfm_points": 161,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.27722843938850594,
+        "q25_overlap": 0.03389830508474576,
+        "median_overlap_reference": 0.16666666666666666,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          24,
+          42,
+          66,
+          87,
+          109,
+          137,
+          161,
+          173,
+          199,
+          216,
+          264,
+          303
+        ],
+        "target": [
+          5,
+          13,
+          25
+        ],
+        "sfm_points": 19,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.5559408967152196,
+        "q25_overlap": 0.11764705882352941,
+        "median_overlap_reference": 0.7933467741935484,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "818e187b91b22ac246baaffba64ce686f995df023caf606aa28c8380fbfe9ed3": {
+    "2": {
+      "high": {
+        "context": [
+          305,
+          312
+        ],
+        "target": [
+          186,
+          231,
+          308
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          0,
+          161
+        ],
+        "target": [
+          7,
+          15,
+          28
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          298,
+          305,
+          309,
+          312
+        ],
+        "target": [
+          185,
+          229,
+          308
+        ],
+        "sfm_points": 75,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.45410445568833113,
+        "q25_overlap": 0.028890959925442685,
+        "median_overlap_reference": 0.4326259946949602,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          87,
+          161,
+          314
+        ],
+        "target": [
+          6,
+          15,
+          28
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          284,
+          291,
+          295,
+          299,
+          302,
+          305,
+          309,
+          312
+        ],
+        "target": [
+          182,
+          227,
+          308
+        ],
+        "sfm_points": 207,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.2776185179619196,
+        "q25_overlap": 0.019018151815181517,
+        "median_overlap_reference": 0.10449727152982499,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          19,
+          45,
+          87,
+          161,
+          279,
+          314,
+          339
+        ],
+        "target": [
+          6,
+          15,
+          28
+        ],
+        "sfm_points": 23,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 7,
+        "zero_pair_ratio": 0.25,
+        "mean_overlap": 0.2838748208313426,
+        "q25_overlap": 0.06,
+        "median_overlap_reference": 0.08514492753623187,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          271,
+          276,
+          279,
+          282,
+          285,
+          288,
+          293,
+          298,
+          303,
+          308,
+          313,
+          318
+        ],
+        "target": [
+          180,
+          224,
+          309
+        ],
+        "sfm_points": 815,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.19032432400511706,
+        "q25_overlap": 0.005239037528685878,
+        "median_overlap_reference": 0.05075975002174264,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          19,
+          45,
+          87,
+          102,
+          132,
+          161,
+          279,
+          299,
+          314,
+          339,
+          365
+        ],
+        "target": [
+          6,
+          15,
+          28
+        ],
+        "sfm_points": 59,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.21962102366696967,
+        "q25_overlap": 0.06505376344086021,
+        "median_overlap_reference": 0.08333333333333333,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "970a5c674c27b504d592d0a70c496d0e35ab0dc76802fb6e1bf336a4c1fe150a": {
+    "2": {
+      "high": {
+        "context": [
+          269,
+          276
+        ],
+        "target": [
+          164,
+          204,
+          273
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          149,
+          323
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          263,
+          267,
+          271,
+          277
+        ],
+        "target": [
+          163,
+          203,
+          273
+        ],
+        "sfm_points": 582,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.867705192475636,
+        "q25_overlap": 0.8172809716398283,
+        "median_overlap_reference": 0.8670527458413135,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          57,
+          89,
+          149,
+          323
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 11,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.6023088023088023,
+        "q25_overlap": 0.5178571428571428,
+        "median_overlap_reference": 0.6190476190476191,
+        "has_isolated_view": false
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          249,
+          256,
+          262,
+          265,
+          270,
+          273,
+          277,
+          280
+        ],
+        "target": [
+          161,
+          200,
+          272
+        ],
+        "sfm_points": 1174,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.6054529708844988,
+        "q25_overlap": 0.4811082743213987,
+        "median_overlap_reference": 0.6129956656204372,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          57,
+          89,
+          134,
+          149,
+          226,
+          272,
+          299,
+          323
+        ],
+        "target": [
+          5,
+          12,
+          23
+        ],
+        "sfm_points": 242,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.35840381832169255,
+        "q25_overlap": 0.18031968031968032,
+        "median_overlap_reference": 0.29084271372071796,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          235,
+          240,
+          244,
+          247,
+          249,
+          254,
+          260,
+          264,
+          271,
+          274,
+          277,
+          282
+        ],
+        "target": [
+          159,
+          198,
+          272
+        ],
+        "sfm_points": 1832,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.42529867650363445,
+        "q25_overlap": 0.25490337504049243,
+        "median_overlap_reference": 0.3880151928932417,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          18,
+          57,
+          89,
+          112,
+          134,
+          149,
+          204,
+          226,
+          242,
+          272,
+          299,
+          323
+        ],
+        "target": [
+          5,
+          12,
+          24
+        ],
+        "sfm_points": 678,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.2745816600970193,
+        "q25_overlap": 0.08536817572507921,
+        "median_overlap_reference": 0.194812382168704,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "971fb09235c6575e9065b968185a44af5b50b7abaaca1b12bfdc81eec19e19b1": {
+    "2": {
+      "high": {
+        "context": [
+          280,
+          287
+        ],
+        "target": [
+          171,
+          212,
+          284
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          108,
+          240
+        ],
+        "target": [
+          5,
+          13,
+          25
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          273,
+          276,
+          280,
+          287
+        ],
+        "target": [
+          170,
+          211,
+          284
+        ],
+        "sfm_points": 689,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.8162795503611286,
+        "q25_overlap": 0.7424121066946129,
+        "median_overlap_reference": 0.8231323889410973,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          108,
+          182,
+          240,
+          307
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          260,
+          263,
+          266,
+          269,
+          273,
+          277,
+          281,
+          289
+        ],
+        "target": [
+          168,
+          208,
+          285
+        ],
+        "sfm_points": 1508,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.515099218972212,
+        "q25_overlap": 0.333783633645766,
+        "median_overlap_reference": 0.523346432259571,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          54,
+          108,
+          148,
+          182,
+          212,
+          240,
+          268,
+          307
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 4,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 13,
+        "zero_pair_ratio": 0.4642857142857143,
+        "mean_overlap": 0.3214285714285714,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.3333333333333333,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          246,
+          251,
+          256,
+          261,
+          266,
+          271,
+          274,
+          277,
+          280,
+          283,
+          289,
+          293
+        ],
+        "target": [
+          166,
+          206,
+          284
+        ],
+        "sfm_points": 2090,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.3803199039726577,
+        "q25_overlap": 0.15709566664718524,
+        "median_overlap_reference": 0.3388894175086534,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          54,
+          108,
+          129,
+          148,
+          166,
+          182,
+          197,
+          212,
+          240,
+          268,
+          284,
+          307
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 165,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.20021242901538971,
+        "q25_overlap": 0.03228410008071025,
+        "median_overlap_reference": 0.0582010582010582,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "9725175383bd86faf7a20f73b65fd2b98e52bcda91b3d8db1c02251d2189f638": {
+    "2": {
+      "high": {
+        "context": [
+          295,
+          299
+        ],
+        "target": [
+          178,
+          222,
+          297
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          40,
+          166
+        ],
+        "target": [
+          5,
+          14,
+          26
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          286,
+          290,
+          294,
+          298
+        ],
+        "target": [
+          177,
+          221,
+          297
+        ],
+        "sfm_points": 11,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.696078431372549,
+        "q25_overlap": 0.5882352941176471,
+        "median_overlap_reference": 0.7226890756302521,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          40,
+          109,
+          166,
+          257
+        ],
+        "target": [
+          5,
+          14,
+          26
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          274,
+          278,
+          281,
+          286,
+          289,
+          293,
+          299,
+          304
+        ],
+        "target": [
+          175,
+          218,
+          296
+        ],
+        "sfm_points": 170,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.3435480466983219,
+        "q25_overlap": 0.08465656474004174,
+        "median_overlap_reference": 0.22283560874020691,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          17,
+          40,
+          109,
+          166,
+          182,
+          190,
+          257
+        ],
+        "target": [
+          6,
+          15,
+          27
+        ],
+        "sfm_points": 7,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 18,
+        "zero_pair_ratio": 0.6428571428571429,
+        "mean_overlap": 0.20916305916305916,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          259,
+          263,
+          267,
+          271,
+          273,
+          278,
+          282,
+          287,
+          294,
+          298,
+          300,
+          304
+        ],
+        "target": [
+          173,
+          215,
+          296
+        ],
+        "sfm_points": 612,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.26399626565090595,
+        "q25_overlap": 0.061187050359712225,
+        "median_overlap_reference": 0.16830870279146143,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          10,
+          17,
+          40,
+          94,
+          109,
+          119,
+          166,
+          182,
+          190,
+          257,
+          318
+        ],
+        "target": [
+          6,
+          15,
+          28
+        ],
+        "sfm_points": 43,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 30,
+        "zero_pair_ratio": 0.45454545454545453,
+        "mean_overlap": 0.18253770600800923,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.053571428571428575,
+        "has_isolated_view": true
+      }
+    }
+  },
+  "974351135002192682b490554b1807f5e201539d6f97cdc7fbce80ef39d27990": {
+    "2": {
+      "high": {
+        "context": [
+          277,
+          284
+        ],
+        "target": [
+          169,
+          210,
+          280
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          160,
+          309
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          271,
+          278,
+          282,
+          285
+        ],
+        "target": [
+          168,
+          208,
+          280
+        ],
+        "sfm_points": 200,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7170233851963965,
+        "q25_overlap": 0.5364963503649635,
+        "median_overlap_reference": 0.7290071805827547,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          46,
+          160,
+          242,
+          309
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 5,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 3,
+        "zero_pair_ratio": 0.5,
+        "mean_overlap": 0.5,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.5,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          256,
+          259,
+          263,
+          270,
+          277,
+          280,
+          284,
+          287
+        ],
+        "target": [
+          166,
+          206,
+          279
+        ],
+        "sfm_points": 632,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.44613448017077756,
+        "q25_overlap": 0.21411935402174248,
+        "median_overlap_reference": 0.3538739796973964,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          46,
+          91,
+          110,
+          160,
+          190,
+          242,
+          287,
+          309
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 60,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.33442802488282614,
+        "q25_overlap": 0.04,
+        "median_overlap_reference": 0.05,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          243,
+          248,
+          253,
+          258,
+          261,
+          264,
+          269,
+          272,
+          275,
+          280,
+          285,
+          290
+        ],
+        "target": [
+          164,
+          203,
+          281
+        ],
+        "sfm_points": 937,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.34520774517334185,
+        "q25_overlap": 0.1785574307873202,
+        "median_overlap_reference": 0.27194995314439124,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          22,
+          46,
+          63,
+          91,
+          110,
+          160,
+          190,
+          242,
+          265,
+          287,
+          309
+        ],
+        "target": [
+          6,
+          14,
+          26
+        ],
+        "sfm_points": 144,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 11,
+        "zero_pair_ratio": 0.16666666666666666,
+        "mean_overlap": 0.23349074925535104,
+        "q25_overlap": 0.019705882352941177,
+        "median_overlap_reference": 0.028381642512077296,
+        "has_isolated_view": true
+      }
+    }
+  },
+  "976447ba2e97db48db6c5245f6d8d95e38fe5ea06e9a56e292b5cb6f50960b00": {
+    "2": {
+      "high": {
+        "context": [
+          261,
+          268
+        ],
+        "target": [
+          159,
+          198,
+          264
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          9,
+          191
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          256,
+          262,
+          265,
+          269
+        ],
+        "target": [
+          158,
+          196,
+          263
+        ],
+        "sfm_points": 101,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7395394058489214,
+        "q25_overlap": 0.6169017942747569,
+        "median_overlap_reference": 0.7487695749440716,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          9,
+          38,
+          96,
+          191
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          240,
+          249,
+          252,
+          258,
+          260,
+          262,
+          265,
+          267
+        ],
+        "target": [
+          156,
+          194,
+          264
+        ],
+        "sfm_points": 249,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.5132172171338419,
+        "q25_overlap": 0.3565072302558398,
+        "median_overlap_reference": 0.5329313543599258,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          9,
+          38,
+          96,
+          137,
+          168,
+          191,
+          228,
+          253
+        ],
+        "target": [
+          5,
+          13,
+          23
+        ],
+        "sfm_points": 1,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 25,
+        "zero_pair_ratio": 0.8928571428571429,
+        "mean_overlap": 0.10714285714285714,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          227,
+          232,
+          234,
+          236,
+          242,
+          245,
+          250,
+          257,
+          260,
+          264,
+          268,
+          274
+        ],
+        "target": [
+          154,
+          191,
+          265
+        ],
+        "sfm_points": 404,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.3510800048140534,
+        "q25_overlap": 0.15310034259537836,
+        "median_overlap_reference": 0.3086363636363636,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          9,
+          22,
+          38,
+          69,
+          96,
+          137,
+          159,
+          168,
+          191,
+          211,
+          228,
+          253
+        ],
+        "target": [
+          4,
+          13,
+          24
+        ],
+        "sfm_points": 87,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 51,
+        "zero_pair_ratio": 0.7727272727272727,
+        "mean_overlap": 0.08346278454047182,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    }
+  },
+  "98724539e82458e819ef575fb66747c28305844a5db4841e08ca85d9d564beba": {
+    "2": {
+      "high": {
+        "context": [
+          323,
+          330
+        ],
+        "target": [
+          196,
+          244,
+          326
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          152,
+          335
+        ],
+        "target": [
+          6,
+          15,
+          28
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          316,
+          318,
+          324,
+          331
+        ],
+        "target": [
+          195,
+          243,
+          327
+        ],
+        "sfm_points": 24,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.5435296625772816,
+        "q25_overlap": 0.09472934472934473,
+        "median_overlap_reference": 0.563869992441421,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          152,
+          173,
+          210,
+          335
+        ],
+        "target": [
+          6,
+          15,
+          28
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          302,
+          308,
+          312,
+          315,
+          317,
+          320,
+          328,
+          333
+        ],
+        "target": [
+          193,
+          240,
+          326
+        ],
+        "sfm_points": 184,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.2791852621798185,
+        "q25_overlap": 0.05873246250604741,
+        "median_overlap_reference": 0.180564263322884,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          152,
+          173,
+          191,
+          210,
+          261,
+          304,
+          335,
+          367
+        ],
+        "target": [
+          6,
+          15,
+          28
+        ],
+        "sfm_points": 0,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 28,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          290,
+          302,
+          308,
+          311,
+          314,
+          316,
+          318,
+          319,
+          322,
+          326,
+          331,
+          336
+        ],
+        "target": [
+          191,
+          238,
+          327
+        ],
+        "sfm_points": 492,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.22123948948589725,
+        "q25_overlap": 0.019049952528253346,
+        "median_overlap_reference": 0.08053644639010493,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          20,
+          80,
+          152,
+          173,
+          191,
+          210,
+          225,
+          261,
+          304,
+          335,
+          367
+        ],
+        "target": [
+          7,
+          16,
+          30
+        ],
+        "sfm_points": 64,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 38,
+        "zero_pair_ratio": 0.5757575757575758,
+        "mean_overlap": 0.12050472984204162,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    }
+  },
+  "c36d9b7a40319dee06fc46cfd33f5d9561e1d2c466bd6930fb14041bcb20f4ab": {
+    "2": {
+      "high": {
+        "context": [
+          271,
+          278
+        ],
+        "target": [
+          165,
+          205,
+          274
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          153,
+          315
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          265,
+          269,
+          272,
+          279
+        ],
+        "target": [
+          164,
+          204,
+          275
+        ],
+        "sfm_points": 112,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7629221489724589,
+        "q25_overlap": 0.6066203435630187,
+        "median_overlap_reference": 0.7656465646564656,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          50,
+          88,
+          153,
+          315
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          253,
+          256,
+          260,
+          263,
+          267,
+          274,
+          277,
+          281
+        ],
+        "target": [
+          162,
+          201,
+          273
+        ],
+        "sfm_points": 271,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.49169949491352233,
+        "q25_overlap": 0.28863636363636364,
+        "median_overlap_reference": 0.43104332222507047,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          28,
+          50,
+          69,
+          88,
+          105,
+          122,
+          153,
+          315
+        ],
+        "target": [
+          5,
+          12,
+          23
+        ],
+        "sfm_points": 39,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 7,
+        "zero_pair_ratio": 0.25,
+        "mean_overlap": 0.2278105764128008,
+        "q25_overlap": 0.04838709677419355,
+        "median_overlap_reference": 0.1043360433604336,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          237,
+          242,
+          247,
+          252,
+          257,
+          262,
+          267,
+          270,
+          273,
+          276,
+          279,
+          284
+        ],
+        "target": [
+          160,
+          199,
+          274
+        ],
+        "sfm_points": 507,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.3001781562716114,
+        "q25_overlap": 0.10723886328725038,
+        "median_overlap_reference": 0.24285977519808366,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          16,
+          28,
+          50,
+          69,
+          88,
+          105,
+          122,
+          153,
+          199,
+          294,
+          315
+        ],
+        "target": [
+          6,
+          13,
+          25
+        ],
+        "sfm_points": 102,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.2162160414536554,
+        "q25_overlap": 0.0425531914893617,
+        "median_overlap_reference": 0.08,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "db6404b2a812bbfafae59106d31152ea5ab71200ad5b410dc9ffad00dd68f797": {
+    "2": {
+      "high": {
+        "context": [
+          339,
+          345
+        ],
+        "target": [
+          205,
+          256,
+          342
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          19,
+          198
+        ],
+        "target": [
+          6,
+          16,
+          31
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          334,
+          338,
+          344,
+          346
+        ],
+        "target": [
+          204,
+          254,
+          341
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          19,
+          115,
+          161,
+          198
+        ],
+        "target": [
+          6,
+          16,
+          31
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          319,
+          324,
+          327,
+          338,
+          342,
+          346,
+          347,
+          349
+        ],
+        "target": [
+          202,
+          252,
+          339
+        ],
+        "sfm_points": 32,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 13,
+        "zero_pair_ratio": 0.4642857142857143,
+        "mean_overlap": 0.19345998448326032,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.07294429708222812,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          19,
+          57,
+          88,
+          115,
+          144,
+          161,
+          198,
+          338
+        ],
+        "target": [
+          6,
+          16,
+          30
+        ],
+        "sfm_points": 0,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 28,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          304,
+          307,
+          310,
+          313,
+          322,
+          326,
+          328,
+          335,
+          338,
+          346,
+          348,
+          351
+        ],
+        "target": [
+          200,
+          249,
+          341
+        ],
+        "sfm_points": 192,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.230892531900491,
+        "q25_overlap": 0.06724137931034482,
+        "median_overlap_reference": 0.1709856035437431,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          6,
+          19,
+          35,
+          57,
+          70,
+          88,
+          115,
+          128,
+          144,
+          161,
+          198,
+          338
+        ],
+        "target": [
+          7,
+          17,
+          31
+        ],
+        "sfm_points": 12,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 21,
+        "zero_pair_ratio": 0.3181818181818182,
+        "mean_overlap": 0.3113406795224977,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.18181818181818182,
+        "has_isolated_view": true
+      }
+    }
+  },
+  "e1984c4d738cf43c82390fb2e17536278b3b264c26e5ad13633003a32748fee2": {
+    "2": {
+      "high": {
+        "context": [
+          279,
+          286
+        ],
+        "target": [
+          170,
+          211,
+          282
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          154,
+          334
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          272,
+          276,
+          279,
+          286
+        ],
+        "target": [
+          169,
+          210,
+          282
+        ],
+        "sfm_points": 200,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.703322813773863,
+        "q25_overlap": 0.5394199827329095,
+        "median_overlap_reference": 0.7196813130859316,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          112,
+          154,
+          299,
+          334
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          258,
+          261,
+          265,
+          269,
+          273,
+          279,
+          282,
+          286
+        ],
+        "target": [
+          167,
+          207,
+          283
+        ],
+        "sfm_points": 519,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.4211988432034386,
+        "q25_overlap": 0.19357798165137619,
+        "median_overlap_reference": 0.36003011190981116,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          37,
+          92,
+          112,
+          131,
+          154,
+          299,
+          315,
+          334
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 19,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.3249149659863946,
+        "q25_overlap": 0.13333333333333333,
+        "median_overlap_reference": 0.2222222222222222,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          244,
+          249,
+          254,
+          259,
+          262,
+          265,
+          271,
+          276,
+          278,
+          281,
+          286,
+          291
+        ],
+        "target": [
+          165,
+          205,
+          283
+        ],
+        "sfm_points": 755,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.29008905170619126,
+        "q25_overlap": 0.09379564827145212,
+        "median_overlap_reference": 0.19213939093603613,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          9,
+          24,
+          37,
+          81,
+          92,
+          112,
+          131,
+          154,
+          232,
+          299,
+          315,
+          334
+        ],
+        "target": [
+          5,
+          14,
+          26
+        ],
+        "sfm_points": 132,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.20677099175550112,
+        "q25_overlap": 0.030539772727272728,
+        "median_overlap_reference": 0.04939024390243903,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "e1d047f311d1a22e1737c777d224a170495c9f112216f2feeee78657c4a9d495": {
+    "2": {
+      "high": {
+        "context": [
+          296,
+          303
+        ],
+        "target": [
+          180,
+          224,
+          299
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          14,
+          160
+        ],
+        "target": [
+          5,
+          15,
+          27
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          290,
+          293,
+          297,
+          304
+        ],
+        "target": [
+          179,
+          222,
+          299
+        ],
+        "sfm_points": 162,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7794788116627878,
+        "q25_overlap": 0.7291381349601593,
+        "median_overlap_reference": 0.8054403409090909,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          14,
+          160,
+          277,
+          314
+        ],
+        "target": [
+          5,
+          15,
+          27
+        ],
+        "sfm_points": 13,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.5298910675381263,
+        "q25_overlap": 0.41111111111111115,
+        "median_overlap_reference": 0.5163398692810457,
+        "has_isolated_view": false
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          278,
+          282,
+          285,
+          288,
+          292,
+          296,
+          299,
+          306
+        ],
+        "target": [
+          177,
+          220,
+          300
+        ],
+        "sfm_points": 388,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.48149566104656616,
+        "q25_overlap": 0.2761379447425959,
+        "median_overlap_reference": 0.47362459546925567,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          14,
+          37,
+          72,
+          108,
+          126,
+          160,
+          277,
+          314
+        ],
+        "target": [
+          5,
+          15,
+          27
+        ],
+        "sfm_points": 147,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.2929253144000892,
+        "q25_overlap": 0.11977321048901488,
+        "median_overlap_reference": 0.21637426900584794,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          261,
+          264,
+          267,
+          272,
+          277,
+          282,
+          287,
+          292,
+          295,
+          298,
+          303,
+          308
+        ],
+        "target": [
+          175,
+          217,
+          300
+        ],
+        "sfm_points": 661,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.35638296465620034,
+        "q25_overlap": 0.14463891653325256,
+        "median_overlap_reference": 0.3359116337481448,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          14,
+          37,
+          47,
+          72,
+          82,
+          108,
+          126,
+          160,
+          181,
+          220,
+          277,
+          314
+        ],
+        "target": [
+          5,
+          13,
+          26
+        ],
+        "sfm_points": 312,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.24954553169163382,
+        "q25_overlap": 0.08570478723404254,
+        "median_overlap_reference": 0.18629626795234816,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "e81eb891d821cdf5485d7e45299d9ae95f6f471de6a536daece63e5125d7a3e2": {
+    "2": {
+      "high": {
+        "context": [
+          271,
+          278
+        ],
+        "target": [
+          165,
+          205,
+          274
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          136,
+          319
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          266,
+          271,
+          275,
+          279
+        ],
+        "target": [
+          164,
+          204,
+          274
+        ],
+        "sfm_points": 383,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7034462100500007,
+        "q25_overlap": 0.6422621080300386,
+        "median_overlap_reference": 0.7124997532368278,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          42,
+          79,
+          136,
+          319
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          250,
+          255,
+          260,
+          267,
+          270,
+          273,
+          277,
+          281
+        ],
+        "target": [
+          162,
+          201,
+          274
+        ],
+        "sfm_points": 892,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.3273716787299102,
+        "q25_overlap": 0.08086155756363385,
+        "median_overlap_reference": 0.30003308519437555,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          42,
+          79,
+          136,
+          160,
+          216,
+          247,
+          272,
+          319
+        ],
+        "target": [
+          5,
+          12,
+          23
+        ],
+        "sfm_points": 16,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 18,
+        "zero_pair_ratio": 0.6428571428571429,
+        "mean_overlap": 0.14218084450090296,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          237,
+          240,
+          244,
+          248,
+          253,
+          259,
+          262,
+          267,
+          270,
+          274,
+          279,
+          284
+        ],
+        "target": [
+          160,
+          199,
+          275
+        ],
+        "sfm_points": 1176,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.23373463394976313,
+        "q25_overlap": 0.015342916654915818,
+        "median_overlap_reference": 0.11297319384505158,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          42,
+          62,
+          79,
+          136,
+          160,
+          199,
+          216,
+          235,
+          247,
+          272,
+          293,
+          319
+        ],
+        "target": [
+          5,
+          12,
+          23
+        ],
+        "sfm_points": 211,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 21,
+        "zero_pair_ratio": 0.3181818181818182,
+        "mean_overlap": 0.12622672829799952,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.024096385542168676,
+        "has_isolated_view": true
+      }
+    }
+  },
+  "ed5de1fd419d6beeedf6fe0249a858567956a5db7c5fa782156c75760c4b7f76": {
+    "2": {
+      "high": {
+        "context": [
+          296,
+          303
+        ],
+        "target": [
+          180,
+          224,
+          299
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          144,
+          339
+        ],
+        "target": [
+          5,
+          14,
+          26
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          290,
+          294,
+          298,
+          304
+        ],
+        "target": [
+          179,
+          222,
+          299
+        ],
+        "sfm_points": 199,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.8125252077865358,
+        "q25_overlap": 0.706074265540285,
+        "median_overlap_reference": 0.8118906838419033,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          74,
+          144,
+          298,
+          339
+        ],
+        "target": [
+          5,
+          14,
+          26
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          277,
+          282,
+          286,
+          290,
+          294,
+          298,
+          301,
+          306
+        ],
+        "target": [
+          177,
+          220,
+          299
+        ],
+        "sfm_points": 467,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.6161410122883911,
+        "q25_overlap": 0.5028620384492271,
+        "median_overlap_reference": 0.6372476564627174,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          59,
+          74,
+          103,
+          144,
+          199,
+          298,
+          339
+        ],
+        "target": [
+          6,
+          15,
+          27
+        ],
+        "sfm_points": 61,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.3015206082151518,
+        "q25_overlap": 0.07512229210342418,
+        "median_overlap_reference": 0.167964404894327,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          261,
+          265,
+          271,
+          279,
+          283,
+          286,
+          291,
+          296,
+          300,
+          302,
+          304,
+          308
+        ],
+        "target": [
+          175,
+          217,
+          298
+        ],
+        "sfm_points": 731,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.5087194451324253,
+        "q25_overlap": 0.3565620426085543,
+        "median_overlap_reference": 0.4980082843823517,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          31,
+          59,
+          74,
+          103,
+          144,
+          163,
+          199,
+          253,
+          298,
+          339,
+          354
+        ],
+        "target": [
+          6,
+          14,
+          26
+        ],
+        "sfm_points": 308,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.21472930781419916,
+        "q25_overlap": 0.01887997728724537,
+        "median_overlap_reference": 0.07087155963302752,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "ee86296175fa4bc0f72e774aa6082ee5f6e7fe77d207f27e055c83bb327284fa": {
+    "2": {
+      "high": {
+        "context": [
+          257,
+          264
+        ],
+        "target": [
+          157,
+          195,
+          261
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          0,
+          132
+        ],
+        "target": [
+          6,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          250,
+          253,
+          257,
+          264
+        ],
+        "target": [
+          156,
+          194,
+          261
+        ],
+        "sfm_points": 399,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7891995373439931,
+        "q25_overlap": 0.6407174513641073,
+        "median_overlap_reference": 0.7940803239196081,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          132,
+          228,
+          264
+        ],
+        "target": [
+          6,
+          13,
+          23
+        ],
+        "sfm_points": 16,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.6467236467236467,
+        "q25_overlap": 0.6923076923076923,
+        "median_overlap_reference": 0.6923076923076923,
+        "has_isolated_view": false
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          237,
+          240,
+          243,
+          247,
+          250,
+          257,
+          261,
+          266
+        ],
+        "target": [
+          154,
+          191,
+          262
+        ],
+        "sfm_points": 955,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.5432172370549145,
+        "q25_overlap": 0.3759281740301135,
+        "median_overlap_reference": 0.5479241552839684,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          49,
+          97,
+          132,
+          185,
+          228,
+          264,
+          294
+        ],
+        "target": [
+          5,
+          13,
+          23
+        ],
+        "sfm_points": 185,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.40678853528301945,
+        "q25_overlap": 0.18011204481792714,
+        "median_overlap_reference": 0.3633053221288515,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          223,
+          228,
+          233,
+          238,
+          243,
+          248,
+          253,
+          256,
+          259,
+          262,
+          266,
+          270
+        ],
+        "target": [
+          152,
+          189,
+          260
+        ],
+        "sfm_points": 1322,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.4363187957809076,
+        "q25_overlap": 0.2697911270381269,
+        "median_overlap_reference": 0.3945318285494238,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          49,
+          81,
+          97,
+          107,
+          121,
+          132,
+          185,
+          206,
+          228,
+          264,
+          294
+        ],
+        "target": [
+          5,
+          13,
+          23
+        ],
+        "sfm_points": 542,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.34083372001611484,
+        "q25_overlap": 0.13007432818753573,
+        "median_overlap_reference": 0.3252281110463987,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "f234342377a079262d7e4a7ee18e3d75e076b502d2e5c66d52eaf5d98bf407d6": {
+    "2": {
+      "high": {
+        "context": [
+          276,
+          283
+        ],
+        "target": [
+          168,
+          209,
+          280
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          153,
+          305
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          269,
+          275,
+          279,
+          283
+        ],
+        "target": [
+          167,
+          208,
+          280
+        ],
+        "sfm_points": 112,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7433839295067675,
+        "q25_overlap": 0.6605691056910569,
+        "median_overlap_reference": 0.743859649122807,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          153,
+          231,
+          267,
+          305
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          259,
+          263,
+          266,
+          272,
+          275,
+          279,
+          283,
+          287
+        ],
+        "target": [
+          165,
+          205,
+          278
+        ],
+        "sfm_points": 585,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.45321076770517194,
+        "q25_overlap": 0.3083576535596722,
+        "median_overlap_reference": 0.42455088191696244,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          104,
+          153,
+          195,
+          231,
+          250,
+          267,
+          284,
+          305
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 50,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 7,
+        "zero_pair_ratio": 0.25,
+        "mean_overlap": 0.26111346082317277,
+        "q25_overlap": 0.030612244897959183,
+        "median_overlap_reference": 0.07125000000000001,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          242,
+          247,
+          250,
+          253,
+          258,
+          263,
+          268,
+          273,
+          278,
+          281,
+          284,
+          289
+        ],
+        "target": [
+          163,
+          203,
+          279
+        ],
+        "sfm_points": 914,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.3221385046320869,
+        "q25_overlap": 0.12526996572609042,
+        "median_overlap_reference": 0.28755861585380005,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          36,
+          50,
+          73,
+          104,
+          136,
+          153,
+          195,
+          231,
+          250,
+          267,
+          284,
+          305
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 207,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 11,
+        "zero_pair_ratio": 0.16666666666666666,
+        "mean_overlap": 0.20876522221610383,
+        "q25_overlap": 0.015885416666666666,
+        "median_overlap_reference": 0.058355437665782495,
+        "has_isolated_view": true
+      }
+    }
+  },
+  "f31caacaa3308b045be3668de3753c1993ee47e914f717fa71aee2f50e321c66": {
+    "2": {
+      "high": {
+        "context": [
+          278,
+          285
+        ],
+        "target": [
+          169,
+          210,
+          281
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          116,
+          257
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          271,
+          275,
+          278,
+          285
+        ],
+        "target": [
+          168,
+          209,
+          282
+        ],
+        "sfm_points": 123,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.7758952711521466,
+        "q25_overlap": 0.6685023907103825,
+        "median_overlap_reference": 0.808705693815988,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          86,
+          116,
+          257,
+          295
+        ],
+        "target": [
+          5,
+          13,
+          24
+        ],
+        "sfm_points": 4,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 3,
+        "zero_pair_ratio": 0.5,
+        "mean_overlap": 0.46296296296296297,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.4444444444444444,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          260,
+          267,
+          271,
+          274,
+          277,
+          279,
+          283,
+          288
+        ],
+        "target": [
+          166,
+          207,
+          281
+        ],
+        "sfm_points": 375,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.49175931960860964,
+        "q25_overlap": 0.3442134662636333,
+        "median_overlap_reference": 0.475089565606807,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          22,
+          52,
+          86,
+          116,
+          161,
+          205,
+          257,
+          295
+        ],
+        "target": [
+          5,
+          13,
+          25
+        ],
+        "sfm_points": 120,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 7,
+        "zero_pair_ratio": 0.25,
+        "mean_overlap": 0.2892829131310712,
+        "q25_overlap": 0.04326923076923077,
+        "median_overlap_reference": 0.32060959977211223,
+        "has_isolated_view": true
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          246,
+          250,
+          252,
+          257,
+          264,
+          268,
+          273,
+          276,
+          279,
+          283,
+          288,
+          291
+        ],
+        "target": [
+          164,
+          204,
+          281
+        ],
+        "sfm_points": 740,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.37907662978002726,
+        "q25_overlap": 0.19134150873281308,
+        "median_overlap_reference": 0.35333516014459915,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          22,
+          52,
+          86,
+          116,
+          131,
+          161,
+          205,
+          230,
+          257,
+          277,
+          295,
+          316
+        ],
+        "target": [
+          5,
+          13,
+          25
+        ],
+        "sfm_points": 281,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.2678860548883435,
+        "q25_overlap": 0.09171957671957673,
+        "median_overlap_reference": 0.24870328228468336,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "fcc6062cccbea85ea8fab48a4ff65adb93f80761f4bf5074accf0f868e977912": {
+    "2": {
+      "high": {
+        "context": [
+          254,
+          261
+        ],
+        "target": [
+          155,
+          192,
+          257
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          101,
+          190
+        ],
+        "target": [
+          5,
+          12,
+          22
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          248,
+          252,
+          255,
+          262
+        ],
+        "target": [
+          154,
+          191,
+          258
+        ],
+        "sfm_points": 779,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.8178073674316912,
+        "q25_overlap": 0.7749654968454258,
+        "median_overlap_reference": 0.823667212518195,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          55,
+          101,
+          190,
+          268
+        ],
+        "target": [
+          4,
+          12,
+          22
+        ],
+        "sfm_points": 1,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 3,
+        "zero_pair_ratio": 0.5,
+        "mean_overlap": 0.5,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.5,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          233,
+          238,
+          242,
+          248,
+          254,
+          258,
+          261,
+          264
+        ],
+        "target": [
+          152,
+          189,
+          256
+        ],
+        "sfm_points": 1615,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.5186563776737064,
+        "q25_overlap": 0.2802958884640334,
+        "median_overlap_reference": 0.5088261289093223,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          29,
+          55,
+          69,
+          82,
+          101,
+          190,
+          223,
+          268
+        ],
+        "target": [
+          4,
+          12,
+          22
+        ],
+        "sfm_points": 197,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.28827594862810735,
+        "q25_overlap": 0.06387249114521842,
+        "median_overlap_reference": 0.23986928104575161,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          220,
+          225,
+          229,
+          235,
+          238,
+          242,
+          247,
+          252,
+          255,
+          258,
+          263,
+          267
+        ],
+        "target": [
+          150,
+          186,
+          257
+        ],
+        "sfm_points": 2174,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.430371595122945,
+        "q25_overlap": 0.24226238065043787,
+        "median_overlap_reference": 0.38936254038294854,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          0,
+          29,
+          42,
+          55,
+          69,
+          82,
+          101,
+          190,
+          223,
+          238,
+          253,
+          268
+        ],
+        "target": [
+          5,
+          12,
+          23
+        ],
+        "sfm_points": 439,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.24646113262677188,
+        "q25_overlap": 0.05572150735294118,
+        "median_overlap_reference": 0.19217914438502673,
+        "has_isolated_view": false
+      }
+    }
+  },
+  "fdd2418c98220bc33a5c4a5e18f82c99531809b7126104d3001d8fdae7d02baf": {
+    "2": {
+      "high": {
+        "context": [
+          259,
+          266
+        ],
+        "target": [
+          158,
+          196,
+          262
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      },
+      "low": {
+        "context": [
+          32,
+          250
+        ],
+        "target": [
+          5,
+          12,
+          23
+        ],
+        "sfm_points": 0,
+        "view_count": 2,
+        "pair_count": 1,
+        "zero_pair_count": 1,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "4": {
+      "high": {
+        "context": [
+          252,
+          258,
+          262,
+          266
+        ],
+        "target": [
+          157,
+          195,
+          263
+        ],
+        "sfm_points": 60,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.6094288562815493,
+        "q25_overlap": 0.3876798876798877,
+        "median_overlap_reference": 0.6268398268398269,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          32,
+          85,
+          155,
+          250
+        ],
+        "target": [
+          5,
+          12,
+          23
+        ],
+        "sfm_points": 0,
+        "view_count": 4,
+        "pair_count": 6,
+        "zero_pair_count": 6,
+        "zero_pair_ratio": 1.0,
+        "mean_overlap": 0.0,
+        "q25_overlap": 0.0,
+        "median_overlap_reference": 0.0,
+        "has_isolated_view": true
+      }
+    },
+    "8": {
+      "high": {
+        "context": [
+          239,
+          242,
+          250,
+          254,
+          257,
+          260,
+          264,
+          270
+        ],
+        "target": [
+          155,
+          192,
+          262
+        ],
+        "sfm_points": 290,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.34881629495085,
+        "q25_overlap": 0.1759765345542996,
+        "median_overlap_reference": 0.33084728845514033,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          12,
+          32,
+          54,
+          85,
+          114,
+          155,
+          194,
+          250
+        ],
+        "target": [
+          5,
+          13,
+          23
+        ],
+        "sfm_points": 37,
+        "view_count": 8,
+        "pair_count": 28,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.2846159806126402,
+        "q25_overlap": 0.08333333333333333,
+        "median_overlap_reference": 0.125,
+        "has_isolated_view": false
+      }
+    },
+    "12": {
+      "high": {
+        "context": [
+          225,
+          229,
+          233,
+          238,
+          241,
+          249,
+          255,
+          257,
+          259,
+          264,
+          267,
+          272
+        ],
+        "target": [
+          153,
+          190,
+          262
+        ],
+        "sfm_points": 761,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.308569857271962,
+        "q25_overlap": 0.1651639885953815,
+        "median_overlap_reference": 0.30563649608450194,
+        "has_isolated_view": false
+      },
+      "low": {
+        "context": [
+          12,
+          21,
+          32,
+          54,
+          85,
+          98,
+          114,
+          155,
+          194,
+          228,
+          250,
+          285
+        ],
+        "target": [
+          4,
+          13,
+          24
+        ],
+        "sfm_points": 181,
+        "view_count": 12,
+        "pair_count": 66,
+        "zero_pair_count": 0,
+        "zero_pair_ratio": 0.0,
+        "mean_overlap": 0.1971495668939941,
+        "q25_overlap": 0.027690802348336593,
+        "median_overlap_reference": 0.06961259079903148,
+        "has_isolated_view": false
+      }
+    }
+  }
+}
