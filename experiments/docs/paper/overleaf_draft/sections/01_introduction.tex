@@ -1,0 +1,32 @@
+% =====================================================================
+\section{서론}
+\label{sec:intro}
+% =====================================================================
+
+Sparse-view(입력 사진이 매우 적은) 조건에서 3D 장면을 재구성하는 문제는 서로 다른 두 계열의 접근으로 발전해 왔다. 첫 번째는 3D Gaussian Splatting~\cite{kerbl20233d}으로 대표되는 \emph{per-scene optimization} 계열로, 각 장면마다 처음부터 반복적인 경사하강법으로 Gaussian 파라미터를 학습한다. 사진이 충분하고 시간이 허락되면 매우 높은 품질의 재구성을 얻을 수 있지만, sparse-view 조건에서는 초기화가 빈약하고 관측이 부족해 densification이 불안정해지는 것으로 알려져 있다.
+
+두 번째는 pixelSplat~\cite{charatan2024pixelsplat}, MVSplat~\cite{chen2024mvsplat}, DepthSplat~\cite{xu2025depthsplat} 등으로 대표되는 \emph{feed-forward} 계열로, 사전 학습된 신경망이 입력 사진에서 단일 forward pass로 3D Gaussian을 직접 예측한다. 추론이 매우 빠르고 sparse-view에 강인하지만, 학습 시 본 입력 분포(view 수, 데이터셋)를 벗어나면 성능이 급격히 저하되는 한계가 있다.
+
+두 계열의 경계 지대는 최근 활발한 연구 대상이다. 예를 들어 feed-forward 예측을 초기값으로 삼아 짧은 per-scene 정제를 수행하는 predict-then-refine 접근~\cite{liu2026diff3r, li2026foresplat}이 제안되었고, sparse 조건의 test-time optimization이 입력 view에 과적합하며 기하를 훼손하는 현상도 보고되었다~\cite{liu2026diff3r}. 그러나 이러한 연구들은 경계의 \emph{존재}를 전제하고 이를 활용하는 방법을 제안할 뿐, \textbf{경계가 어디에 있으며 무엇이 그것을 결정하는지}를 동일 프로토콜 아래에서 규명하지는 않는다.
+
+기존 문헌의 비교가 갖는 구조적 한계는 세 가지다. 대부분의 연구가 (1) 자신의 방법이 유리한 소수의 벤치마크에서만 비교하고, (2) 계산 시간을 독립 축으로 다루지 않으며, (3) view 수와 view 간 겹침(overlap)을 분리하지 않은 채 ``sparse-view 성능''을 단일 스칼라로 보고한다.
+
+특히 (3)은 심각한 교란을 낳는다. 같은 view 수라도 카메라 배치에 따라 co-visibility가 크게 달라지며, 저겹침 조건에서 pixel 기반 feed-forward 표현의 기하 품질이 급락한다는 보고~\cite{wei2025omniscene}도 데이터셋 교체를 통해 overlap을 변화시켰기 때문에 overlap과 domain이 분리되어 있지 않다.
+
+본 논문은 새로운 방법을 제안하는 대신, 다음 연구 질문에 답하는 \textbf{실증 연구(empirical study), 통제 분석(controlled analysis), 실패 분석(failure analysis)}을 수행한다.
+
+\begin{quote}
+\emph{Sparse-view 3D 재구성에서 입력 view 수, view overlap, 계산 시간 예산에 따라 feed-forward와 per-scene optimization의 품질--효율 우위는 어떻게 변화하며, 그 역전 경계는 무엇이 결정하는가?}
+\end{quote}
+
+핵심 메시지는 \textbf{보편적으로 우월한 패러다임은 없으며, 실용적 선택은 조건의 함수}라는 것이다.
+
+논문의 서사는 다음 사슬을 따른다. (i) Regime Map으로 \emph{어디서} 우위가 갈리는지 지도를 그리고, (ii) 기하 불확실성 프록시와 최적화 동역학으로 \emph{왜} 갈리는지에 대한 증거를 제시하고, (iii) 동일 초기값 refinement on/off 통제 실험과 depth noise 개입으로 그 인과관계를 \emph{검증}하며, (iv) 마지막으로 조건별 \emph{선택 가이드라인}을 제시한다.
+
+\paragraph{기여} 본 논문의 기여는 다음과 같다.
+\begin{itemize}
+  \item \textbf{품질--시간 Regime Map}: view 수 $\times$ overlap $\times$ 계산 예산 격자에서 대표 시스템들의 실용적 승패 영역과 품질--시간 Pareto frontier를 제시한다(\S\ref{sec:results}).
+  \item \textbf{동일 초기값 Refinement On/Off 통제 실험}: feed-forward 출력을 고정한 뒤 표준 3DGS refinement의 순효과만을 분리해 측정한다(\S\ref{sec:c1b}).
+  \item \textbf{기하 불확실성--렌더링 실패 연결 분석}: 카메라 기하학에 기반한 불확실도 프록시, densification gradient의 관측 부족(observation starvation) 메커니즘, 통제된 depth noise 개입을 통해 초기 geometry 오차가 렌더링 실패로 이어지는 경로를 분석한다(\S\ref{sec:failure}).
+  \item \textbf{실용 가이드라인}: 위 분석에서 파생되는 조건별 선택 규칙을 제시한다(\S\ref{sec:guideline}).
+\end{itemize}

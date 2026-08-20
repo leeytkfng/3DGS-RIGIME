@@ -223,9 +223,14 @@ def run(args: argparse.Namespace) -> None:
         from dl3dv_dataset import load_metadata, load_views
 
         target_shape = tuple(args.image_shape) if args.image_shape else None
-        overlap_summary = json.loads(Path(args.dl3dv_overlap_summary).read_text())
-        row = next(r for r in overlap_summary if r["scene"] == args.dl3dv_scene_key and r["view_count"] == args.view_count)
-        train_ids, test_ids = row["context_indices"], row["target_indices"]
+        if args.overlap_level:
+            overlap_data = json.loads(Path(args.dl3dv_overlap_candidates_index).read_text())
+            ov_entry = overlap_data[args.dl3dv_scene_key][str(args.view_count)][args.overlap_level]
+            train_ids, test_ids = ov_entry["context"], ov_entry["target"]
+        else:
+            overlap_summary = json.loads(Path(args.dl3dv_overlap_summary).read_text())
+            row = next(r for r in overlap_summary if r["scene"] == args.dl3dv_scene_key and r["view_count"] == args.view_count)
+            train_ids, test_ids = row["context_indices"], row["target_indices"]
         scene_dir = Path("/data/Re-feem/datasets/dl3dv") / args.dl3dv_scene_key
         meta = load_metadata(scene_dir)
         train_views = load_views(scene_dir, meta, train_ids, target_shape=target_shape)
@@ -431,7 +436,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--dl3dv-overlap-summary",
         default="experiments/outputs/dl3dv_overlap_v2/all_scenes_summary.json",
-        help="dataset=dl3dv일 때만 사용. generate_dl3dv_view_overlap.py(v2) 출력.",
+        help="dataset=dl3dv일 때만 사용, --overlap-level 미지정 시. generate_dl3dv_view_overlap.py(v2) 출력.",
+    )
+    parser.add_argument(
+        "--dl3dv-overlap-candidates-index",
+        default="experiments/outputs/dl3dv_overlap_lowhigh/dl3dv_overlap_candidates.json",
+        help="dataset=dl3dv이고 --overlap-level 지정 시 사용. generate_dl3dv_overlap_candidates.py 출력.",
     )
     parser.add_argument("--dl3dv-scene-key", default=None, help="dataset=dl3dv일 때 필요.")
     parser.add_argument(

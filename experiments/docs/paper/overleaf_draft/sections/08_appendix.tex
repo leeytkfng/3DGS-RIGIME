@@ -1,0 +1,156 @@
+% =====================================================================
+\section*{부록 A. 조기 종료 보조 실험}
+\label{sec:appendix-early-stop}
+
+\todo{view 수 $\in \{8, 12\}$ 조건의 held-out validation 기반 $t_{95}$ 분석. $t_{95}$에서의 test PSNR과 예산 종료 시점 test PSNR의 차이를 표로 보고한다. 프로토콜 정의는 \S\ref{sec:early-stop}(``조기 종료 규칙'') 참조.}
+
+\section*{부록 B. Oracle peak 분석}
+\label{sec:appendix-oracle-peak}
+
+메인 비교(\S\ref{sec:budget-selection})는 예산 종료 시점(300\,s) 결과만 사용하고 test PSNR이 가장 높은 체크포인트를 사후 선택하지 않는다 — 이는 test leakage이기 때문이다. 이 부록은 그 최고점(oracle peak)이 예산 종료 시점 결과와 실제로 얼마나 차이 나는지를 참고용으로만 보고한다(C1-a 궤적 로그 재분석, 재실행 없음).
+
+\begin{table*}[t]
+\centering
+\caption{Oracle peak gap = (최고 test PSNR $-$ 300\,s 시점 test PSNR), scene cluster bootstrap 평균. 괄호는 정점이 300\,s 이전에 나온 비율(early peak rate).}
+\label{tab:oracle-peak}
+\small
+\begin{tabular}{@{}l cccc@{}}
+\toprule
+View 수 & RE10K V3DGS & RE10K FSGS & DL3DV V3DGS & DL3DV FSGS \\
+\midrule
+2  & $+0.66$ (92\%) & $+0.83$ (92\%) & $+0.46$ (88\%) & $+0.78$ (86\%) \\
+4  & $+0.95$ (85\%) & $+0.47$ (83\%) & $+0.47$ (86\%) & $+0.50$ (86\%) \\
+8  & $+1.46$ (77\%) & $+0.49$ (53\%) & $+1.09$ (68\%) & $+0.18$ (38\%) \\
+12 & $+1.94$ (63\%) & $+0.14$ (18\%) & $+1.45$ (66\%) & $+0.05$ (6\%) \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+두 방법의 패턴이 반대 방향이다. \textbf{Vanilla3DGS는 view 수가 늘수록 gap이 오히려 커진다}(RE10K $+0.66\,\mathrm{dB} \to +1.94\,\mathrm{dB}$, 95\% CI $[1.08, 2.98]$; DL3DV $+0.46 \to +1.45\,\mathrm{dB}$, CI $[0.78, 2.28]$) — early peak rate는 63--66\%로 여전히 낮지 않은데도 격차 자체는 더 벌어진다. 이는 \S\ref{sec:results}에서 관찰한 12-view Vanilla3DGS의 비단조적 궤적(60\,s 하락 후 300\,s 회복)과 같은 현상의 다른 단면으로 읽힌다 — 300\,s 지점이 회복된 값이라 해도 그 이전 어딘가의 정점보다는 여전히 낮다는 뜻이다.
+
+반대로 \textbf{FSGS는 view 수가 늘수록 gap과 early peak rate가 함께 0에 가까워진다}(RE10K $12$-view: gap $+0.14\,\mathrm{dB}$, early peak $18.3\%$; DL3DV $12$-view: gap $+0.05\,\mathrm{dB}$, early peak $6\%$) — \S\ref{sec:h2-verification}의 H2 검증에서 이미 본 조기 정점 비율 감소(FSGS $2$-view $91.7\% \to 12$-view $18.3\%$)를 그대로 재확인하며, 300\,s 시점이 사실상 정점 자체라 test leakage 우려가 가장 적은 지점이라는 뜻이다. 즉 예산 종료 시점만 쓰는 본 논문의 정책(\S\ref{sec:budget-selection})이 FSGS 고-view 조건에서는 거의 손실이 없는 반면, Vanilla3DGS 고-view 조건에서는 실제로 최대 2\,dB 가까운 보수적 하한을 보고하고 있는 셈이다.
+
+% =====================================================================
+\bibliographystyle{plain}
+\begin{thebibliography}{99}
+
+\bibitem{kerbl20233d}
+Bernhard Kerbl, Georgios Kopanas, Thomas Leimk\"uhler, and George Drettakis.
+\newblock 3D Gaussian Splatting for Real-Time Radiance Field Rendering.
+\newblock \emph{ACM Transactions on Graphics (Proc. SIGGRAPH)}, 42(4), 2023.
+
+\bibitem{charatan2024pixelsplat}
+David Charatan, Sizhe Lester Li, Andrea Tagliasacchi, and Vincent Sitzmann.
+\newblock pixelSplat: 3D Gaussian Splats from Image Pairs for Scalable Generalizable 3D Reconstruction.
+\newblock In \emph{Proc. IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 19457--19467, 2024.
+
+\bibitem{chen2024mvsplat}
+Yuedong Chen, Haofei Xu, Chuanxia Zheng, Bohan Zhuang, Marc Pollefeys, Andreas Geiger, Tat-Jen Cham, and Jianfei Cai.
+\newblock MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images.
+\newblock In \emph{Proc. European Conference on Computer Vision (ECCV)}, 2024.
+
+\bibitem{xu2025depthsplat}
+Haofei Xu, Songyou Peng, Fangjinhua Wang, Hermann Blum, Daniel Barath, Andreas Geiger, and Marc Pollefeys.
+\newblock DepthSplat: Connecting Gaussian Splatting and Depth.
+\newblock In \emph{Proc. IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2025.
+
+\bibitem{zhu2024fsgs}
+Zehao Zhu, Zhiwen Fan, Yifan Jiang, and Zhangyang Wang.
+\newblock FSGS: Real-Time Few-Shot View Synthesis using Gaussian Splatting.
+\newblock In \emph{Proc. European Conference on Computer Vision (ECCV)}, 2024.
+
+\bibitem{chen2025splatformer}
+Yutong Chen, Marko Mihajlovic, Xiyi Chen, Yiming Wang, Sergey Prokudin, and Siyu Tang.
+\newblock SplatFormer: Point Transformer for Robust 3D Gaussian Splatting.
+\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2025.
+
+\bibitem{wei2025omniscene}
+Dongxu Wei, Zhiqi Li, and Peidong Liu.
+\newblock Omni-Scene: Omni-Gaussian Representation for Ego-Centric Sparse-View Scene Reconstruction.
+\newblock In \emph{Proc. IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2025.
+
+\bibitem{liu2026diff3r}
+Yueh-Cheng Liu, Jozef Hladk\'{y}, Matthias Nie{\ss}ner, and Angela Dai.
+\newblock Diff3R: Feed-forward 3D Gaussian Splatting with Uncertainty-aware Differentiable Optimization.
+\newblock \emph{arXiv preprint arXiv:2604.01030}, 2026.
+% 2026-08-13 웹서치로 저자/venue 확인 완료(arXiv 프리프린트가 맞음). 이름 오타(Hlad\'{y}->Hladk\'{y}) 수정.
+
+\bibitem{li2026foresplat}
+Yuke Li, Weihang Liu, Cheng Zhang, Yuefeng Zhang, Jiadi Cui, Zixuan Wang, Junran Ding, Haoyu Wu, Yujiao Shi, Jingyi Yu, and Xin Lou.
+\newblock ForeSplat: Optimization-Aware Foresight for Feed-Forward 3D Gaussian Splatting.
+\newblock \emph{arXiv preprint arXiv:2605.22020}, 2026.
+% 2026-08-13 웹서치로 전체 11인 저자 목록 확인 완료(arXiv abstract 페이지 직접 대조).
+
+\bibitem{xu2026resplat}
+Haofei Xu, Daniel Barath, Andreas Geiger, and Marc Pollefeys.
+\newblock ReSplat: Learning Recurrent Gaussian Splatting.
+\newblock \emph{arXiv preprint arXiv:2510.08575}, 2025.
+% 게재처를 ECCV 2026으로 적었던 것을 arXiv preprint로 수정(2026-08-19) — 아래 확인 각주가
+% 명시하듯 실제로 대조한 것은 arXiv abstract뿐이었고 ECCV 게재 여부는 확인된 적이 없었다.
+% arXiv ID(2510.xxxxx)는 2025년 10월 제출을 뜻하므로 연도도 2025로 정정.
+% 2026-08-14 웹서치+arXiv abstract 직접 대조로 저자 4인 확인(arXiv:2510.08575). 1저자가
+% DepthSplat 1저자와 동일 인물. abstract 수준에서는 "per-scene optimization이 sparse-view에서
+% 실패한다"를 직접 비교하기보다 "feed-forward를 반복적으로 개선"하는 접근으로 스스로를 위치시킴
+% — 본문 서술(위 관련연구 절)도 이 구분을 정확히 반영해서 썼음(과장 없이).
+
+\bibitem{yao2018mvsnet}
+Yao Yao, Zixin Luo, Shiwei Li, Tian Fang, and Long Quan.
+\newblock MVSNet: Depth Inference for Unstructured Multi-view Stereo.
+\newblock In \emph{Proc. European Conference on Computer Vision (ECCV)}, 2018.
+
+\bibitem{schoenberger2016sfm}
+Johannes L. Sch\"onberger and Jan-Michael Frahm.
+\newblock Structure-from-Motion Revisited.
+\newblock In \emph{Proc. IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2016.
+
+\bibitem{ye2024gsplat}
+Vickie Ye, Ruilong Li, Justin Kerr, Matias Turkulainen, Brent Yi, Zhuoyang Pan, Otto Seiskari, Jianbo Ye, Jeffrey Hu, Matthew Tancik, and Angjoo Kanazawa.
+\newblock gsplat: An Open-Source Library for Gaussian Splatting.
+\newblock \emph{arXiv preprint arXiv:2409.06765}, 2024.
+
+\bibitem{zhou2018stereo}
+Tinghui Zhou, Richard Tucker, John Flynn, Graham Fyffe, and Noah Snavely.
+\newblock Stereo Magnification: Learning View Synthesis using Multiplane Images.
+\newblock \emph{ACM Transactions on Graphics (Proc. SIGGRAPH)}, 37(4), 2018.
+
+\bibitem{ling2024dl3dv}
+Lu Ling, Yichen Sheng, Zhi Tu, Wentian Zhao, Cheng Xin, Kun Wan, Lantao Yu, Qianyu Guo, Zixun Yu, Yawen Lu, et al.
+\newblock DL3DV-10K: A Large-Scale Scene Dataset for Deep Learning-based 3D Vision.
+\newblock In \emph{Proc. IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 22160--22169, 2024.
+
+\bibitem{jensen2014dtu}
+Rasmus Jensen, Anders Dahl, George Vogiatzis, Engin Tola, and Henrik Aan{\ae}s.
+\newblock Large Scale Multi-view Stereopsis Evaluation.
+\newblock In \emph{Proc. IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 406--413, 2014.
+
+\bibitem{ranftl2022midas}
+Ren\'{e} Ranftl, Katrin Lasinger, David Hafner, Konrad Schindler, and Vladlen Koltun.
+\newblock Towards Robust Monocular Depth Estimation: Mixing Datasets for Zero-shot Cross-dataset Transfer.
+\newblock \emph{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 44(3), 2022.
+
+\bibitem{hartley2003multiple}
+Richard Hartley and Andrew Zisserman.
+\newblock \emph{Multiple View Geometry in Computer Vision}.
+\newblock Cambridge University Press, 2nd edition, 2003.
+
+\bibitem{wang2004ssim}
+Zhou Wang, Alan C. Bovik, Hamid R. Sheikh, and Eero P. Simoncelli.
+\newblock Image Quality Assessment: From Error Visibility to Structural Similarity.
+\newblock \emph{IEEE Transactions on Image Processing}, 13(4):600--612, 2004.
+
+\bibitem{zhang2018lpips}
+Richard Zhang, Phillip Isola, Alexei A. Efros, Eli Shechtman, and Oliver Wang.
+\newblock The Unreasonable Effectiveness of Deep Features as a Perceptual Metric.
+\newblock In \emph{Proc. IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 586--595, 2018.
+
+\bibitem{holm1979simple}
+Sture Holm.
+\newblock A Simple Sequentially Rejective Multiple Test Procedure.
+\newblock \emph{Scandinavian Journal of Statistics}, 6(2):65--70, 1979.
+
+\bibitem{efron1993bootstrap}
+Bradley Efron and Robert J. Tibshirani.
+\newblock \emph{An Introduction to the Bootstrap}.
+\newblock Chapman \& Hall/CRC, 1993.
+
+\end{thebibliography}
