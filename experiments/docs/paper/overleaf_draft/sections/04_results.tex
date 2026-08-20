@@ -5,43 +5,14 @@
 
 본 절의 RE10K 결과는 C1-a 본 실험(30-scene $\times$ view 수 $\times$ 예산 $\times$ \{MVSplat, Vanilla3DGS $\times$ 2 seed, FSGS $\times$ 2 seed\}, 2026-08-15 완료, 총 2400개 결과 셀 전량 확보)의 view 수 $\times$ 예산 축 전체를 반영한다.
 
-overlap 축은 co-visibility selector 검증만 끝난 상태로 별도 실행이 필요하다(\S\ref{sec:overlap}). 보조 데이터셋 DL3DV는 \S\ref{sec:c1b}(2/4-view 부분 스케일업)와 \S\ref{sec:resplat-exploratory}(25-scene 전체, ReSplat 탐색적 비교)에 포함되어 있으나, view 수 $\times$ 예산 축 전체를 도는 C1-a급 본 실험(RE10K와 동급 규모)은 아직 없다 — 이 절의 Regime Map(그림~\ref{fig:regime-heatmap}, 표~\ref{tab:regime})은 RE10K 결과만 다룬다.
+overlap 축은 co-visibility selector 검증만 끝난 상태로 별도 실행이 필요하다(\S\ref{sec:overlap}). 보조 데이터셋 DL3DV는 \S\ref{sec:c1b}(2/4-view 부분 스케일업)와 \S\ref{sec:resplat-exploratory}(25-scene 전체, ReSplat 탐색적 비교)에 포함되어 있으나, view 수 $\times$ 예산 축 전체를 도는 C1-a급 본 실험(RE10K와 동급 규모)은 아직 없다 — 이 절의 Regime Map(그림~\ref{fig:regime-heatmap})은 RE10K 결과만 다룬다.
 
 \subsection{품질--시간 Regime Map}
-
-\begin{table}[h]
-\centering
-\caption{View 수 $\times$ 계산 예산별 승패 판정(RE10K 30-scene, 식~\eqref{eq:wtl}의 $\tau$ 적용). FF=MVSplat 우세, OPT=해당 optimization 방법 우세, Tie=$|\Delta| \le \tau$.}
-\label{tab:regime}
-\begin{tabular}{@{}l cccc@{}}
-\toprule
-View 수 & 1\,s & 10\,s & 60\,s & 300\,s \\
-\midrule
-\multicolumn{5}{@{}l}{\textit{Vanilla3DGS vs.\ MVSplat}} \\
-2  & FF & FF & FF & FF \\
-4  & FF & FF & FF & FF \\
-8  & FF & FF & FF & FF \\
-12 & FF & OPT & FF & OPT \\
-\midrule
-\multicolumn{5}{@{}l}{\textit{FSGS vs.\ MVSplat}} \\
-2  & FF & FF & FF & FF \\
-4  & FF & FF & FF & FF \\
-8  & FF & Tie & OPT & OPT \\
-12 & FF & OPT & OPT & OPT \\
-\midrule
-\multicolumn{5}{@{}l}{\textit{FSGS vs.\ Vanilla3DGS}} \\
-2  & V3DGS & V3DGS & V3DGS & V3DGS \\
-4  & V3DGS & V3DGS & FSGS & Tie \\
-8  & Tie & FSGS & FSGS & FSGS \\
-12 & Tie & FSGS & FSGS & FSGS \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/regime_map.png}
-\caption{품질--시간 Regime Map(RE10K 30-scene). 세 방법 쌍(Vanilla3DGS-vs-MVSplat, FSGS-vs-MVSplat, FSGS-vs-Vanilla3DGS) 각각에 대해 $\tau$ 적용 승패 판정(식~\eqref{eq:wtl})을 view 수 $\times$ 예산 격자로 표시. 표~\ref{tab:regime}과 동일한 데이터의 시각화.}
+\caption{품질--시간 Regime Map(RE10K 30-scene). 세 방법 쌍(V3DGS-vs-MVSplat, FSGS-vs-MVSplat, FSGS-vs-V3DGS) 각각에 대해 $\tau$ 적용 승패 판정(식~\eqref{eq:wtl})을 view 수 $\times$ 예산 격자로 표시(A/B는 각 패널 제목의 방법, Tie는 $|\Delta|\le\tau$).}
 \label{fig:regime-heatmap}
 \end{figure*}
 
@@ -56,7 +27,7 @@ View 수 & 1\,s & 10\,s & 60\,s & 300\,s \\
 
 \subsection{장면별 win rate와 신뢰구간}
 
-표~\ref{tab:regime}의 판정 중 두 지점은 신뢰구간까지 함께 보면 해석이 갈린다.
+그림~\ref{fig:regime-heatmap}의 판정 중 두 지점은 신뢰구간까지 함께 보면 해석이 갈린다.
 
 첫째, FSGS-vs-MVSplat의 8-view 역전은 예산이 늘수록 명확해진다. 60\,s에서 FSGS $20.85$\,dB(95\% CI $[17.48, 24.32]$) 대 MVSplat $18.71$\,dB($[17.79, 19.60]$), 300\,s에서는 FSGS $21.00$\,dB($[17.48, 24.64]$) 대 MVSplat $18.71$\,dB로, 두 CI가 겹치기는 하나 $\Delta$가 $\tau=1.4$\,dB를 넘게 유지되며 scene 수를 30개로 채운 뒤에도 방향이 뒤집히지 않았다(30-scene 이전 부분 데이터에서는 이 경계가 예산에 따라 판정이 흔들렸던 지점이었다).
 
@@ -145,17 +116,17 @@ View 수 & COLMAP & FF warm-start & Gap (95\% CI) \\
 \toprule
 데이터셋 & 학습 view 분포 & 역전 지점 \\
 \midrule
-RE10K & 고정 2-view & 8-view, 60\,s부터(표~\ref{tab:regime}) \\
+RE10K & 고정 2-view & 8-view, 60\,s부터(그림~\ref{fig:regime-heatmap}) \\
 DL3DV & 2--6-view & 8-view와 12-view 사이(표~\ref{tab:resplat-exploratory}) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-표~\ref{tab:regime}(FSGS vs.\ MVSplat)에서 역전은 8-view/60\,s에서 시작된다. 표~\ref{tab:resplat-exploratory}(budget=300\,s 단일 지점)에서는 8-view에 DepthSplat($25.79$)이 FSGS($24.97$)를 아직 근소하게 앞서고, 12-view에는 FSGS($30.07$)가 DepthSplat($25.58$)을 크게 앞선다 — 즉 역전이 8-view와 12-view 사이 어딘가로 밀린다.
+그림~\ref{fig:regime-heatmap}(FSGS vs.\ MVSplat 패널)에서 역전은 8-view/60\,s에서 시작된다. 표~\ref{tab:resplat-exploratory}(budget=300\,s 단일 지점)에서는 8-view에 DepthSplat($25.79$)이 FSGS($24.97$)를 아직 근소하게 앞서고, 12-view에는 FSGS($30.07$)가 DepthSplat($25.58$)을 크게 앞선다 — 즉 역전이 8-view와 12-view 사이 어딘가로 밀린다.
 
 \textbf{학습 분포가 더 넓은 DepthSplat 쪽이 역전 지점도 더 바깥(높은 view 수)으로 밀렸다} — 분포 이탈 가설이 예측하는 방향과 일치한다: 학습 분포를 벗어나는 시점이 늦을수록 feed-forward가 우위를 더 오래 유지한다.
 
-\chk{\textbf{한계 — 완전히 통제된 비교는 아니다.} (1) 데이터셋이 다르다(RE10K 대 DL3DV) — 모델 학습 view 분포 차이와 데이터셋 자체의 난이도 차이가 얽혀 있다. (2) 표~\ref{tab:regime}는 view $\times$ 예산 전체 격자에서 역전 지점을 잡지만, 표~\ref{tab:resplat-exploratory}는 budget=300\,s 단일 지점만 있어 DL3DV의 역전이 정확히 어느 예산부터 시작되는지는 모른다(DL3DV C1-a급 본 실험이 아직 없다는 \S\ref{sec:results} 서두의 한계와 같은 원인). (3) FSGS 초기화가 두 경우 모두 sparse COLMAP(\S\ref{sec:protocol})이라는 점은 통제되어 있다. 완전한 통제 비교(동일 데이터셋에서 학습 분포만 다른 두 체크포인트)는 향후 과제로 남긴다 — 그럼에도 이 결과는 \S\ref{sec:c1b}에서 정보량 가설과 분포 이탈 가설이 ``같은 방향으로 얽혀 분리되지 않는다''고 한 것을 부분적으로 풀어준다: 분포 이탈 가설도 최소한 방향을 지지하는 독립적 증거가 있다는 뜻이다.}
+\chk{\textbf{한계 — 완전히 통제된 비교는 아니다.} (1) 데이터셋이 다르다(RE10K 대 DL3DV) — 모델 학습 view 분포 차이와 데이터셋 자체의 난이도 차이가 얽혀 있다. (2) 그림~\ref{fig:regime-heatmap}은 view $\times$ 예산 전체 격자에서 역전 지점을 잡지만, 표~\ref{tab:resplat-exploratory}는 budget=300\,s 단일 지점만 있어 DL3DV의 역전이 정확히 어느 예산부터 시작되는지는 모른다(DL3DV C1-a급 본 실험이 아직 없다는 \S\ref{sec:results} 서두의 한계와 같은 원인). (3) FSGS 초기화가 두 경우 모두 sparse COLMAP(\S\ref{sec:protocol})이라는 점은 통제되어 있다. 완전한 통제 비교(동일 데이터셋에서 학습 분포만 다른 두 체크포인트)는 향후 과제로 남긴다 — 그럼에도 이 결과는 \S\ref{sec:c1b}에서 정보량 가설과 분포 이탈 가설이 ``같은 방향으로 얽혀 분리되지 않는다''고 한 것을 부분적으로 풀어준다: 분포 이탈 가설도 최소한 방향을 지지하는 독립적 증거가 있다는 뜻이다.}
 
 \subsection{확장 비교: Recurrent Refinement (ReSplat)}
 \label{sec:resplat-exploratory}

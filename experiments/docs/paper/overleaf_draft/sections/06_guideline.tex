@@ -8,11 +8,11 @@
 \subsection{View 수 $\times$ 계산 예산 축 (확정)}
 \label{sec:guideline-view-budget}
 
-표~\ref{tab:regime}(RE10K 30-scene, C1-a 본 실험)의 승패 판정을 그대로 실무 규칙으로 옮기면 다음과 같다.
+그림~\ref{fig:regime-heatmap}(RE10K 30-scene, C1-a 본 실험)의 승패 판정을 그대로 실무 규칙으로 옮기면 다음과 같다.
 
 \begin{table}[h]
 \centering
-\caption{View 수 $\times$ 계산 예산에 따른 권장 방법론(표~\ref{tab:regime} 요약)}
+\caption{View 수 $\times$ 계산 예산에 따른 권장 방법론(그림~\ref{fig:regime-heatmap} 요약)}
 \label{tab:guideline-view-budget}
 \small
 \begin{tabular}{@{}L{4.3cm} L{2.7cm}@{}}
@@ -28,7 +28,7 @@ view $= 12$, 예산 $\ge 10$\,s & Optimization(FSGS) \\
 \end{tabular}
 \end{table}
 
-표~\ref{tab:regime}(FSGS vs.\ MVSplat 블록)을 그대로 따른 것이다 — 8-view는 10\,s 지점이 Tie이고 60\,s부터 OPT로 굳어지는 반면, 12-view는 10\,s부터 이미 OPT다. 두 view 수를 하나의 ``$\ge 8$'' 규칙으로 뭉뚱그리면 8-view/10s를 실제보다 낙관적으로(OPT로) 권장하게 되므로 분리했다.
+그림~\ref{fig:regime-heatmap}(FSGS vs.\ MVSplat 패널)을 그대로 따른 것이다 — 8-view는 10\,s 지점이 Tie이고 60\,s부터 OPT로 굳어지는 반면, 12-view는 10\,s부터 이미 OPT다. 두 view 수를 하나의 ``$\ge 8$'' 규칙으로 뭉뚱그리면 8-view/10s를 실제보다 낙관적으로(OPT로) 권장하게 되므로 분리했다.
 
 \S\ref{sec:results}에서 확인했듯 12-view Vanilla3DGS는 예산에 대해 비단조적이므로(60\,s 지점에서 일시 하락), Vanilla3DGS를 예산 상한 없이 단일 지점에서만 평가해 배포할 경우 이 비단조성을 반드시 별도로 확인할 것 — FSGS는 같은 문제를 보이지 않아 8/12-view 고예산 구간의 기본 권장으로 FSGS를 우선한다.
 

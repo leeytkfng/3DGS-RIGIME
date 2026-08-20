@@ -31,6 +31,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 VIEW_COUNTS = [2, 4, 8, 12]
 BUDGETS = [1.0, 10.0, 60.0, 300.0]
 OPT_METHODS = ["Vanilla3DGS", "FSGS"]
+METHOD_ABBR = {"Vanilla3DGS": "V3DGS", "FSGS": "FSGS", "MVSplat": "MVSplat", "DepthSplat": "DepthSplat"}
 METHOD_COLOR = {"MVSplat": "#4C72B0", "DepthSplat": "#4C72B0", "Vanilla3DGS": "#DD8452", "FSGS": "#55A868"}
 METHOD_MARKER = {"MVSplat": "o", "DepthSplat": "o", "Vanilla3DGS": "s", "FSGS": "^"}
 
@@ -106,7 +107,7 @@ def plot_regime_map(rows: list[dict], out_dir: Path, progress_note: str, ff_meth
         ax.set_xticklabels([f"{int(b)}s" for b in BUDGETS])
         ax.set_yticks(range(len(VIEW_COUNTS)))
         ax.set_yticklabels([f"{v}-view" for v in VIEW_COUNTS])
-        ax.set_title(f"{method_a} (A) vs {method_b} (B)", fontsize=10)
+        ax.set_title(f"{METHOD_ABBR.get(method_a, method_a)} (A) vs {METHOD_ABBR.get(method_b, method_b)} (B)", fontsize=10)
         ax.set_xlabel("budget")
     axes[0].set_ylabel("view count")
 
@@ -119,8 +120,8 @@ def plot_regime_map(rows: list[dict], out_dir: Path, progress_note: str, ff_meth
     fig.legend(handles=handles, loc="lower center", ncol=4, frameon=False, bbox_to_anchor=(0.5, -0.05), fontsize=9)
     fig.suptitle(f"C1-a Regime Map ({dataset_label}, τ=0.5dB@2/4-view, 1.4dB@8/12-view) — {progress_note}", fontsize=10)
     fig.tight_layout(rect=(0, 0.05, 1, 0.95))
-    fig.savefig(out_dir / "regime_map.png", dpi=150)
-    fig.savefig(out_dir / "regime_map.pdf")
+    fig.savefig(out_dir / "regime_map.png", dpi=150, bbox_inches="tight")
+    fig.savefig(out_dir / "regime_map.pdf", bbox_inches="tight")
     plt.close(fig)
     print(f"wrote {out_dir / 'regime_map.png'}")
 
