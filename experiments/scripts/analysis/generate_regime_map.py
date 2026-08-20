@@ -52,18 +52,18 @@ def cell_mean(rows: list[dict], method: str, view_count: int, budget: float) -> 
     return scene_cluster_bootstrap_ci(subset, value_fn=lambda r: r["test_psnr"])
 
 
-def classify(delta: float, tau: float) -> str:
+def classify(delta: float, tau: float, method_a: str, method_b: str) -> str:
+    """method_a - method_b 부호로 판정. 반환: 실제 승자 method 이름, 'tie', 또는 'no_data'."""
     if np.isnan(delta):
         return "no_data"
     if delta > tau:
-        return "a_wins"
+        return method_a
     if delta < -tau:
-        return "b_wins"
+        return method_b
     return "tie"
 
 
 def build_regime_grid(rows: list[dict], method_a: str, method_b: str) -> np.ndarray:
-    """method_a - method_b 부호로 판정. 반환: view_count x budget 문자열 배열."""
     grid = np.empty((len(VIEW_COUNTS), len(BUDGETS)), dtype=object)
     for i, vc in enumerate(VIEW_COUNTS):
         tau = tau_for(vc)
@@ -74,17 +74,12 @@ def build_regime_grid(rows: list[dict], method_a: str, method_b: str) -> np.ndar
                 grid[i, j] = "no_data"
                 continue
             delta = stat_a["mean"] - stat_b["mean"]
-            grid[i, j] = classify(delta, tau)
+            grid[i, j] = classify(delta, tau, method_a, method_b)
     return grid
 
 
-CLASS_COLOR = {
-    "a_wins": "#4C72B0",
-    "b_wins": "#DD8452",
-    "tie": "#DDDDDD",
-    "no_data": "#FFFFFF",
-}
-CLASS_TEXT = {"a_wins": "A", "b_wins": "B", "tie": "="}
+TIE_COLOR = "#DDDDDD"
+NO_DATA_COLOR = "#FFFFFF"
 
 
 def plot_regime_map(rows: list[dict], out_dir: Path, progress_note: str, ff_method: str, dataset_label: str) -> None:
@@ -95,29 +90,44 @@ def plot_regime_map(rows: list[dict], out_dir: Path, progress_note: str, ff_meth
         color_grid = np.zeros((len(VIEW_COUNTS), len(BUDGETS), 3))
         for i in range(len(VIEW_COUNTS)):
             for j in range(len(BUDGETS)):
-                hexcolor = CLASS_COLOR[grid[i, j]]
+                winner = grid[i, j]
+                if winner == "tie":
+                    hexcolor = TIE_COLOR
+                elif winner == "no_data":
+                    hexcolor = NO_DATA_COLOR
+                else:
+                    hexcolor = METHOD_COLOR[winner]
                 color_grid[i, j] = matplotlib.colors.to_rgb(hexcolor)
         ax.imshow(color_grid, aspect="auto")
         for i in range(len(VIEW_COUNTS)):
             for j in range(len(BUDGETS)):
-                label = CLASS_TEXT.get(grid[i, j], "")
+                winner = grid[i, j]
+                if winner == "tie":
+                    label, textcolor = "=", "black"
+                elif winner == "no_data":
+                    label, textcolor = "", "black"
+                else:
+                    label, textcolor = METHOD_ABBR.get(winner, winner), "white"
                 if label:
-                    ax.text(j, i, label, ha="center", va="center", fontsize=10, color="black")
+                    ax.text(j, i, label, ha="center", va="center", fontsize=9, color=textcolor,
+                             fontweight="bold")
         ax.set_xticks(range(len(BUDGETS)))
         ax.set_xticklabels([f"{int(b)}s" for b in BUDGETS])
         ax.set_yticks(range(len(VIEW_COUNTS)))
         ax.set_yticklabels([f"{v}-view" for v in VIEW_COUNTS])
-        ax.set_title(f"{METHOD_ABBR.get(method_a, method_a)} (A) vs {METHOD_ABBR.get(method_b, method_b)} (B)", fontsize=10)
+        ax.set_title(f"{METHOD_ABBR.get(method_a, method_a)} vs {METHOD_ABBR.get(method_b, method_b)}", fontsize=10)
         ax.set_xlabel("budget")
     axes[0].set_ylabel("view count")
 
+    legend_methods = [ff_method] + OPT_METHODS
     handles = [
-        plt.Rectangle((0, 0), 1, 1, color=CLASS_COLOR["a_wins"], label="A wins"),
-        plt.Rectangle((0, 0), 1, 1, color=CLASS_COLOR["b_wins"], label="B wins"),
-        plt.Rectangle((0, 0), 1, 1, color=CLASS_COLOR["tie"], label="Tie"),
-        plt.Rectangle((0, 0), 1, 1, facecolor=CLASS_COLOR["no_data"], edgecolor="black", label="No data"),
+        plt.Rectangle((0, 0), 1, 1, color=METHOD_COLOR[m], label=METHOD_ABBR.get(m, m))
+        for m in legend_methods
     ]
-    fig.legend(handles=handles, loc="lower center", ncol=4, frameon=False, bbox_to_anchor=(0.5, -0.05), fontsize=9)
+    handles.append(plt.Rectangle((0, 0), 1, 1, color=TIE_COLOR, label="Tie"))
+    handles.append(plt.Rectangle((0, 0), 1, 1, facecolor=NO_DATA_COLOR, edgecolor="black", label="No data"))
+    fig.legend(handles=handles, loc="lower center", ncol=len(handles), frameon=False,
+               bbox_to_anchor=(0.5, -0.05), fontsize=9)
     fig.suptitle(f"C1-a Regime Map ({dataset_label}, τ=0.5dB@2/4-view, 1.4dB@8/12-view) — {progress_note}", fontsize=10)
     fig.tight_layout(rect=(0, 0.05, 1, 0.95))
     fig.savefig(out_dir / "regime_map.png", dpi=150, bbox_inches="tight")
