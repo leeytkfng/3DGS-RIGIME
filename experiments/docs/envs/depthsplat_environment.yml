@@ -50,7 +50,6 @@ dependencies:
       - cycler==0.12.1
       - dacite==1.8.1
       - decorator==4.4.2
-      - diff-gaussian-rasterization==0.0.0
       - docker-pycreds==0.4.0
       - e3nn==0.5.1
       - einops==0.8.0

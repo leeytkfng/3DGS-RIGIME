@@ -26,6 +26,56 @@ pip install -r mvsplat_pip_freeze.txt
 `*_environment.yml`은 `conda env export --no-builds`(machine-specific `prefix:` 줄 제거함)
 결과이고, `*_pip_freeze.txt`는 해당 환경 안에서 `pip list --format=freeze`한 백업본이다.
 
+## ⚠ `diff-gaussian-rasterization` / `simple-knn`은 위 export에 못 담았다 — 별도 빌드 필요
+
+이 둘은 PyPI에 없는 CUDA 확장 패키지라 `pip==0.0.0`으로만 잡히고(설치 시 리졸브 불가),
+`*_environment.yml`/`*_pip_freeze.txt`에서도 해당 줄을 지워놨다. 대신 실제 설치에 쓰인
+소스를 `direct_url.json`(pip가 VCS/로컬 설치 시 기록하는 정확한 origin) 기준으로 역추적
+완료 — 아래 명령으로 conda env 만든 뒤 이어서 각각 빌드하면 된다.
+
+### mvsplat, depthsplat (동일 소스)
+
+MVSplat/DepthSplat 계열은 pixelSplat 저자(dcharatan)의 수정판을 쓴다(원본 3DGS 저장소가
+아님 — antialiasing/depth-output/confidence 없는 더 단순한 버전). `requirements.txt`에
+git URL만 적혀 있고 커밋이 안 박혀 있어서, 실제 설치된 커밋을 `direct_url.json`으로
+확인했다:
+
+```bash
+conda activate mvsplat   # 또는 depthsplat — 먼저 torch부터 environment.yml로 설치돼 있어야 함
+pip install "git+https://github.com/dcharatan/diff-gaussian-rasterization-modified@1250c420ebb945f0dce9945086e22faab9157c92"
+```
+
+두 환경 모두 정확히 이 커밋(`1250c420ebb945f0dce9945086e22faab9157c92`)이었다. nvcc가 활성
+CUDA 12.1 툴체인을 가리키고 있어야 컴파일된다(torch는 mvsplat=2.1.2+cu121,
+depthsplat=2.4.0+cu121 — environment.yml에 이미 포함).
+
+### fsgs (FSGS 자체 confidence 변형 + simple-knn)
+
+FSGS는 `.gitmodules`에 원본 graphdeco-inria 저장소를 submodule로 선언해놓고 있지만,
+**실제 빌드에 쓰인 소스는 FSGS 저장소 자체에 일반 파일로 커밋되어 있는
+`submodules/diff-gaussian-rasterization-confidence`다**(별도 서브모듈 URL이 아니라
+FSGS 저장소를 클론하면 바로 딸려 옴 — 논문 §V.4/§Confidence 서술의 근거인 FSGS의
+`confidence` 필드가 바로 이 변형에서 나온다). `submodules/simple-knn`도 마찬가지로
+FSGS 저장소에 직접 커밋되어 있다.
+
+```bash
+conda activate fsgs
+git clone https://github.com/VITA-Group/FSGS.git /tmp/FSGS_src
+cd /tmp/FSGS_src && git checkout a536a64c5b366b1088be64eeadf9e791ca26897c
+pip install submodules/diff-gaussian-rasterization-confidence
+pip install submodules/simple-knn
+```
+
+(`git submodule update --init`은 필요 없다 — 이 두 디렉터리는 진짜 submodule이 아니라
+FSGS 저장소에 직접 커밋된 일반 디렉터리다. `.gitmodules`의 선언과 실제 내용이 다르다는
+점을 클론 직후 `git ls-tree HEAD submodules/`로 한 번 확인해보길 권한다.)
+
+### ps3
+
+`ps3` 환경은 `diff-gaussian-rasterization`을 아예 안 쓴다 — 이 프로젝트의 Vanilla3DGS는
+gsplat(`pip install gsplat`, PyPI에 있음, 논문 §III.3 "3DGS~\cite{kerbl20233d} ...
+gsplat~\cite{ye2024gsplat} 구현" 참고) 기반이라 위 빌드가 필요 없다.
+
 ## Git에 없던 입력 artifact (이번에 강제로 커밋함)
 
 `experiments/outputs/`는 통째로 `.gitignore` 대상(체크포인트/로그가 100MB 넘는 게 흔해서)
