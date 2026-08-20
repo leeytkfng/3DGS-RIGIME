@@ -72,7 +72,7 @@ RE10K에서 뚜렷한 단조 패턴이 나타난다. 2-view에서 $\Delta_{60\te
 
 DL3DV는 두 view 수 모두 CI가 0을 포함해($-$0.01/$+$0.10\,dB, $+$0.23/$+$0.15\,dB) RE10K만큼 뚜렷하지 않다. 특히 4-view에서 $\Delta_{10\text{s}}$($+0.23$)보다 $\Delta_{60\text{s}}$($+0.15$)가 오히려 작아지는 것은 방향은 미미하지만 \S\ref{sec:starvation}·\S\ref{sec:c2}에서 다루는 sparse-view TTO 과적합 위험과 같은 계열의 신호일 수 있다 — 다만 CI가 겹쳐 통계적으로 유의하지 않으므로 단정하지 않는다.
 
-\chk{RE10K C1-b는 C1-a의 30-scene 최종 풀이 아니라 이전 20-scene 풀로 실행됐고(gate 통과 17--20/20), DL3DV는 2/4-view만 있으며(25-scene 풀, gate 통과 24/25) 8/12-view는 아직 없다. 예산 스냅샷도 300\,s가 아직 없다(0/10/60\,s만). 최종본에서는 RE10K 30-scene·300\,s 스냅샷까지 재실행해 채우고, DL3DV 8/12-view도 추가할지 결정할 것 — 특히 DL3DV가 RE10K처럼 고-view에서 극적으로 커지는지 확인해야 위 정보량 가설 해석이 두 데이터셋 모두에서 성립하는지 알 수 있다.}
+\chk{RE10K C1-b는 C1-a의 30-scene 풀이 아니라 이전 20-scene 부분집합(gate 통과 17--20/20)이며, DL3DV는 2/4-view·budget 0/10/60\,s만 있고(gate 통과 24/25) 8/12-view·300\,s는 아직 없다 — DL3DV가 RE10K처럼 고-view에서 이득이 커지는지는 후속 확장 과제로 남긴다.}
 
 \subsection{동일 최적화 절차, 다른 초기화: FF warm-start 대 COLMAP sparse}
 \label{sec:init-comparison}
@@ -100,7 +100,7 @@ View 수 & COLMAP & FF warm-start & Gap (95\% CI) \\
 
 \paragraph{격차의 성격 — 균일한 페널티가 아니라 큰 분산} scene 단위로 뜯어보면(12-view 예시) 격차는 $-0.32$부터 $+29.10\,$dB까지 퍼져 있다. 이는 COLMAP triangulation 자체가 실패해 random-sphere fallback으로 떨어진 경우(20개 중 2개)만의 문제가 아니다 — triangulation이 정상적으로 성공한(\texttt{colmap\_sfm}) 18개 scene 중에서도 격차가 $-0.32$부터 $+29.10\,$dB까지 걸쳐 있다. 즉 COLMAP sparse init은 ``항상 나쁘다''가 아니라 \textbf{60\,s라는 짧은 예산 안에서 densification이 전체 장면을 다 커버할지 여부가 scene마다 크게 갈린다}는 뜻으로 읽힌다. FF warm-start는 애초에 view당 전체 픽셀을 덮는 dense한 Gaussian 집합(12-view 기준 786{,}432개)으로 시작하므로 이 ``커버리지 확보'' 단계 자체가 필요 없다 — \S\ref{sec:starvation}의 관측 부족(observation-starved) Gaussian 메커니즘과 같은 축의 설명이다: COLMAP sparse init은 소수의 seed point에서 densification으로 커버리지를 키워야 하고, 그 과정이 60\,s 안에 끝나는지가 scene마다 운에 가깝게 갈린다.
 
-\chk{\textbf{가이드라인(\S\ref{sec:guideline})에 대한 함의}: 이 결과는 ``feed-forward냐 optimization이냐''의 이분법이 아니라 ``COLMAP+optimization'' 대비 ``FF 출력을 초기값으로 쓴 optimization''이라는 세 번째 선택지가 실질적으로 우월할 수 있음을 시사한다 — predict-then-refine 계열(Diff3R, ForeSplat)이 정확히 이 구조를 택하는 이유의 실증이기도 하다. 다만 이는 §VI 가이드라인과 초록의 서술 전체를 재구성할 만큼 큰 함의라 이 절 하나만으로 결정하지 않는다 — 사용자와 상의해 가이드라인에 별도 축으로 넣을지, 결론/한계 절에서 향후 과제로만 언급할지 정할 것.}
+이는 ``feed-forward냐 optimization이냐''의 이분법이 아니라 ``COLMAP+optimization'' 대비 ``FF 출력을 초기값으로 쓴 optimization''이라는 세 번째 선택지가 실질적으로 우월할 수 있음을 시사하며, predict-then-refine 계열(Diff3R, ForeSplat)이 정확히 이 구조를 택하는 이유의 실증이기도 하다.
 
 \subsection{역전 지점 대조: MVSplat 대 DepthSplat}
 \label{sec:reversal-comparison}
@@ -126,7 +126,7 @@ DL3DV & 2--6-view & 8-view와 12-view 사이(표~\ref{tab:resplat-exploratory}) 
 
 \textbf{학습 분포가 더 넓은 DepthSplat 쪽이 역전 지점도 더 바깥(높은 view 수)으로 밀렸다} — 분포 이탈 가설이 예측하는 방향과 일치한다: 학습 분포를 벗어나는 시점이 늦을수록 feed-forward가 우위를 더 오래 유지한다.
 
-\chk{\textbf{한계 — 완전히 통제된 비교는 아니다.} (1) 데이터셋이 다르다(RE10K 대 DL3DV) — 모델 학습 view 분포 차이와 데이터셋 자체의 난이도 차이가 얽혀 있다. (2) 그림~\ref{fig:regime-heatmap}은 view $\times$ 예산 전체 격자에서 역전 지점을 잡지만, 표~\ref{tab:resplat-exploratory}는 budget=300\,s 단일 지점만 있어 DL3DV의 역전이 정확히 어느 예산부터 시작되는지는 모른다(DL3DV C1-a급 본 실험이 아직 없다는 \S\ref{sec:results} 서두의 한계와 같은 원인). (3) FSGS 초기화가 두 경우 모두 sparse COLMAP(\S\ref{sec:protocol})이라는 점은 통제되어 있다. 완전한 통제 비교(동일 데이터셋에서 학습 분포만 다른 두 체크포인트)는 향후 과제로 남긴다 — 그럼에도 이 결과는 \S\ref{sec:c1b}에서 정보량 가설과 분포 이탈 가설이 ``같은 방향으로 얽혀 분리되지 않는다''고 한 것을 부분적으로 풀어준다: 분포 이탈 가설도 최소한 방향을 지지하는 독립적 증거가 있다는 뜻이다.}
+\chk{\textbf{한계 — 완전히 통제된 비교는 아니다.} 데이터셋이 다르고(RE10K 대 DL3DV, 학습 분포 차이와 난이도 차이가 얽힘), DL3DV 쪽은 budget=300\,s 단일 지점만 있어 역전이 정확히 어느 예산부터 시작되는지 모른다(FSGS 초기화는 두 경우 모두 sparse COLMAP으로 통제됨). 그럼에도 이 결과는 \S\ref{sec:c1b}에서 두 가설이 ``같은 방향으로 얽혀 분리되지 않는다''고 한 것을 부분적으로 풀어준다 — 분포 이탈 가설도 최소한 방향을 지지하는 독립적 증거가 있다는 뜻이다.}
 
 \subsection{확장 비교: Recurrent Refinement (ReSplat)}
 \label{sec:resplat-exploratory}

@@ -127,7 +127,7 @@ def plot_regime_map(rows: list[dict], out_dir: Path, progress_note: str, ff_meth
 
 
 def plot_pareto_frontier(rows: list[dict], out_dir: Path, progress_note: str, ff_method: str, dataset_label: str) -> None:
-    fig, axes = plt.subplots(2, 2, figsize=(8.5, 7.0), sharex=False)
+    fig, axes = plt.subplots(1, 4, figsize=(13.0, 3.3), sharex=False)
 
     for ax, vc in zip(axes.flat, VIEW_COUNTS):
         for method in [ff_method] + OPT_METHODS:
@@ -150,11 +150,11 @@ def plot_pareto_frontier(rows: list[dict], out_dir: Path, progress_note: str, ff
         ax.set_xlabel("wall-clock budget (s)")
         ax.set_ylabel("test PSNR (dB)")
 
-    axes[0, 0].legend(frameon=False, fontsize=9)
+    axes[0].legend(frameon=False, fontsize=9)
     fig.suptitle(f"C1-a Quality-Time Pareto Frontier ({dataset_label}) — {progress_note}", fontsize=10)
-    fig.tight_layout(rect=(0, 0, 1, 0.96))
-    fig.savefig(out_dir / "pareto_frontier.png", dpi=150)
-    fig.savefig(out_dir / "pareto_frontier.pdf")
+    fig.tight_layout(rect=(0, 0, 1, 0.92))
+    fig.savefig(out_dir / "pareto_frontier.png", dpi=150, bbox_inches="tight")
+    fig.savefig(out_dir / "pareto_frontier.pdf", bbox_inches="tight")
     plt.close(fig)
     print(f"wrote {out_dir / 'pareto_frontier.png'}")
 
