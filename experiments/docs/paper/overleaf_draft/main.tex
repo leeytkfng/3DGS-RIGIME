@@ -3,11 +3,20 @@
 % Overleaf 설정: Menu > Compiler > XeLaTeX (또는 LuaLaTeX)
 % kotex이 한글을 처리하므로 pdfLaTeX로는 컴파일되지 않는다.
 %
+% 2단(two-column) 형식(2026-08-18 변경) — 페이지 중앙의 columnsep을 기준으로 좌우 단을
+% 나눈다. 단 하나로는 폭이 부족한 요소(다패널 정성적 비교 이미지, regime/pareto 그림, 넓은
+% 표)는 preamble/layout.tex의 columnsep 설정을 그대로 두고 figure*/table*(양단 spanning)로
+% 승격했다 — 아래 파일 구조 목록 참고.
+%
+% documentclass에는 twocolumn 옵션을 주지 않는다 — 주면 \maketitle/abstract까지 좁은 한
+% 단에 찌그러져 나온다. 대신 표준 \twocolumn[...] 트릭으로 제목/저자/초록만 전체 폭으로
+% 찍고 그 다음부터 본문이 2단으로 시작하게 한다(대부분의 학회 양식이 쓰는 방식과 동일).
+%
 % 파일 구조(2026-08-17 다중 파일로 재구성 — 내용은 그대로, 파일만 분리):
 %   preamble/packages.tex  — \usepackage 전부
 %   preamble/layout.tex    — 여백/줄간격/제목 간격
 %   preamble/commands.tex  — \todo, \chk 커스텀 명령
-%   sections/00_front.tex      — \maketitle + abstract
+%   sections/00_front.tex      — 제목/저자/소속(국영문 병기, 수동 조판) + 요약/Abstract/Keyword
 %   sections/01_introduction.tex
 %   sections/02_related_work.tex
 %   sections/03_protocol.tex
@@ -26,12 +35,19 @@
 % ============================================================================
 \title{Sparse-view 3D Gaussian Splatting에서\\
        Feed-forward와 장면별 최적화의 우위 조건 분석}
-\author{\todo{저자명 / 소속}}
+% 저자/소속 블록은 학회 양식(2단 저자명+소속 각주, 국영문 병기, 교신저자 표시)이 단순
+% \author{}로는 표현이 안 돼 00_front.tex에 직접 그린다 — \author{}는 PDF 메타데이터
+% 등 하위호환 용도로만 평문으로 남겨둔다.
+\author{이용수, 황인재, 서창희, 최종선}
 \date{\today\ \ (초안 — 실험 진행 중)}
 
 \begin{document}
 
+\twocolumn[
 \input{sections/00_front}
+\vspace{1em}
+]
+
 \input{sections/01_introduction}
 \input{sections/02_related_work}
 \input{sections/03_protocol}

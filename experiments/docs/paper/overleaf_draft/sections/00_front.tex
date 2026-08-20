@@ -1,11 +1,45 @@
-\maketitle
+% \maketitle 대신 제목/저자 블록을 직접 그린다 — \maketitle은 article.cls에서 \newpage를
+% 무조건 호출하는데, 이 파일은 main.tex의 \twocolumn[...] 인자 안에서 \input되므로(전체
+% 폭 제목/초록을 찍은 뒤 2단 본문으로 전환하는 표준 트릭, 2026-08-18) 그 안에서 \newpage가
+% 실행되면 페이지가 깨진다. 저자/소속도 학회 양식(국영문 병기, 상첨자 소속 번호, 교신저자
+% 표시)이 단순 \author{}로는 안 나와 아래처럼 직접 조판한다. \footnote는 \twocolumn[...]
+% 인자 안에서 위치가 어긋나는 경우가 있어(알려진 LaTeX 함정) 실제 각주 대신 같은 자리에
+% 작은 글자 블록으로 대체한다 — 물리적으로 페이지 최하단에 붙지는 않지만 시각적으로는
+% 동일하다.
+\begin{center}
+{\LARGE\bfseries Sparse-view 3D Gaussian Splatting에서\\
+Feed-forward와 장면별 최적화의 우위 조건 분석\par}
+\vspace{0.9em}
 
-\begin{abstract}
-사진 몇 장으로 3D 장면을 재구성하는 방법은 크게 두 갈래로 나뉜다. 하나는 미리 학습한 모델에 사진을 넣으면 즉시 3D Gaussian을 출력하는 feed-forward 방식이고, 다른 하나는 새 장면마다 그 장면 전용으로 반복 최적화하는 per-scene optimization 방식이다.
+{\normalsize 이용수\textsuperscript{1)}, 황인재\textsuperscript{1)}, 서창희\textsuperscript{1)}, 최종선\textsuperscript{2)‡}\par}
+\vspace{0.25em}
+{\small \textsuperscript{1)}동서울대학교 컴퓨터소프트웨어학과 학생
+\quad \textsuperscript{2)}동서울대학교 컴퓨터소프트웨어학과 교수\par}
+\vspace{0.6em}
 
-본 연구는 새로운 알고리즘을 제안하는 대신, \textbf{입력 view 수, view 간 겹침 정도(co-visibility overlap), 사용 가능한 계산 시간 예산}을 통제 축으로 삼아 대표 시스템들(feed-forward: MVSplat~\cite{chen2024mvsplat}, DepthSplat~\cite{xu2025depthsplat}; per-scene optimization: 3D Gaussian Splatting~\cite{kerbl20233d}, FSGS~\cite{zhu2024fsgs})의 실용적 우위 지도(regime map)를 그린다.
+{\normalsize Yongsu Lee\textsuperscript{1)}, Injae Hwang\textsuperscript{1)}, Changhee Seo\textsuperscript{1)}, Sunseon Choi\textsuperscript{2)‡}\par}
+\vspace{0.25em}
+{\small \textsuperscript{1)}Student, Department of Computer Software, Dong Seoul University\\
+\textsuperscript{2)}Professor, Department of Computer Software, Dong Seoul University\par}
+\end{center}
 
-동일한 feed-forward 초기값에서 표준 3DGS refinement를 켜고 끄는 통제 실험으로 최적화의 순효과를 분리하고, 카메라 기하학 기반 불확실도 분석과 통제된 depth noise 개입으로 우위가 갈리는 원인을 설명하며, 마지막으로 조건별 선택 가이드라인을 제시한다. \todo{실험 완료 후 핵심 수치 1--2개를 요약에 추가}
-\end{abstract}
+\vspace{0.6em}
+\noindent{\footnotesize
+‡ 교신저자(Corresponding Author): \chk{원본 학회 양식 PDF 자체에 모순이 있다 — 저자 목록에는 ‡ 표시가 최종선 교수 이름에 붙어 있는데, 하단 각주 텍스트는 ``교신저자: 황인재''로 되어 있다. 실제 교신저자가 최종선 교수인지 황인재인지 확인 후 이 줄을 확정할 것(현재는 저자 목록의 ‡ 위치를 따라 최종선으로 잠정 표기).} 최종선, E-mail: \todo{email}, Tel: \todo{전화번호}, ORCID: \todo{ORCID}\par
+\vspace{0.3em}
+※ 투고일자/수정일자/게재확정일자 표기는 심사 과정에서 편집위원회가 기입한다.\par
+}
 
+\vspace{1.2em}
+\begin{center}{\bfseries 요\ 약}\end{center}
+\noindent 사진 몇 장으로 3D 장면을 재구성하는 방법은 크게 두 갈래로 나뉜다. 하나는 미리 학습한 모델에 사진을 넣으면 즉시 3D Gaussian을 출력하는 feed-forward 방식이고, 다른 하나는 새 장면마다 그 장면 전용으로 반복 최적화하는 per-scene optimization 방식이다. 본 연구는 새로운 알고리즘을 제안하는 대신, \textbf{입력 view 수, view 간 겹침 정도(co-visibility overlap), 사용 가능한 계산 시간 예산}을 통제 축으로 삼아 대표 시스템들(feed-forward: MVSplat~\cite{chen2024mvsplat}, DepthSplat~\cite{xu2025depthsplat}; per-scene optimization: 3D Gaussian Splatting~\cite{kerbl20233d}, FSGS~\cite{zhu2024fsgs})의 실용적 우위 지도(regime map)를 그린다. 동일한 feed-forward 초기값에서 표준 3DGS refinement를 켜고 끄는 통제 실험으로 최적화의 순효과를 분리하고, 카메라 기하학 기반 불확실도 분석과 통제된 depth noise 개입으로 우위가 갈리는 원인을 설명하며, 마지막으로 조건별 선택 가이드라인을 제시한다. \todo{실험 완료 후 핵심 수치 1--2개를 요약에 추가} \chk{투고규정상 국문요약 500자 이내 — 최종본에서 글자 수 확인 후 압축할 것}
+
+\vspace{1em}
+\begin{center}{\bfseries Abstract}\end{center}
+\noindent Sparse-view 3D scene reconstruction methods fall into two families: feed-forward models that predict 3D Gaussians in a single forward pass, and per-scene optimization that iteratively fits each new scene from scratch. Rather than proposing a new algorithm, this study maps the practical regime boundary between the two families. Using the number of input views, the co-visibility overlap between views, and the compute-time budget as controlled axes, we chart where representative systems (feed-forward: MVSplat and DepthSplat; per-scene optimization: 3D Gaussian Splatting and FSGS) prevail. A controlled experiment that toggles standard 3DGS refinement on top of identical feed-forward initializations isolates the net effect of optimization; a camera-geometry-based uncertainty analysis and controlled depth-noise interventions explain why the advantage flips; and we distill the findings into condition-dependent selection guidelines. \todo{영문 초록은 국문 요약 기반 초안이다 — 실험 수치 반영 및 원어민 수준 검수 필요(200단어 이내 유지)}
+
+\vspace{0.8em}
+\noindent{\bfseries Keyword} : Sparse-view 3D reconstruction, 3D Gaussian Splatting, Feed-forward reconstruction, Per-scene optimization, Regime analysis \chk{키워드 5개 이하 규정 — 위 5개는 초안이므로 확정할 것}
+
+\vspace{0.8em}
 \noindent\todo{본 문서는 실험이 진행 중인 상태의 초안이다. 표/수치가 비어 있는 절은 명시적으로 표시했다. 산문(서론, 관련 연구, 프로토콜, 일부 분석)은 지금까지 확정된 내용을 담았다.}

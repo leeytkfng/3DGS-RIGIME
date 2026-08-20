@@ -3,22 +3,57 @@
 \label{sec:guideline}
 % =====================================================================
 
-\todo{\S\ref{sec:results}--\S\ref{sec:failure} 결과가 나온 뒤 채운다. 아래는 형식 예시이며 실제 값은 결과로 대체한다.}
+본 절은 \S\ref{sec:results}--\S\ref{sec:failure}의 결과를 실무자가 패러다임을 선택할 때 참조할 수 있는 형태로 재구성한다. 축별로 이미 확보된 결과와 아직 진행 중인 결과를 구분해 서술하며, \S\ref{sec:protocol}에서 제한한 서술 수위(``대표 시스템의 실용적 우위'')를 그대로 유지한다 — 즉 아래 권장은 패러다임 일반에 대한 인과적 주장이 아니라 본 연구가 평가한 대표 시스템(MVSplat/DepthSplat, 3DGS, FSGS)에 한정된다.
+
+\subsection{View 수 $\times$ 계산 예산 축 (확정)}
+\label{sec:guideline-view-budget}
+
+표~\ref{tab:regime}(RE10K 30-scene, C1-a 본 실험)의 승패 판정을 그대로 실무 규칙으로 옮기면 다음과 같다.
 
 \begin{table}[h]
 \centering
-\caption{조건별 권장 방법론(형식 예시)}
-\label{tab:guideline}
+\caption{View 수 $\times$ 계산 예산에 따른 권장 방법론(표~\ref{tab:regime} 요약)}
+\label{tab:guideline-view-budget}
 \small
-\begin{tabular}{@{}L{7.5cm} l@{}}
+\begin{tabular}{@{}L{4.3cm} L{2.7cm}@{}}
 \toprule
 조건 & 권장 \\
 \midrule
-view $\le 4$ 이고 overlap이 낮음 & Feed-forward \\
-view $\ge 8$ 이고 overlap이 높음 & Per-scene optimization \\
-예산 $< 10$초 & Feed-forward \\
-예산 $> 300$초이고 초기 geometry 신뢰도가 높음 & Per-scene optimization \\
-그 외 & Tie 영역, Pareto frontier 참조 \\
+view $\le 4$ (모든 예산) & Feed-forward \\
+view $= 8$, 예산 $\le 10$\,s & Feed-forward/Tie \\
+view $= 8$, 예산 $\ge 60$\,s & Optimization(FSGS) \\
+view $= 12$, 예산 $= 1$\,s & Feed-forward \\
+view $= 12$, 예산 $\ge 10$\,s & Optimization(FSGS) \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+표~\ref{tab:regime}(FSGS vs.\ MVSplat 블록)을 그대로 따른 것이다 — 8-view는 10\,s 지점이 Tie이고 60\,s부터 OPT로 굳어지는 반면, 12-view는 10\,s부터 이미 OPT다. 두 view 수를 하나의 ``$\ge 8$'' 규칙으로 뭉뚱그리면 8-view/10s를 실제보다 낙관적으로(OPT로) 권장하게 되므로 분리했다.
+
+\S\ref{sec:results}에서 확인했듯 12-view Vanilla3DGS는 예산에 대해 비단조적이므로(60\,s 지점에서 일시 하락), Vanilla3DGS를 예산 상한 없이 단일 지점에서만 평가해 배포할 경우 이 비단조성을 반드시 별도로 확인할 것 — FSGS는 같은 문제를 보이지 않아 8/12-view 고예산 구간의 기본 권장으로 FSGS를 우선한다.
+
+\subsection{Gaussian 수 / VRAM 효율 축 (확정, 미통합)}
+\label{sec:guideline-efficiency}
+
+\chk{\S\ref{sec:results} 본문에는 아직 반영되지 않았지만, 기존 C1-a 로그의 zero-rerun 분석(findings 폴더의 2026-08-17자 지표 불일치/Pareto 분석 문서)에서 이미 Gaussian 수/VRAM Pareto 관계를 확보했다. 결과 절에 정식 서브섹션으로 편입한 뒤 이 문단을 그 참조로 교체할 것 — 지금은 자료가 있다는 사실만 남겨둔다(메모리 제약 환경에서의 권장에 직결되므로 가이드라인에서 빠지면 안 됨).}
+
+\subsection{Overlap 축 (실행 대기)}
+\label{sec:guideline-overlap}
+
+\todo{보조 실험 실행 대기 중(RE10K/DL3DV overlap 보조실험 스크립트 준비 완료, 2026-08-18 — RE10K/DL3DV 각 8-scene(seed=0 결정론적 서브샘플) $\times$ 4 view\_count $\times$ \{high, low\} overlap, seed=0 단일, C2 GPU 사용 종료 후 착수). 완료되면 표~\ref{tab:guideline-view-budget}에 "동일 view 수에서 overlap이 낮으면 feed-forward 권장 구간이 더 넓어지는가"를 열로 추가한다 — \S\ref{sec:confound}의 baseline/parallax 기하 논증이 예측하는 방향과 일치하는지가 핵심 확인 대상.}
+
+\subsection{초기 geometry 오차에 대한 강건성 (확정)}
+\label{sec:guideline-depth-noise}
+
+C2 depth-noise sensitivity sweep(DTU 8-scan, 640 combo, \S\ref{sec:c2})가 완료됐다. 개별 노이즈($\sigma$) 축은 예측대로 품질을 갉아먹는다 — 대표 조건 4개 전부에서 $\sigma=0\to0.1$ 구간에 test PSNR이 하락했고(최대 $-3.66\,$dB, 12-view 고겹침), \textbf{densification이 이를 자동으로 보정해주지 않는다}(Gaussian 수가 오히려 줄거나 평탄). 따라서 입력 depth의 신뢰도가 낮다고 알려진 경우(단안 depth prior, 노이즈가 큰 센서 등)에는 예산을 늘리는 것만으로 품질 손실을 메우기 어렵다고 가정하는 게 안전하다 — 위 표의 예산 권장은 ``깨끗한 geometry''를 전제한다는 점을 명시한다.
+
+전역 스케일 편향($s$) 축은 아직 실무 규칙으로 옮기지 않는다 — 탐색한 범위($s\in[0.9,1.1]$)에서 정점을 못 찾아 방향성 있는 권장을 낼 근거가 부족하다(\S\ref{sec:c2}). 저겹침이 두 축의 민감도를 키우는지도 4-view 단일 비교쌍에서만 약하게 확인돼, 이 절의 결론은 ``노이즈에는 취약, 스케일 편향은 미해결''로 제한한다.
+
+\subsection{경계 사례 및 확장 참고}
+\label{sec:guideline-caveats}
+
+\begin{itemize}
+  \item \textbf{학습 분포 이탈(\S\ref{sec:ood-confound})}: 위 권장은 8/12-view에서 feed-forward 체크포인트가 학습 분포를 벗어난 상태의 결과를 포함한다. 분포 내 체크포인트를 별도로 학습·배포할 수 있다면 feed-forward 권장 구간이 넓어질 가능성이 있으며, 본 연구는 이를 배제하지 않는다(\S\ref{sec:ood-confound}의 세 갈래 구분 참조).
+  \item \textbf{Recurrent refinement 계열(\S\ref{sec:resplat-exploratory})}: ReSplat은 사전 등록 비교 축에는 없으나, 8-view in-domain 지점에서 단일 pass feed-forward보다 우수했다. Feed-forward 계열 중에서도 recurrent refinement를 지원하는 시스템이 있다면, 표~\ref{tab:guideline-view-budget}의 "Feed-forward" 권장은 그 안에서도 recurrent 변형을 우선 고려할 근거가 된다 — 다만 \S\ref{sec:resplat-exploratory}에서 보였듯 8-view보다 view 수가 늘어나면 여전히 FSGS가 앞선다.
+  \item \textbf{FSGS 초기화 편차(\S\ref{sec:protocol})}: 본 연구의 FSGS는 dense-MVS 초기화가 아닌 sparse COLMAP 초기화로 평가되었다. Dense-MVS 인프라가 있는 배포 환경에서는 FSGS 권장 구간이 원 논문 수준으로 더 넓어질 수 있다.
+\end{itemize}

@@ -174,7 +174,8 @@ def run(args: argparse.Namespace) -> None:
     lpipss = [float(lpips_model((pred[i] * 2 - 1)[None], (gt[i] * 2 - 1)[None]).item()) for i in range(pred.shape[0])]
 
     output_dir = Path(args.output_dir)
-    checkpoints_dir = output_dir / "checkpoints" / args.scene_key / f"{args.view_count}view"
+    overlap_suffix = f"_{args.overlap_level}" if args.overlap_level else ""
+    checkpoints_dir = output_dir / "checkpoints" / args.scene_key / f"{args.view_count}view{overlap_suffix}"
     logs_dir = output_dir / "logs"
     checkpoints_dir.mkdir(parents=True, exist_ok=True)
     logs_dir.mkdir(parents=True, exist_ok=True)
@@ -212,7 +213,7 @@ def run(args: argparse.Namespace) -> None:
         "gaussian_count": int(gaussians.means.shape[1]),
         "peak_vram": float(torch.cuda.max_memory_allocated() / (1024 * 1024)),
     }
-    log_path = logs_dir / f"{args.scene_key}_DepthSplat_{args.view_count}view.json"
+    log_path = logs_dir / f"{args.scene_key}_DepthSplat_{args.view_count}view{overlap_suffix}.json"
     # 원자적 쓰기 — vanilla_3dgs_runner.py/fsgs_runner.py/mvsplat_re10k_runner.py와 동일 이유.
     tmp_path = log_path.with_suffix(".json.tmp")
     tmp_path.write_text(json.dumps(row_out, indent=2), encoding="utf-8")

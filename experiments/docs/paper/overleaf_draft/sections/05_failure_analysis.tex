@@ -23,12 +23,12 @@ Baseline을 \emph{선형으로} 통제한 편상관은 $+0.801$로 소폭만 감
 
 이 결과의 해석은 두 가지다. 첫째, 부호 역전 자체는 위의 이론과 정합적이다. DTU와 같은 궤도형(orbital) 촬영에서는 두 카메라가 가까울수록 overlap이 크고 동시에 baseline이 작으므로, overlap과 깊이 불확실도가 함께 증가하는 것이 기하학적으로 예측되는 결과다. 둘째, $\log B$ 통제 후에도 잔여 상관 $+0.301$이 남는다는 점은 overlap이 baseline으로 완전히 환원되지는 않음을 시사한다. 따라서 본 연구는 overlap을 주 축으로 유지하되, ``왜 저겹침 조건이 어려운가''에 대한 \emph{설명}은 overlap 자체가 아니라 그 배후의 baseline/parallax 기하에 귀속시킨다.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.95\linewidth]{figures/geometry_confound.png}
+\includegraphics[width=0.8\linewidth]{figures/geometry_confound.png}
 \caption{Overlap과 $\log(\mathrm{baseline})$이 깊이 불확실도($\log\hat\sigma_{\mathrm{depth}}$)와 맺는 관계. 왼쪽: 원시 overlap--불확실도 상관은 예상과 반대 부호($r=+0.952$). 오른쪽: $\log(\mathrm{baseline})$과의 관계는 거의 완벽한 선형($r=-0.989$) — baseline 교란이 부호 역전의 주 원인임을 시사한다. DTU scan1, 861 view pair.}
 \label{fig:confound}
-\end{figure}
+\end{figure*}
 
 \chk{DTU는 궤도형 rig이므로 overlap과 baseline이 강하게 결합되어 있다. RE10K/DL3DV처럼 경로형(trajectory) 촬영에서는 두 변수의 결합 강도가 다를 수 있으므로 동일 분석을 반드시 반복할 것}
 
@@ -43,7 +43,7 @@ gsplat~\cite{ye2024gsplat}의 기본 densification 전략은 매 100-iteration w
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.62\linewidth]{figures/observation_starvation.png}
+\includegraphics[width=0.95\linewidth]{figures/observation_starvation.png}
 \caption{$\mathrm{count}[g] \le 2$인(=최근 100-iteration window에서 2번 이하로만 관측된) Gaussian의 비율. View 수가 늘수록 급격히 감소하며, 초기화 방식(sparse COLMAP init 대 random-sphere fallback)을 고정한 단일 scene에서도 동일한 패턴이 재현된다.}
 \label{fig:starvation}
 \end{figure}
@@ -58,7 +58,7 @@ gsplat~\cite{ye2024gsplat}의 기본 densification 전략은 매 100-iteration w
 조건 & 2-view & 4-view & 8-view & 12-view \\
 \midrule
 Pooled 평균 & 51.5\% & 30.8\% & 3.2\% & 0.7\% \\
-초기화 고정 단일 scene & 55.3\% & 32.3\% & 8.3\% & 1.3\% \\
+초기화 고정(단일) & 55.3\% & 32.3\% & 8.3\% & 1.3\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -70,22 +70,23 @@ Pooled 평균 & 51.5\% & 30.8\% & 3.2\% & 0.7\% \\
 \paragraph{사후 발견으로서의 위치} 본 절의 관측은 사전 등록한 가설 H1--H3에 포함되지 않았던 탐색적 발견(exploratory finding)이다. 따라서 확증적 결과와 구분하여 서술하며, 주 데이터셋 전체 규모에서의 재현 여부를 별도로 보고한다.
 
 \subsection{사전 등록 가설의 검증}
+\label{sec:h2-verification}
 
-\begin{table}[h]
+\begin{table*}[t]
 \centering
 \caption{사전 등록 가설과 검증 상태}
 \label{tab:hypotheses}
 \small
-\begin{tabular}{@{}l L{8.5cm} L{2.6cm}@{}}
+\begin{tabular}{@{}l L{12cm} L{2.6cm}@{}}
 \toprule
 가설 & 내용 & 상태 \\
 \midrule
-H1 & 초기 geometry 오차($\sigma$)가 커질수록 densification 이후 Gaussian 수는 증가하지만 held-out 품질은 감소하며, 이 관계는 저겹침 조건에서 강화된다 & \todo{C2 실행 후} \\
+H1 & 초기 geometry 오차($\sigma$)가 커질수록 densification 이후 Gaussian 수는 증가하지만 held-out 품질은 감소하며, 이 관계는 저겹침 조건에서 강화된다 & 절반 지지, 절반 기각(\S\ref{sec:c2}) \\
 H2 & Optimization의 품질 정점 도달 시점은 view 수가 줄수록 앞당겨지고, 정점 이후 하강 기울기가 가팔라진다 & 부분 지지 (아래) \\
-H3 & 초기 geometry 품질이 일정 수준을 넘으면 refinement의 한계 이득이 소멸한다 & \todo{C1-b 실행 후} \\
+H3 & 초기 geometry 품질이 일정 수준을 넘으면 refinement의 한계 이득이 소멸한다 & 잠정 지지, 교란 미분리 (\S\ref{sec:c1b}) \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 세 가설 중 어느 것이 기각되더라도 그 자체가 보고 대상이다. 실제로 \S\ref{sec:starvation}에서 원래 가설(관측 부족으로 인한 오탐)이 기각되고 다른 메커니즘(관측 부족 자체의 비율)이 발견된 사례가 있었다.
 
@@ -97,7 +98,40 @@ H3 & 초기 geometry 품질이 일정 수준을 넘으면 refinement의 한계 �
 
 정점 시점이 앞당겨지는 것과 하강이 가팔라지는 것은 별개 현상이며, 후자는 view 수 자체보다 densification/opacity reset 주기와 예산 경계의 상호작용에 더 좌우되는 것으로 보인다 — 이는 \S\ref{sec:results}에서 관찰한 12-view Vanilla3DGS의 비단조성과 같은 계열의 현상일 가능성이 있다.
 
+\chk{\textbf{표본 해상도의 한계}: 예산 스냅샷이 1/10/60/300\,s 4개뿐이라 ``정점 시점''과 ``하강 기울기'' 추정 모두 해상도가 매우 거칠다 — 실제 정점이 이 4개 지점 \emph{사이}에 있어도 가장 가까운 스냅샷으로만 근사된다. 특히 위 하강폭 결과(view 수가 늘수록 하강이 커짐)는 12-view Vanilla3DGS의 60\,s 지점 비단조성(\S\ref{sec:results}) 자체가 4점 표본에 어떻게 걸리느냐에 따라 만들어졌을 수 있다 — 이 조악한 표본으로는 ``하강이 실제로 view 수에 따라 커진다''와 ``60\,s 근방의 일시적 하락이 우연히 하강폭으로 잡혔다''를 구분할 수 없다. 더 촘촘한 예산 스냅샷(예: 5/15/30/60/120/300\,s)으로 재실행해야 이 둘을 가른다.}
+
 \subsection{Depth 불확실도 개입}
 \label{sec:c2}
 
-\todo{미착수. 통제된 depth noise 주입: (a) 개별 노이즈 $d' = d(1 + \varepsilon)$, $\varepsilon \sim \mathcal{N}(0, \sigma^2)$, $\sigma \in \{0, 0.01, 0.03, 0.05, 0.10\}$, (b) 전역 스케일 편향 $d' = s\cdot d$, $s \in \{0.9, 0.95, 1.0, 1.05, 1.1\}$. DTU 외부 검증 8 scene, 300초 trajectory 재사용. (b)는 단안·저겹침 조건의 절대 스케일 미결정성~\cite{hartley2003multiple}을 모사한다.}
+DTU 8-scan 외부 검증에서 두 종류의 통제된 depth 왜곡을 대표 조건 4개(\texttt{2view\_low\_overlap}, \texttt{4view\_low\_overlap}, \texttt{4view\_high\_overlap}, \texttt{12view\_high\_overlap}) $\times$ seed\{0,1\}에 주입했다: (a) 개별 노이즈 $d' = d(1+\varepsilon)$, $\varepsilon \sim \mathcal{N}(0,\sigma^2)$, $\sigma \in \{0, 0.01, 0.03, 0.05, 0.10\}$, (b) 전역 스케일 편향 $d' = s \cdot d$, $s \in \{0.9, 0.95, 1.0, 1.05, 1.1\}$(단안·저겹침 조건의 절대 스케일 미결정성~\cite{hartley2003multiple}을 모사). 640 combo 전량(2560 rows) 완주했다. 아래는 budget=300\,s 시점, scene cluster bootstrap 기준.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.85\linewidth]{figures/c2_depth_sensitivity.png}
+\caption{C2 depth-noise sensitivity, DTU 8-scan, budget=300\,s. 위 행은 개별 노이즈 $\sigma$ 축, 아래 행은 전역 스케일 편향 $s$ 축. 왼쪽 열(PSNR)은 4개 조건 모두 예측대로 하락(위)/비대칭 단조 증가(아래)하지만, 오른쪽 열(Gaussian 수)은 H1이 예측한 증가가 아니라 하락 또는 평탄이다. 오차 막대는 scene cluster bootstrap 95\% CI.}
+\label{fig:c2-sensitivity}
+\end{figure*}
+
+\begin{table}[h]
+\centering
+\caption{H1 예측 대 결과 요약(C2, DTU 8-scan).}
+\label{tab:h1-summary}
+\small
+\begin{tabular}{@{}L{3.3cm} L{3.6cm}@{}}
+\toprule
+예측 & 결과 \\
+\midrule
+$\sigma$ $\uparrow$ $\Rightarrow$ PSNR $\downarrow$ & 지지(4개 조건 전부, $r=-0.06$~$-0.51$) \\
+$\sigma$ $\uparrow$ $\Rightarrow$ Gaussian 수 $\uparrow$ & 기각 — 반대(4개 조건 전부 하락/평탄, $r=-0.13$~$-0.38$) \\
+저겹침에서 두 경향 강화 & 부분 지지($\sigma$축만, 유일 비교쌍인 4-view에서 근소) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{$\sigma$(개별 노이즈) 축} PSNR은 4개 조건 전부에서 $\sigma$가 커질수록 하락했다(예: 12-view 고겹침 $11.15 \to 7.49\,$dB, $r=-0.51$) — H1의 첫 절반은 지지된다. 그러나 \textbf{Gaussian 수는 4개 조건 전부에서 하락 또는 평탄}했다(예: 12-view 고겹침 $575{,}642 \to 534{,}311$, $r=-0.20$) — ``densification이 나쁜 geometry를 더 많은 Gaussian으로 보정하려 한다''는 두 번째 절반과 정반대다. 노이즈가 gradient 신호 자체를 훼손해 \S\ref{sec:starvation}의 \texttt{count[g]}가 임계값을 덜 넘기게 되고, 그 결과 densification이 오히려 억제되는 것으로 보인다 — \S\ref{sec:starvation}에서 발견한 관측-count 메커니즘과 같은 축의 설명이다.
+
+\paragraph{$s$(전역 스케일 편향) 축} $s=1.0$을 중심으로 대칭적인 U자(0.9와 1.1이 비슷하게 나쁘고 1.0이 최고)를 사전에 기대했으나, 실제로는 \textbf{4개 조건 전부에서 $s=0.9\to1.1$까지 PSNR이 단조 증가}했다(예: 12-view 고겹침 $9.52\to13.37\,$dB) — 탐색 범위 안에서 정점을 찾지 못했다. $s=1.05$/$1.1$이 ``정답 스케일''인 $s=1.0$보다 항상 낫다는 것은, 본 연구의 depth 추정 파이프라인 자체에 계통적 과소추정 편향이 있어 $s>1.0$이 그 편향을 부분 상쇄하고 있을 가능성을 시사한다. 왜곡된 스케일이 ``진짜로 더 좋다''는 결론이 아니라, 탐색 범위를 벗어난 곳에 정점이 있을 가능성을 배제하지 못한다는 뜻으로 해석한다.
+
+\paragraph{Overlap 증폭 효과} 같은 view 수에서 overlap만 다른 직접 비교쌍은 4-view 하나뿐이다(2-view는 저겹침만, 12-view는 고겹침만 설계에 있음). $\sigma$축은 저겹침이 근소하게 더 가파르게 하락했으나($-1.61\,$dB 대 $-1.14\,$dB), $s$축은 사실상 차이가 없었다($+1.59\,$dB 대 $+1.53\,$dB) — H1의 저겹침 증폭 예측은 절반의 절반만 지지된다.
+
+\chk{자세한 조건별 수치와 재현 커맨드는 findings 폴더의 2026-08-19자 C2 분석 문서 참고. $s$축 탐색 범위 확장($s \in \{1.15, 1.2, 1.3\}$)과 Gaussian growth/prune 카운트 분리 계측이 다음 단계로 남아 있다.}

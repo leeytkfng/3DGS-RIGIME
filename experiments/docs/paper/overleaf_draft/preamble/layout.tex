@@ -1,13 +1,35 @@
 % ---- 레이아웃 및 간격 -------------------------------------------------------
-\usepackage[margin=1in]{geometry}
+% 2026-08-19: 10--11장 분량 목표로 여백/줄간격/문단간격/float 주변 여백을 전반적으로
+% 소폭(10~25%) 줄였다 — 어느 하나를 무리하게 줄이지 않고 여러 군데를 조금씩 줄이는
+% 방식(자간 자체는 건드리지 않음, 폰트 크기·글자 사이 간격은 그대로).
+\usepackage[margin=0.85in]{geometry}
+\setlength{\columnsep}{0.26in}       % 2단 사이 간격(가운데 기준선)
 \usepackage{setspace}
-\setstretch{1.15}                    % 줄 간격
-\setlength{\parskip}{0.55em}         % 문단 간격
+\setstretch{1.08}                    % 줄 간격(1.15 -> 1.08)
+\setlength{\parskip}{0.42em}         % 문단 간격(0.55em -> 0.42em)
 \setlength{\parindent}{1em}          % 들여쓰기
 
+% float(그림/표) 주변 여백 축소 — 기본값(약 12--20pt)보다 타이트하게.
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+
 \usepackage{titlesec}
-\titlespacing*{\section}      {0pt}{2.0em}{0.9em}
-\titlespacing*{\subsection}   {0pt}{1.5em}{0.6em}
-\titlespacing*{\subsubsection}{0pt}{1.2em}{0.5em}
-\titlespacing*{\paragraph}    {0pt}{1.0em}{0.7em}
+\titlespacing*{\section}      {0pt}{1.5em}{0.7em}
+\titlespacing*{\subsection}   {0pt}{1.1em}{0.45em}
+\titlespacing*{\subsubsection}{0pt}{0.9em}{0.4em}
+\titlespacing*{\paragraph}    {0pt}{0.8em}{0.6em}
 \titleformat{\paragraph}[runin]{\normalfont\bfseries}{}{0pt}{}[.]
+
+% ---- 절 번호 체계(2026-08-18, 학회 양식 대조) -------------------------------
+% \section은 로마 숫자(중앙 정렬), \subsection은 그 절 안에서 다시 1부터 시작하는
+% 아라비아 숫자(왼쪽 정렬, 제목 앞) — GSSS 학회 양식(예: "I. 서론", "III. 실험 프로토콜"
+% 안의 "1. 공정성 원칙") 대조. \thesubsection 자체는 article.cls 기본값
+% (\thesection.\arabic{subsection}, 예: "IV.5")을 그대로 둔다 — \S\ref{}로 본문에서
+% 절을 가리킬 때는 "§IV.5"처럼 로마 숫자 절 번호까지 나와야 하기 때문이다(제목에 찍히는
+% 번호만 아래 \titleformat에서 절 번호를 뺀 순수 \arabic{subsection}으로 바꾼다).
+\renewcommand{\thesection}{\Roman{section}}
+\titleformat{\section}{\centering\normalfont\large\bfseries}{\Roman{section}.}{0.6em}{}
+\titleformat{\subsection}{\normalfont\bfseries}{\arabic{subsection}.}{0.5em}{}
+\renewcommand{\refname}{References}

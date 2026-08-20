@@ -3,12 +3,12 @@
 \label{sec:protocol}
 % =====================================================================
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\todo{Figure 1(프로토콜 개요) 자리. 아래 note 참고 — 모델 아키텍처 파이프라인 그림은 권장하지 않음.}
+\todo{Figure 1(프로토콜 개요) 자리. 아래 note 참고 — 모델 아키텍처 파이프라인 그림은 권장하지 않음. 2단 상단 spanning(figure*)이므로 가로로 넓게(3~4개 박스+화살표) 구성.}
 \caption{실험 설계 개요: 통제 축(view 수 $\times$ overlap $\times$ 계산 예산)과 서사 사슬(Regime Map $\to$ 메커니즘 증거 $\to$ 통제 검증 $\to$ 가이드라인, \S\ref{sec:intro}).}
 \label{fig:overview}
-\end{figure}
+\end{figure*}
 
 \noindent\chk{\textbf{Figure 자리에 대한 판단}: 모델 내부 아키텍처(cost volume, densification 등)를 보여주는 상세 파이프라인 다이어그램은 \emph{권장하지 않는다} — 이 논문은 새 아키텍처를 제안하는 게 아니라 기존 방법들을 비교하는 분석 논문이라, 남의 모델 내부 구조를 다시 그리는 건 지면만 차지하고 기여로 안 잡힌다. 대신 위 Figure 1처럼 \textbf{통제 축 3개(view/overlap/budget) + 서사 사슬 4단계}를 보여주는 가벼운 개요 다이어그램 하나만 Protocol 절 도입부에 두는 걸 추천한다 — 독자가 전체 실험 설계를 한눈에 파악하게 하는 용도로, 만들기도 간단하다(3~4개 박스와 화살표 수준).}
 
@@ -44,12 +44,12 @@ Feed-forward 모델은 특정 view 수 분포로 학습된다. MVSplat의 RE10K 
 
 \subsection{비교 대상}
 
-\begin{table}[t]
+\begin{table*}[t]
 \centering
 \caption{비교 대상 방법론}
 \label{tab:methods}
 \small
-\begin{tabular}{@{}l l l L{6.0cm}@{}}
+\begin{tabular}{@{}l l l L{5.8cm}@{}}
 \toprule
 방법 & 계열 & 학습 view 분포 & 비고 \\
 \midrule
@@ -59,7 +59,7 @@ DepthSplat~\cite{xu2025depthsplat} & Feed-forward & DL3DV: 2--6-view & 8/12-view
 FSGS~\cite{zhu2024fsgs} & Optimization (sparse 특화) & 해당 없음 & 원 논문은 dense-MVS 초기화를 사용하나, 본 연구는 공정성을 위해 3DGS와 동일한 sparse COLMAP 초기화로 대체(아래 참고) \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 각 데이터셋에는 해당 데이터셋으로 학습된 in-domain feed-forward 모델을 짝짓는다(RE10K--MVSplat, DL3DV--DepthSplat). 두 optimization 방법은 두 데이터셋 모두에서 동일하게 평가된다.
 
@@ -67,7 +67,7 @@ FSGS~\cite{zhu2024fsgs} & Optimization (sparse 특화) & 해당 없음 & 원 논
 
 이는 의도적 선택이다. (i) 두 optimization 방법에 서로 다른 초기화 품질을 주면 ``sparse-view 특화 기법 대 일반 기법'' 비교가 아니라 ``dense init 대 sparse init'' 비교로 오염되며, (ii) dense MVS는 본 연구 인프라에 없는 외부 의존성이다. 이로 인해 FSGS의 보고 성능이 원 논문보다 낮게 나올 수 있으며, 이는 알고리즘의 결함이 아니라 초기화 조건의 차이임을 명시한다. FSGS가 3DGS를 능가하지 못하는 결과가 나오더라도 그 자체로 유효한 보고 대상이다.
 
-\chk{"선행 연구(SplatFormer~\cite{chen2025splatformer})에서도 sparse-view 특화 기법이 표준 3DGS를 일관되게 앞서지 못한다는 관찰이 보고되었다"는 주장은 SplatFormer 논문의 abstract 수준에서 직접 확인되지 않았다(해당 논문의 핵심 주장은 자신의 point-transformer 정제 기법이 다른 baseline들을 능가한다는 것으로, "sparse-view 특화 기법 대 vanilla 3DGS"의 직접 비교를 명시적으로 보고하는지는 본문 표를 확인해야 한다). 본문을 확인해 인용을 확정하거나, 확인 전까지는 이 문장을 빼고 "FSGS가 3DGS를 능가하지 못해도 유효한 보고 대상"이라는 진술만 남길 것}
+선행 연구는 dense 입력의 분포 밖 시점 합성(OOD-NVS) 조건에서 sparse-view 특화 정규화 기법(FSGS)이 표준 3DGS를 앞서지 못하는 사례를 보고한 바 있다(SplatFormer~\cite{chen2025splatformer} Table 1: ShapeNet-OOD에서 3DGS $20.21\,$dB 대 FSGS $17.32\,$dB, Objaverse-OOD에서 3DGS $19.24\,$dB 대 FSGS $18.82\,$dB) — 다만 이는 sparse-view가 아니라 dense 입력·OOD 시점 조건이므로 본 연구의 설정과는 다르다.
 
 \subsection{데이터셋}
 
@@ -113,6 +113,8 @@ $\Delta = \mathrm{PSNR}_{\mathrm{FF}} - \mathrm{PSNR}_{\mathrm{OPT}}$에 대해 
 \end{cases}
 \label{eq:wtl}
 \end{equation}
+위 정의는 한쪽이 feed-forward(FF)인 비교를 전제한다. 두 optimization 방법을 직접 비교하는 경우(예: FSGS 대 Vanilla3DGS, 표~\ref{tab:regime} 세 번째 블록)에는 $\Delta = \mathrm{PSNR}_{\mathrm{FSGS}} - \mathrm{PSNR}_{\mathrm{Vanilla3DGS}}$로 재정의하고 판정 라벨도 ``FSGS win''/``Vanilla3DGS win''/``tie''로 바꿔 동일한 식~\eqref{eq:wtl} 구조를 그대로 적용한다. $\tau$ 값도 재사용한다 — 아래에서 측정하는 seed 변동성은 FF 쪽이 아니라 optimization 방법(Vanilla3DGS/FSGS)의 학습 무작위성에서 나오므로(MVSplat 추론 자체는 결정론적), 어느 두 방법을 비교하든 관측되는 잡음 수준은 이 동일한 seed 변동성에서 비롯된다.
+
 임계값 $\tau$는 \emph{seed 변동성}과 \emph{실용적으로 의미 있는 최소 차이}(0.5\,dB) 중 큰 값으로 정의한다.
 \begin{equation}
 \tau = \max\bigl(\text{seed 변동성},\ 0.5\,\text{dB}\bigr)
@@ -126,6 +128,7 @@ $\Delta = \mathrm{PSNR}_{\mathrm{FF}} - \mathrm{PSNR}_{\mathrm{OPT}}$에 대해 
 나아가 scene별로 분해하면 5개 중 3개는 optimization이 크게 우세($+1.1$--$5.3\,$dB), 2개는 feed-forward가 크게 우세($+1.0$--$5.8\,$dB)하여 단일한 방향이 존재하지 않았고, 평균이 우연히 상쇄된 결과였다. 이 사례는 사전 동결한 판정 기준과 scene 단위 분해가 pooled 평균만으로는 놓칠 수 있는 오류를 실제로 차단함을 보여준다.
 
 \subsection{계산 예산 시점의 결과 선택 규칙}
+\label{sec:budget-selection}
 
 메인 비교는 예산 종료 시점 결과를 사용한다. 방법 $m$과 예산 $B$에 대해 $t_B = \max\{t : t \le B\}$, $Q_m(B) = Q_m(t_B)$로 정의한다. \textbf{Test PSNR이 가장 높은 체크포인트를 사후 선택하지 않는다.} 이는 test leakage이며, 특히 과적합이 연구 주제인 본 논문에서는 과적합 현상 자체가 측정에서 지워지는 문제를 낳는다.
 
@@ -153,6 +156,7 @@ p_{(i)}^{\mathrm{adj}} = \max_{j \le i}\bigl\{(n - j + 1)\cdot p_{(j)}\bigr\},
 보정 대상 family는 \textbf{방법 쌍당} $4 \times 2 \times 4 = 32$개 비교로 정의하며, 서로 다른 방법 쌍은 서로 다른 family로 독립 보정한다.
 
 \subsection{조기 종료 규칙}
+\label{sec:early-stop}
 
 메인 결과는 예산 종료 시점 체크포인트를 사용하지만, ``더 일찍 멈췄어야 한다''는 반론에 대응하기 위해 view 수 $\in \{8, 12\}$ 조건에 한해 \textbf{보조 실험}을 부록으로 수행한다. 기존 context view 중 1개를 학습에서 제외해 별도의 held-out validation view로 두고(메인 비교에 쓰는 고정 test set과는 구분된다), 촘촘한 budget snapshot으로 validation PSNR이 최종값의 95\%에 처음 도달하는 시점 $t_{95}$를 ``조기 종료했다면 멈췄을 시점''으로 정의해, $t_{95}$에서의 test PSNR과 예산 종료 시점 test PSNR의 차이를 보고한다.
 
