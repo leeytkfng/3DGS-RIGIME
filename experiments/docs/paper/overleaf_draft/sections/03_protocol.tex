@@ -113,7 +113,7 @@ $\Delta = \mathrm{PSNR}_{\mathrm{FF}} - \mathrm{PSNR}_{\mathrm{OPT}}$에 대해 
 \end{cases}
 \label{eq:wtl}
 \end{equation}
-위 정의는 한쪽이 feed-forward(FF)인 비교를 전제한다. 두 optimization 방법을 직접 비교하는 경우(예: FSGS 대 Vanilla3DGS, 표~\ref{tab:regime} 세 번째 블록)에는 $\Delta = \mathrm{PSNR}_{\mathrm{FSGS}} - \mathrm{PSNR}_{\mathrm{Vanilla3DGS}}$로 재정의하고 판정 라벨도 ``FSGS win''/``Vanilla3DGS win''/``tie''로 바꿔 동일한 식~\eqref{eq:wtl} 구조를 그대로 적용한다. $\tau$ 값도 재사용한다 — 아래에서 측정하는 seed 변동성은 FF 쪽이 아니라 optimization 방법(Vanilla3DGS/FSGS)의 학습 무작위성에서 나오므로(MVSplat 추론 자체는 결정론적), 어느 두 방법을 비교하든 관측되는 잡음 수준은 이 동일한 seed 변동성에서 비롯된다.
+위 정의는 한쪽이 feed-forward(FF)인 비교를 전제한다. 두 optimization 방법을 직접 비교하는 경우(예: FSGS 대 Vanilla3DGS, 그림~\ref{fig:regime-heatmap} 세 번째 패널)에는 $\Delta = \mathrm{PSNR}_{\mathrm{FSGS}} - \mathrm{PSNR}_{\mathrm{Vanilla3DGS}}$로 재정의하고 판정 라벨도 ``FSGS win''/``Vanilla3DGS win''/``tie''로 바꿔 동일한 식~\eqref{eq:wtl} 구조를 그대로 적용한다. $\tau$ 값도 재사용한다 — 아래에서 측정하는 seed 변동성은 FF 쪽이 아니라 optimization 방법(Vanilla3DGS/FSGS)의 학습 무작위성에서 나오므로(MVSplat 추론 자체는 결정론적), 어느 두 방법을 비교하든 관측되는 잡음 수준은 이 동일한 seed 변동성에서 비롯된다.
 
 임계값 $\tau$는 \emph{seed 변동성}과 \emph{실용적으로 의미 있는 최소 차이}(0.5\,dB) 중 큰 값으로 정의한다.
 \begin{equation}
