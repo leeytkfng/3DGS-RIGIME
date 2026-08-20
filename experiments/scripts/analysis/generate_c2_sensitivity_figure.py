@@ -101,22 +101,22 @@ def main() -> int:
         if combos_done < total_combos else "final, 640/640 combos complete"
     )
 
-    fig, axes = plt.subplots(2, 2, figsize=(8.5, 7.0))
-    plot_axis(axes[0, 0], axes[0, 1], rows, "c2_depth_noise", "sigma", NOISE_LEVELS, r"depth noise $\sigma$")
-    plot_axis(axes[1, 0], axes[1, 1], rows, "c2_depth_scale_bias", "scale_bias", SCALE_LEVELS, r"global scale bias $s$")
-    axes[0, 0].set_title(r"PSNR vs. $\sigma$ (scale bias fixed at 1.0)", fontsize=10)
-    axes[0, 1].set_title(r"Gaussian count vs. $\sigma$", fontsize=10)
-    axes[1, 0].set_title(r"PSNR vs. $s$ (noise fixed at 0)", fontsize=10)
-    axes[1, 1].set_title(r"Gaussian count vs. $s$", fontsize=10)
-    axes[0, 0].legend(frameon=False, fontsize=8, loc="best")
+    fig, axes = plt.subplots(1, 4, figsize=(13.0, 3.3))
+    plot_axis(axes[0], axes[1], rows, "c2_depth_noise", "sigma", NOISE_LEVELS, r"depth noise $\sigma$")
+    plot_axis(axes[2], axes[3], rows, "c2_depth_scale_bias", "scale_bias", SCALE_LEVELS, r"global scale bias $s$")
+    axes[0].set_title(r"PSNR vs. $\sigma$ (scale bias fixed at 1.0)", fontsize=10)
+    axes[1].set_title(r"Gaussian count vs. $\sigma$", fontsize=10)
+    axes[2].set_title(r"PSNR vs. $s$ (noise fixed at 0)", fontsize=10)
+    axes[3].set_title(r"Gaussian count vs. $s$", fontsize=10)
+    axes[0].legend(frameon=False, fontsize=8, loc="best")
 
     fig.suptitle(f"C2 Depth-Noise Sensitivity (DTU 8-scan, budget=300s) — {progress_note}", fontsize=10)
-    fig.tight_layout(rect=(0, 0, 1, 0.96))
+    fig.tight_layout(rect=(0, 0, 1, 0.90))
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_dir / "c2_depth_sensitivity.png", dpi=150)
-    fig.savefig(out_dir / "c2_depth_sensitivity.pdf")
+    fig.savefig(out_dir / "c2_depth_sensitivity.png", dpi=150, bbox_inches="tight")
+    fig.savefig(out_dir / "c2_depth_sensitivity.pdf", bbox_inches="tight")
     plt.close(fig)
     print(f"wrote {out_dir / 'c2_depth_sensitivity.png'}")
     return 0

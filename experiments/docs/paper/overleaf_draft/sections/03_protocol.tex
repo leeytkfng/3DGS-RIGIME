@@ -3,14 +3,7 @@
 \label{sec:protocol}
 % =====================================================================
 
-\begin{figure*}[t]
-\centering
-\todo{Figure 1(프로토콜 개요) 자리. 아래 note 참고 — 모델 아키텍처 파이프라인 그림은 권장하지 않음. 2단 상단 spanning(figure*)이므로 가로로 넓게(3~4개 박스+화살표) 구성.}
-\caption{실험 설계 개요: 통제 축(view 수 $\times$ overlap $\times$ 계산 예산)과 서사 사슬(Regime Map $\to$ 메커니즘 증거 $\to$ 통제 검증 $\to$ 가이드라인, \S\ref{sec:intro}).}
-\label{fig:overview}
-\end{figure*}
-
-\noindent\chk{\textbf{Figure 자리에 대한 판단}: 모델 내부 아키텍처(cost volume, densification 등)를 보여주는 상세 파이프라인 다이어그램은 \emph{권장하지 않는다} — 이 논문은 새 아키텍처를 제안하는 게 아니라 기존 방법들을 비교하는 분석 논문이라, 남의 모델 내부 구조를 다시 그리는 건 지면만 차지하고 기여로 안 잡힌다. 대신 위 Figure 1처럼 \textbf{통제 축 3개(view/overlap/budget) + 서사 사슬 4단계}를 보여주는 가벼운 개요 다이어그램 하나만 Protocol 절 도입부에 두는 걸 추천한다 — 독자가 전체 실험 설계를 한눈에 파악하게 하는 용도로, 만들기도 간단하다(3~4개 박스와 화살표 수준).}
+본 실험은 세 통제 축(view 수 $\times$ overlap $\times$ 계산 예산)을 완전교차하며, Regime Map(\S\ref{sec:results}) $\to$ 메커니즘 증거(\S\ref{sec:failure}) $\to$ 통제 검증(\S\ref{sec:c1b}) $\to$ 가이드라인(\S\ref{sec:guideline})의 순서로 서술한다.
 
 \subsection{공정성 원칙}
 
@@ -24,8 +17,6 @@
 
 \subsection{학습 view 분포 이탈이라는 교란}
 \label{sec:ood-confound}
-
-\chk{이 절은 본 논문의 결과 해석에서 가장 중요한 쟁점이므로, 결과가 나온 뒤 이 틀에 맞춰 서술할 것}
 
 Feed-forward 모델은 특정 view 수 분포로 학습된다. MVSplat의 RE10K 공개 체크포인트는 2-view로 학습되었고, DepthSplat의 DL3DV 체크포인트는 2--6-view 범위로 학습되었다. 따라서 view 수를 4, 8, 12로 늘리면 feed-forward 쪽은 점차 학습 분포를 벗어나는 반면 per-scene optimization은 그러한 개념 자체가 없다. 이 비대칭 때문에 ``view 수가 늘면 optimization이 역전한다''는 관찰은 두 가지로 해석될 수 있다.
 

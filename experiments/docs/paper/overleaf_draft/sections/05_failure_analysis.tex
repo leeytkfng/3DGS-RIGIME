@@ -30,7 +30,7 @@ Baseline을 \emph{선형으로} 통제한 편상관은 $+0.801$로 소폭만 감
 \label{fig:confound}
 \end{figure*}
 
-\chk{DTU는 궤도형 rig이므로 overlap과 baseline이 강하게 결합되어 있다. RE10K/DL3DV처럼 경로형(trajectory) 촬영에서는 두 변수의 결합 강도가 다를 수 있으므로 동일 분석을 반드시 반복할 것}
+DTU는 궤도형 rig이므로 overlap과 baseline이 강하게 결합되어 있다는 점은 한계다 — RE10K/DL3DV 같은 경로형(trajectory) 촬영에서는 결합 강도가 다를 수 있어 동일 분석의 반복이 후속 과제로 남는다.
 
 \subsection{Densification gradient의 관측 부족}
 \label{sec:starvation}
@@ -65,7 +65,7 @@ Pooled 평균 & 51.5\% & 30.8\% & 3.2\% & 0.7\% \\
 
 이는 sparse-view에서 optimization이 불리한 이유를 ``데이터가 적다''는 추상적 설명을 넘어, \textbf{Gaussian 예산의 상당 부분이 어떤 학습 구간에서도 유의미한 gradient 신호를 받지 못한 채 방치된다}는 구현 수준에서 추적 가능한 메커니즘으로 제시한다. 이 Gaussian들은 gradient 신호가 미약하여 gradient 기반 densification의 대상이 되지도 못하고, 그렇다고 임계값을 넘어 잘못된 성장을 유발하지도 않으며, 사실상 사용되지 않는 모델 용량으로 남는다.
 
-\chk{현재 결과는 두 원인이 섞여 있을 수 있다. (i) 관측 부족: Gaussian은 적절히 배치되었으나 카메라 수가 적어 소수 view에서만 보이는 경우, (ii) 배치 실패: random-sphere fallback으로 뿌린 점이 애초에 어떤 카메라 절두체에도 포함되지 않는 경우. 어떤 view에도 투영되지 않는 Gaussian의 비율을 별도로 측정해 (ii)를 분리해야 하며, 그 결과에 따라 본 절의 주장이 ``sparse-view 일반의 메커니즘''인지 ``triangulation 실패 시 random 초기화의 한계''인지가 갈린다}
+\chk{두 원인이 섞여 있을 수 있다 — (i) 관측 부족(적절히 배치됐으나 카메라 수가 적어 소수 view에서만 보임) 대 (ii) 배치 실패(random-sphere fallback 점이 애초에 어떤 카메라 절두체에도 안 잡힘). 어떤 view에도 투영되지 않는 Gaussian 비율을 별도 측정해 분리하는 작업이 남아 있으며, 결과에 따라 본 절의 주장이 ``sparse-view 일반의 메커니즘''인지 ``triangulation 실패 시 random 초기화의 한계''인지가 갈린다.}
 
 \paragraph{사후 발견으로서의 위치} 본 절의 관측은 사전 등록한 가설 H1--H3에 포함되지 않았던 탐색적 발견(exploratory finding)이다. 따라서 확증적 결과와 구분하여 서술하며, 주 데이터셋 전체 규모에서의 재현 여부를 별도로 보고한다.
 
@@ -98,7 +98,7 @@ H3 & 초기 geometry 품질이 일정 수준을 넘으면 refinement의 한계 �
 
 정점 시점이 앞당겨지는 것과 하강이 가팔라지는 것은 별개 현상이며, 후자는 view 수 자체보다 densification/opacity reset 주기와 예산 경계의 상호작용에 더 좌우되는 것으로 보인다 — 이는 \S\ref{sec:results}에서 관찰한 12-view Vanilla3DGS의 비단조성과 같은 계열의 현상일 가능성이 있다.
 
-\chk{\textbf{표본 해상도의 한계}: 예산 스냅샷이 1/10/60/300\,s 4개뿐이라 ``정점 시점''과 ``하강 기울기'' 추정 모두 해상도가 매우 거칠다 — 실제 정점이 이 4개 지점 \emph{사이}에 있어도 가장 가까운 스냅샷으로만 근사된다. 특히 위 하강폭 결과(view 수가 늘수록 하강이 커짐)는 12-view Vanilla3DGS의 60\,s 지점 비단조성(\S\ref{sec:results}) 자체가 4점 표본에 어떻게 걸리느냐에 따라 만들어졌을 수 있다 — 이 조악한 표본으로는 ``하강이 실제로 view 수에 따라 커진다''와 ``60\,s 근방의 일시적 하락이 우연히 하강폭으로 잡혔다''를 구분할 수 없다. 더 촘촘한 예산 스냅샷(예: 5/15/30/60/120/300\,s)으로 재실행해야 이 둘을 가른다.}
+\chk{\textbf{표본 해상도의 한계}: 예산 스냅샷이 1/10/60/300\,s 4개뿐이라 ``정점 시점''과 ``하강 기울기'' 추정 모두 해상도가 거칠다 — 특히 위 하강폭 결과는 12-view Vanilla3DGS의 60\,s 지점 비단조성(\S\ref{sec:results})이 4점 표본에 어떻게 걸리느냐에 따라 만들어졌을 수 있어, ``하강이 실제로 view 수에 따라 커진다''와 ``60\,s 근방의 일시적 하락이 우연히 잡혔다''를 이 표본만으로는 구분할 수 없다. 더 촘촘한 스냅샷(예: 5/15/30/60/120/300\,s) 재실행이 필요하다.}
 
 \subsection{Depth 불확실도 개입}
 \label{sec:c2}
@@ -108,7 +108,7 @@ DTU 8-scan 외부 검증에서 두 종류의 통제된 depth 왜곡을 대표 �
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.85\linewidth]{figures/c2_depth_sensitivity.png}
-\caption{C2 depth-noise sensitivity, DTU 8-scan, budget=300\,s. 위 행은 개별 노이즈 $\sigma$ 축, 아래 행은 전역 스케일 편향 $s$ 축. 왼쪽 열(PSNR)은 4개 조건 모두 예측대로 하락(위)/비대칭 단조 증가(아래)하지만, 오른쪽 열(Gaussian 수)은 H1이 예측한 증가가 아니라 하락 또는 평탄이다. 오차 막대는 scene cluster bootstrap 95\% CI.}
+\caption{C2 depth-noise sensitivity, DTU 8-scan, budget=300\,s. 왼쪽 두 패널은 개별 노이즈 $\sigma$ 축, 오른쪽 두 패널은 전역 스케일 편향 $s$ 축. PSNR 패널은 4개 조건 모두 예측대로 하락($\sigma$)/단조 증가($s$)하지만, Gaussian 수 패널은 H1이 예측한 증가가 아니라 하락 또는 평탄이다. 오차 막대는 scene cluster bootstrap 95\% CI.}
 \label{fig:c2-sensitivity}
 \end{figure*}
 
@@ -134,4 +134,4 @@ $\sigma$ $\uparrow$ $\Rightarrow$ Gaussian 수 $\uparrow$ & 기각 — 반대(4�
 
 \paragraph{Overlap 증폭 효과} 같은 view 수에서 overlap만 다른 직접 비교쌍은 4-view 하나뿐이다(2-view는 저겹침만, 12-view는 고겹침만 설계에 있음). $\sigma$축은 저겹침이 근소하게 더 가파르게 하락했으나($-1.61\,$dB 대 $-1.14\,$dB), $s$축은 사실상 차이가 없었다($+1.59\,$dB 대 $+1.53\,$dB) — H1의 저겹침 증폭 예측은 절반의 절반만 지지된다.
 
-\chk{자세한 조건별 수치와 재현 커맨드는 findings 폴더의 2026-08-19자 C2 분석 문서 참고. $s$축 탐색 범위 확장($s \in \{1.15, 1.2, 1.3\}$)과 Gaussian growth/prune 카운트 분리 계측이 다음 단계로 남아 있다.}
+\chk{$s$축 탐색 범위 확장($s \in \{1.15, 1.2, 1.3\}$)과 Gaussian growth/prune 카운트 분리 계측이 다음 단계로 남아 있다.}
